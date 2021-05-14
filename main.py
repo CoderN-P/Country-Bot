@@ -1669,7 +1669,7 @@ async def prestige(ctx):
       update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
       embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
       await ctx.channel.send(embed=embed)
-      update_coins(ctx.author.id, 0)
+      update_coins((ctx.author.id, 0))
   else:
     embed = discord.Embed(title='Oh No', description=''':x: you haven't met the requirements to prestige''')
     await ctx.channel.send(embed=embed)
