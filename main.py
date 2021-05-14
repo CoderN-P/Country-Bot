@@ -5,7 +5,7 @@ import inspect
 import pymongo, dns
 from mongomethods import user_exists
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall
 import textwrap, contextlib
 from traceback import format_exception
 from discord.ext import tasks
@@ -159,6 +159,7 @@ def start_extensions(bot):
 
 
 
+
 @bot.command()
 @commands.cooldown(1, 3600, commands.BucketType.user)
 async def tax(ctx):
@@ -177,7 +178,7 @@ async def tax(ctx):
     return
 
   
-  tax1 = round((round((a[0][1] ** 0.5)/ 100)  * a[0][5] + 1)
+  tax1 = round((round((a[0][1] ** 0.5)/ 100)  * a[0][5] + 1))
 
   await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
 
@@ -1262,7 +1263,7 @@ async def start(ctx):
 
     msg = await bot.wait_for('message', check=check, timeout=100)
 
-    writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 1000000000, 0, 0, 0, 0))
+    writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 1000000000, 0, 0, 0, 0, 0))
 
     await ctx.channel.send('Hooray, Country Created!!!!')
   except:
@@ -1270,6 +1271,35 @@ async def start(ctx):
 
     await ctx.channel.send(embed=embed)
 
+
+@bot.command()
+@commands.is_owner()
+async def send_update(ctx, *, info):
+  embed = discord.Embed(title='Update!!!', description=info)
+  for i in findall():
+    await bot.get_channel(i["_id"]).send(embed=embed)
+
+@bot.command()
+async def configure_channel(ctx, channel):
+  channel = channel.strip('<')
+  channel = channel.strip('>')
+  channel = channel.strip('#')
+  try:
+    await bot.get_channel.send(embed=discord.Embed(title='Success', description='Channel is configured to receive updates about the bot!'))
+
+  except:
+    await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: I couldn't send mesages in that channel. Please provide a valid channel!"))
+    return
+
+  try:
+    create_update(channel)
+  except:
+    await ctx.send(embed=discord.Embed(title='Hey!', description='This channel has already been configured!'))
+
+  
+@bot.command()
+async def unconfigure(ctx, channel):
+  pass
 
 @bot.command()
 async def profile(ctx, *arg):
