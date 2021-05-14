@@ -160,7 +160,7 @@ def start_extensions(bot):
 
 
 @bot.command()
-@commands.cooldown(1, 60, commands.BucketType.user)
+@commands.cooldown(1, 3600, commands.BucketType.user)
 async def tax(ctx):
   try:
     a = reading(ctx.author.id)
@@ -171,6 +171,12 @@ async def tax(ctx):
     await ctx.send(embed=embed)
     return
 
+  if a[0][11] > 1000000000:
+    embed = discord.Embed(title='Hey!', description="You can't tax more. You have emptied the money supply!")
+    await ctx.send(embed=embed)
+    return
+
+  
   tax1 = round(a[0][1] ** 0.5) * a[0][5] + 1
 
   await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
@@ -1663,6 +1669,7 @@ async def prestige(ctx):
       update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
       embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
       await ctx.channel.send(embed=embed)
+      update_coins(ctx.author.id, 0)
   else:
     embed = discord.Embed(title='Oh No', description=''':x: you haven't met the requirements to prestige''')
     await ctx.channel.send(embed=embed)
