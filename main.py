@@ -177,7 +177,7 @@ async def tax(ctx):
     return
 
   
-  tax1 = round(a[0][1] ** 0.5) * a[0][5] + 1
+  tax1 = round((round((a[0][1] ** 0.5)/ 100)  * a[0][5] + 1)
 
   await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
 
