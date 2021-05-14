@@ -21,10 +21,15 @@ ipython = "^7.20.0"
 wget = "^3.2"
 a-world-of-countries = "^1.0.0"
 fuzzywuzzy = "^0.18.0"
-flag = "^0.1.1"
-flags = "^0.0.1"
 emojiflags = "^0.1.1"
 replit = "^2.0.0"
+dblpy = "^0.4.0"
+psutil = "^5.8.0"
+motor = "^2.4.0"
+dnspython = "^2.1.0"
+
+
+
 
 
 [tool.poetry.dev-dependencies]

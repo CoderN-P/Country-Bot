@@ -1,11 +1,11 @@
-from flask import Flask
+from flask import Flask, redirect, render_template
 from threading import Thread
 
 app = Flask('')
 
 @app.route('/')
 def main():
-    return "Your bot is alive!"
+    return redirect('https://cbotdiscord.npcool.repl.co/')
     
 
 def run():
