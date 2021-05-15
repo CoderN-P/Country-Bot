@@ -3,9 +3,10 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import inspect
 import pymongo, dns
+from discord.ext.commands import has_permissions
 from mongomethods import user_exists
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete
 import textwrap, contextlib
 from traceback import format_exception
 from discord.ext import tasks
@@ -1280,14 +1281,17 @@ async def send_update(ctx, *, info):
     await bot.get_channel(i["_id"]).send(embed=embed)
 
 @bot.command()
-async def configure_channel(ctx, channel):
+@has_permissions(administrator=True)
+async def configurechannel(ctx, channel):
   channel = channel.strip('<')
   channel = channel.strip('>')
   channel = channel.strip('#')
+  
   try:
-    await bot.get_channel.send(embed=discord.Embed(title='Success', description='Channel is configured to receive updates about the bot!'))
+    await bot.get_channel(int(channel)).send(embed=discord.Embed(title='Success', description='Channel is configured to receive updates about the bot!'))
 
-  except:
+  except Exception as e:
+    print(e)
     await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: I couldn't send mesages in that channel. Please provide a valid channel!"))
     return
 
@@ -1296,10 +1300,34 @@ async def configure_channel(ctx, channel):
   except:
     await ctx.send(embed=discord.Embed(title='Hey!', description='This channel has already been configured!'))
 
-  
+
+@configurechannel.error
+async def configure_error(error, ctx):
+   if isinstance(error, discord.ext.commands.MissingPermissions):
+       await ctx.send("You need the `MANAGE_SERVER` permission to do that!")
+
+   
+
+
 @bot.command()
-async def unconfigure(ctx, channel):
-  pass
+@has_permissions(administrator=True)
+async def unconfigurechannel(ctx, channel):
+  channel = channel.strip('<')
+  channel = channel.strip('>')
+  channel = channel.strip('#')
+  try:
+    delete(int(channel))
+
+  except:
+    await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: Please provide a valid channel!"))
+    return
+
+  await ctx.send(embed=discord.Embed(title='Success', description=f"<#{channel}> won't receive update messages"))
+
+@unconfigurechannel.error
+async def unconfigure_error(error, ctx):
+   if isinstance(error, discord.ext.commands.MissingPermissions):
+       await ctx.send("You need the `MANAGE_SERVER` permission to do that!")
 
 @bot.command()
 async def profile(ctx, *arg):
@@ -2506,6 +2534,8 @@ async def help(ctx, *arg):
 
           **Check out `.changelog` to see new features that have come out!!!**
 
+          Use the `{db[ctx.guild.id]}configurechannel` and `{db[ctx.guild.id]}unconfigurechannel` command to receive updates about the bot in that channel
+
 
 
       ''', color=0xFF5733)
@@ -2515,6 +2545,7 @@ async def help(ctx, *arg):
             
         )
 
+        
         message = await ctx.channel.send(embed=main)
                             
 
