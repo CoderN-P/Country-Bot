@@ -98,11 +98,11 @@ def create_update(channel):
 def findall():
   return my_collection2.find()
 
-def delete(channel):
-  if check_channel(channel) == False:
+def delete_update(channel):
+  if check_channel(channel) == True:
     raise Exception
   else:
     pass
-  my_collection.delete_one({"_id": int(channel)})
+  my_collection2.delete_one({"_id": int(channel)})
 
 

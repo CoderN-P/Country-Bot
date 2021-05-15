@@ -6,7 +6,7 @@ import pymongo, dns
 from discord.ext.commands import has_permissions
 from mongomethods import user_exists
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update
 import textwrap, contextlib
 from traceback import format_exception
 from discord.ext import tasks
@@ -31,7 +31,7 @@ import wbdata
 import random
 import time
 import unicodedata
-from help_page import geographical, economy, general, country_database, admin_stuff, games, misc, gambling, developer_commands
+from help_page import geographical, economy, general, country_database, admin_stuff, games, misc, gambling, developer_commands, meme_commands
 global cc
 import resource, psutil
 from replit import db
@@ -155,6 +155,7 @@ def start_extensions(bot):
   bot.load_extension("extensions.country_database")
   bot.load_extension("extensions.gambling")
   bot.load_extension("extensions.economy")
+  bot.load_extension("extensions.memes")
 
 
 
@@ -1291,7 +1292,6 @@ async def configurechannel(ctx, channel):
     await bot.get_channel(int(channel)).send(embed=discord.Embed(title='Success', description='Channel is configured to receive updates about the bot!'))
 
   except Exception as e:
-    print(e)
     await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: I couldn't send mesages in that channel. Please provide a valid channel!"))
     return
 
@@ -1302,9 +1302,13 @@ async def configurechannel(ctx, channel):
 
 
 @configurechannel.error
-async def configure_error(error, ctx):
+async def configure_error(ctx, error):
    if isinstance(error, discord.ext.commands.MissingPermissions):
-       await ctx.send("You need the `MANAGE_SERVER` permission to do that!")
+       await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
+
+   elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}configurechannel <channel>```')
+    await ctx.channel.send(embed=embed)
 
    
 
@@ -1316,18 +1320,23 @@ async def unconfigurechannel(ctx, channel):
   channel = channel.strip('>')
   channel = channel.strip('#')
   try:
-    delete(int(channel))
+    delete_update(int(channel))
 
-  except:
+  except Exception as e:
+    print(e)
     await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: Please provide a valid channel!"))
     return
 
   await ctx.send(embed=discord.Embed(title='Success', description=f"<#{channel}> won't receive update messages"))
 
 @unconfigurechannel.error
-async def unconfigure_error(error, ctx):
+async def unconfigure_error(ctx, error):
    if isinstance(error, discord.ext.commands.MissingPermissions):
-       await ctx.send("You need the `MANAGE_SERVER` permission to do that!")
+       await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
+
+   elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}unconfigurechannel <channel>```')
+    await ctx.channel.send(embed=embed)
 
 @bot.command()
 async def profile(ctx, *arg):
@@ -2398,81 +2407,10 @@ async def on_command_error(ctx, error):
        raise error
 
 
-@bot.command()
-async def aww(ctx):
-  data = requests.get('https://meme-api.herokuapp.com/gimme/awww').json()
-  meme = data
-
-  
-  
-  title = meme['title']
-  
-  
-    
-  embed = discord.Embed(title=f'{title}', url=meme['postLink'])
-  embed.set_image(url=meme['url'])
-  author = meme['author']
-  likes = meme['ups']
-  embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-  await ctx.send(embed=embed)
-
-
-@bot.command()
-async def snake(ctx):
-  data = requests.get('https://meme-api.herokuapp.com/gimme/snakes').json()
-  meme = data
-
-  
-  
-  title = meme['title']
-  
-  
-    
-  embed = discord.Embed(title=f'{title}', url=meme['postLink'])
-  embed.set_image(url=meme['url'])
-  author = meme['author']
-  likes = meme['ups']
-  embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-  await ctx.send(embed=embed)
-
-
-@bot.command()
-async def cat(ctx):
-  data = requests.get('https://meme-api.herokuapp.com/gimme/cats').json()
-  meme = data
-
-  
-  
-  title = meme['title']
-  
-  
-    
-  embed = discord.Embed(title=f'{title}', url=meme['postLink'])
-  embed.set_image(url=meme['url'])
-  author = meme['author']
-  likes = meme['ups']
-  embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-  await ctx.send(embed=embed)
 
 
 
-@bot.command()
-async def dog(ctx):
-  data = requests.get('https://meme-api.herokuapp.com/gimme/dog').json()
-  meme = data
 
-  
-  
-  title = meme['title']
-  
-  
-    
-  embed = discord.Embed(title=f'{title}', url=meme['postLink'])
-  embed.set_image(url=meme['url'])
-  author = meme['author']
-  likes = meme['ups']
-  embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-  await ctx.send(embed=embed)
 
 
 
@@ -2482,35 +2420,7 @@ async def dog(ctx):
 
     
 
-@bot.command()
-async def meme(ctx):
-  data = requests.get('https://meme-api.herokuapp.com/gimme/wholesomememes').json()
-  meme = data
-  channel_nsfw = ctx.message.channel.is_nsfw()
-  title = meme['title']
-  
-  if meme['nsfw'] == 'True':
-    if channel_nsfw:
-      embed = discord.Embed(title=f'{title} [NSFW]', url=meme['postLink'])
-      embed.set_image(url=meme['url'])
-      author = meme['author']
-      likes = meme['ups']
-      embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-      await ctx.send(embed=embed)
 
-    else:
-      embed = discord.Embed(title='Hey!', description=':x: This meme is NSFW!!! You can only see it in an NSFW channel.')
-      await ctx.send(embed=embed)
-
-    
-
-  else:
-    embed = discord.Embed(title=meme['title'], url=meme['postLink'])
-    embed.set_image(url=meme['url'])
-    author = meme['author']
-    likes = meme['ups']
-    embed.set_footer(text=f'Author: {author} | 👍 {likes}')
-    await ctx.send(embed=embed)
     
 
 
@@ -2534,7 +2444,7 @@ async def help(ctx, *arg):
 
           **Check out `.changelog` to see new features that have come out!!!**
 
-          Use the `{db[ctx.guild.id]}configurechannel` and `{db[ctx.guild.id]}unconfigurechannel` command to receive updates about the bot in that channel
+          Use the `{db[ctx.guild.id]}configurechannel <channel>` and `{db[ctx.guild.id]}unconfigurechannel <channel>` command to receive updates about the bot in that channel
 
 
 
@@ -2551,7 +2461,7 @@ async def help(ctx, *arg):
 
           
 
-        contents = [main, geographical, economy, general, country_database, admin_stuff, games, misc, gambling, developer_commands]
+        contents = [main, geographical, economy, general, country_database, admin_stuff, games, misc, gambling, meme_commands, developer_commands]
 
         pages = len(contents)
         cur_page = 1
