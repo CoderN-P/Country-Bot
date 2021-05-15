@@ -1,5 +1,5 @@
 from discord.ext import commands
-import dbl
+import dbl, os
 class TopGG1(commands.Cog):
     """
     This example uses dblpy's autopost feature to post guild count to top.gg every 30 minutes.
@@ -7,7 +7,7 @@ class TopGG1(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgxMDY2MjQwMzIxNzk0ODY3MiIsImJvdCI6dHJ1ZSwiaWF0IjoxNjE1NzQwMDA2fQ.eFEgjaUOU4J1WagbKLzFSNgqfEP07-cOmdT3MYKlIFI'  # set this to your DBL token
+        self.token = os.environ['TOPGGTOKEN'] # set this to your DBL token
         self.dblpy = dbl.DBLClient(self.bot, self.token, autopost=True)  # Autopost will post your guild count every 30 minutes
 
     @commands.Cog.listener()

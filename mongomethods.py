@@ -75,6 +75,17 @@ def update_coins(arg):
 
 
 
+def update_inventory(arg):
+  a = reading(arg[0])
+  my_collection.update_one(
+   {"_id": str(arg[0])},
+   {
+     '$set': {'inventory': arg[1]}
+   }
+)
+
+
+
 
 def search_name(name):
   data = [list(my_collection.find_one({'data.name': name})['data'].values())]

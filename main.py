@@ -6,7 +6,7 @@ import pymongo, dns
 from discord.ext.commands import has_permissions
 from mongomethods import user_exists
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
 import textwrap, contextlib
 from traceback import format_exception
 from discord.ext import tasks
@@ -145,8 +145,8 @@ async def on_guild_remove(guild):
  
   
 #A command to change the prefix of the bot in that guild
-
-
+global hunt_animals
+hunt_animals = {'Boar': [':boar:', 1000], 'Deer': [':deer:', 400], 'Crocodile': [':crocodile:', 750]}
 
 def start_extensions(bot):
   bot.load_extension("extensions.adminstuff")
@@ -192,7 +192,85 @@ async def tax_error(ctx, error):
         em = discord.Embed(title="Hey!",description=f'''You can't collect taxes now! Try again in `{error.retry_after:.2f}`s.''')
         await ctx.send(embed=em)
 
+
 @bot.command()
+@commands.cooldown(1, 15, commands.BucketType.user)
+async def hunt(ctx):
+  try:
+    a = find_inventory(ctx.author.id)
+
+  except:
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    await ctx.send(embed=embed)
+    return
+
+  lst = list(hunt_animals.keys())
+  lst.append(' ')
+  animal = random.choice(lst)
+
+  if animal == ' ':
+    embed = discord.Embed(title='Hunting', description='While hunting you found nothing :C')
+
+    await ctx.send(embed=embed)
+
+  else:
+    embed = discord.Embed(title='Hunting', description=f"While hunting you found an {hunt_animals[animal][0]} {animal} worth {hunt_animals[animal][1]}")
+
+    await ctx.send(embed=embed)
+
+    if f'{hunt_animals[animal][0]} {animal}' not in a.keys():
+      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': 1, 'value': hunt_animals[animal][1]}
+
+    else:
+      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': a[f'{hunt_animals[animal][0]} {animal}']['amount'] + 1, 'value': a[f'{hunt_animals[animal][0]} {animal}']['value'] + hunt_animals[animal][1]}
+
+    update_inventory((ctx.author.id, a))
+
+      
+
+@hunt.error
+async def hunt_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="Hey!",description=f'''You can't hunt right now! Try again in `{error.retry_after:.2f}`s.''')
+        await ctx.send(embed=em) 
+
+@bot.command()
+async def sell(ctx, *item1):
+  try:
+    a = find_inventory(ctx.author.id)
+    ab = reading(ctx.author.id)
+
+  except:
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    await ctx.send(embed=embed)
+    return
+
+  if len(item1) == 1:
+    item = None
+    for i in a.keys():
+      if item1[0].lower() in i:
+        item = i
+
+    if item == None:
+      await ctx.send(":x: You don't own that!")
+      return
+
+    else:
+      value = a[item]['value']
+      if a[item]['amount'] == 1:
+        del a[item]
+        update_inventory((ctx.author.id, a))
+
+        await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+
+        update_coins((ctx.author.id, ab[0][11] + value))
+
+      else:
+        pass
+
+    
+
+@bot.command(aliases=['inv'])
 async def inventory(ctx):
   try:
     a = find_inventory(ctx.author.id)
@@ -204,9 +282,10 @@ async def inventory(ctx):
 
   
   string = ''''''
-
   for x, i in enumerate(a.items()):
-    string = string + f'**{x}.** {i[0]}: {i[1]}'
+    amount = i[1]['amount']
+    value = i[1]['value']
+    string = string + f'**{x + 1}.** {i[0]} | Amount: {amount} : Worth: {value}\n'
 
   if len(a) == 0:
     string = ":x: You don't have anything in your inventory. Buy things from the shop with coins!"
@@ -2391,7 +2470,7 @@ async def on_command_error(ctx, error):
       elif similar == '`.tax`':
         await ctx.channel.send(f"Did you mean {similar}")
         return
-      elif similar == '`.daily`':
+      elif similar == '`.daily`' or '`.hunt`':
         await ctx.channel.send(f"Did you mean {similar}")
         return
       try:
