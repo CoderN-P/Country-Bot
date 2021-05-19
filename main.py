@@ -2494,7 +2494,9 @@ async def on_command_error(ctx, error):
 
     
 
-
+@bot.command()
+async def invite(ctx):
+  await ctx.send(embed=discord.Embed(title='Invite link', description='Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands'))
     
 
 
