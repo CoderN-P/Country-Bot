@@ -26,7 +26,7 @@ def find_inventory(user_id):
 
 
 def writing(arg):
-   my_collection.insert_one({"_id": str(arg[0]), "data" : {"name": arg[1], "population": arg[2], "multiplier": arg[3], "job": arg[4], "work_ethic": arg[5], "prestige": arg[6], "requirement": arg[7], "wars_played": arg[8], "wars_won": arg[9], "wars_lost": arg[10], "times_worked": arg[11], "coins": arg[12]}})
+   my_collection.insert_one({"_id": str(arg[0]), "data" : {"name": arg[1], "population": arg[2], "multiplier": arg[3], "job": arg[4], "work_ethic": arg[5], "prestige": arg[6], "requirement": arg[7], "wars_played": arg[8], "wars_won": arg[9], "wars_lost": arg[10], "times_worked": arg[11], "coins": arg[12]}, 'inventory': {}})
 
 def reading(user_id):
    if user_exists(user_id) == False:
