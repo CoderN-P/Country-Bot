@@ -1,25 +1,29 @@
 from discord.ext import commands
 import discord
-from youtube_search import YoutubeSearch
-import requests
+from youtube_api import YoutubeDataApi
+import requests, os
+import datetime
 from replit import db
 
 @commands.command()
 async def youtube_search(ctx, *, query):
-  results = YoutubeSearch(query, max_results=10).to_dict()
+  YT_KEY = os.environ['YOUTUBEKEY']
+  yt = YoutubeDataApi(YT_KEY)
+  results = yt.search(q=query,max_results=1)
   vid = results[0]
   
-  url = vid['url_suffix']
-  embed = discord.Embed(title=query, url=f'https://www.youtube.com{url}')
+
+  dateTimeObj = datetime.datetime.fromtimestamp(results[0]['video_publish_date'])
+
+  timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
+  embed = discord.Embed(title=query)
   
 
-  embed.add_field(name=results[0]['title'], value=f'''**Channel:** {results[0]['channel']} 
-  **Views:** {results[0]['views']}
-  **Published:** {results[0]['publish_time']}
-  **Long description:** {results[0]['long_desc']}
-  **Duration:** {results[0]['duration']}''')
+  embed.add_field(name=vid['video_title'], value=f'''**Channel:** {vid['channel_title']} 
+  **Published:** {timestampStr}
+''')
 
-  embed.set_thumbnail(url=results[0]['thumbnails'][0])
+  embed.set_thumbnail(url=results[0]['video_thumbnail'])
 
   await ctx.channel.send(embed=embed)
 
