@@ -358,8 +358,7 @@ async def flag(ctx, *country: str):
       embed = discord.Embed(title='Error', description=':x: Country not found')
       await ctx.send(embed=embed)
       
-    
-@commands.cooldown(1, 1800, commands.BucketType.user)
+
 @bot.command()
 async def war(ctx, user):
   b = user
@@ -542,11 +541,8 @@ async def war(ctx, user):
 
       update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
   
-@war.error
-async def war_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="Hey!",description=f'''You can't wage war now! Try again in `{error.retry_after:.2f}`s.''')
-        await ctx.send(embed=em)
+
+
 @bot.command()
 async def stats(ctx):
   current_process = psutil.Process()
