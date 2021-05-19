@@ -1,10 +1,7 @@
 #importing dependecies
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-import inspect
-import pymongo, dns
 from discord.ext.commands import has_permissions
-from mongomethods import user_exists
 import discord
 from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
 import textwrap, contextlib
@@ -13,9 +10,7 @@ from discord.ext import tasks
 from discord import Color
 import regex as re
 import keep_alive
-import urllib
 import io
-from discord_slash import SlashCommand, SlashContext
 import os
 from pathlib import Path
 import motor.motor_asyncio
@@ -36,8 +31,7 @@ global cc
 import resource, psutil
 from replit import db
 from fuzzywuzzy import fuzz
-import asyncio, os
-import operator
+import asyncio
 from emojiflags.lookup import lookup
 
 
@@ -116,12 +110,6 @@ data = {
 
 
 
-slash = SlashCommand(bot, sync_commands=True)
-
-@slash.slash(name="test", guild_ids=[821872779523522580])
-async def _test(ctx: SlashContext):
-    embed = discord.Embed(title="embed test")
-    await ctx.send(content="test", embeds=[embed])
 
 
 
@@ -371,7 +359,7 @@ async def flag(ctx, *country: str):
       await ctx.send(embed=embed)
       
     
-
+@commands.cooldown(1, 1800, commands.BucketType.user)
 @bot.command()
 async def war(ctx, user):
   b = user
@@ -554,7 +542,11 @@ async def war(ctx, user):
 
       update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
   
-
+@war.error
+async def war_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="Hey!",description=f'''You can't wage war now! Try again in `{error.retry_after:.2f}`s.''')
+        await ctx.send(embed=em)
 @bot.command()
 async def stats(ctx):
   current_process = psutil.Process()
@@ -2478,6 +2470,9 @@ async def on_command_error(ctx, error):
 
       except:
         await ctx.channel.send(f"Did you mean {similar}")
+
+    elif isinstance(error, discord.ext.commands.CommandOnCooldown):
+       pass
 
     elif isinstance(error, discord.ext.commands.CommandOnCooldown):
        pass
