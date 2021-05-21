@@ -1,16 +1,19 @@
 from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
 
-from fuzzywuzzy import fuzzywuzzy
+from fuzzywuzzy import fuzz
 
 from emojiflags.lookup import lookup
 
-import unicodedata
+import unicodedata, asyncio
+
+from countryinfo import CountryInfo
 
 from main import quiz_country_list
 
 
 from replit import db
 
+import random
 
 
 import discord
@@ -64,25 +67,23 @@ class WarCog(commands.Cog):
   
   @commands.command()
   @commands.cooldown(1, 60, commands.BucketType.user)
-  async def war(self, ctx, user):
-    b = user
-    b = b.replace("<","")
-    b = b.replace(">","")
-    b = b.replace("@","")
-    b = b.replace("!", "")
+  async def war(self, ctx, user: discord.Member):
+    b = user.id
+
+    opponent = user
+    
 
     
-    try:
-
-      if int(b) == int(ctx.message.author.id):
+    
+    
+      
+    if int(b) == int(ctx.author.id):
         embed = discord.Embed(title='Stop!', description=":x: You can't wage war on yourself!")
         await ctx.channel.send(embed=embed)
         return
-    except:
-      embed= discord.Embed(title='Sorry', description=f''':x: This user doesn't have a country yet''')
+    
 
-      await ctx.channel.send(embed=embed)
-      return
+      
     try:
       user1 = reading(ctx.message.author.id)
     except:
@@ -98,9 +99,9 @@ class WarCog(commands.Cog):
       await ctx.channel.send(embed=embed)
       return
     
-    await ctx.channel.send(f"{user}, you have 20 seconds to accept <@!{ctx.message.author.id}> request to war. Type `accept` in the chat to accept, or type `deny` in the chat to end the conflict")
+    await ctx.channel.send(f"<@!{b}>, you have 20 seconds to accept <@!{ctx.message.author.id}> request to war. Type `accept` in the chat to accept, or type `deny` in the chat to end the conflict")
 
-    opponent = await bot.fetch_user(b)
+    
     def check(m):
       return m.channel == ctx.channel and m.author == opponent and m.content.lower() == 'accept' or m.content.lower() == 'deny'
     try:
