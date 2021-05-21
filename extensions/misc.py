@@ -6,7 +6,9 @@ from replit import db
 
 
 
-
+@commands.command()
+async def invite(ctx):
+  await ctx.send(embed=discord.Embed(title='Invite link', description='Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands'))
 
 
 class PingCog(commands.Cog):
@@ -112,13 +114,19 @@ async def changelog(ctx):
   **4.** Added Statistics for `war` on country profiles
   **5.** Added a special feature only in the support server
   **6.** Added new feature `.gift` (allows you to gift population to other users
-  **7.** New autocorrect when you misspell a command''')
+  **7.** New autocorrect when you misspell a command
+  ''')
   await ctx.send(embed=embed)
 
-
+@commands.command(name='calc')
+async def my_command(ctx, *, arg):
+    result = eval(arg)
+    await ctx.send(result)
 
 def setup(bot):
   bot.add_command(color)
   bot.add_command(lol)
   bot.add_cog(PingCog(bot))
   bot.add_command(changelog)
+  bot.add_command(my_command)
+  bot.add_command(invite)

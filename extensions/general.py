@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import country_converter as coco
 import random
+from replit import db
+from fuzzywuzzy import fuzz
 
 from countryinfo import CountryInfo
 
@@ -33,5 +35,56 @@ async def flag(ctx, *country: str):
       await ctx.send(embed=embed)
 
 
+@commands.command(name='capital')
+async def cap(ctx, *, country):
+
+    try:
+    
+      if fuzz.ratio(country, "England") > 80:
+        country1 = CountryInfo('Great Britan')
+      else:
+        country1 = CountryInfo(country)
+
+      result = country1.capital()
+
+    
+
+      embed = discord.Embed(
+              title="Capital of " + country,
+              description="**The capital of {country} is `{result}`**".format(
+                  result=result, country=country),
+              color=0xFF5733)
+
+      result4 = coco.convert(names=country, to='ISO2')
+      embed.set_thumbnail(
+              url=f'https://flagcdn.com/w80/{result4.lower()}.jpg')
+
+      embed.set_footer(
+              text="Requested by: {name}".format(name=ctx.message.author),
+              icon_url=ctx.author.avatar_url)
+
+      await ctx.channel.send(embed=embed)
+
+    except:
+        embed = discord.Embed(
+           title="Sorry",
+            description="**{country} is not a country**".format(
+                country=country),
+            color=0xFF5733)
+
+        embed.set_thumbnail(
+            url=
+            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+        )
+
+        await ctx.channel.send(embed=embed)
+
+@cap.error
+async def capital_error(ctx, error):
+  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}capital <country>```')
+    await ctx.channel.send(embed=embed)
+
 def setup(bot):
   bot.add_command(flag)
+  bot.add_command(cap)

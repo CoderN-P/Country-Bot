@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
 import pycountry, re
+from replit import db
 
 @commands.command()
 async def list(ctx, arg):

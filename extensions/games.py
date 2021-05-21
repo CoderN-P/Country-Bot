@@ -1,6 +1,7 @@
 from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
 
 from fuzzywuzzy import fuzz
+import country_converter as coco
 
 from emojiflags.lookup import lookup
 
@@ -104,6 +105,7 @@ class WarCog(commands.Cog):
     
     def check(m):
       return m.channel == ctx.channel and m.author == opponent and m.content.lower() == 'accept' or m.content.lower() == 'deny'
+
     try:
       msg = await self.bot.wait_for('message', check=check, timeout=20)
     except asyncio.TimeoutError:
@@ -247,8 +249,8 @@ class WarCog(commands.Cog):
 
 
 
-    @war.error
-    async def war_error(self, ctx, error):
+  @war.error
+  async def war_error(self, ctx, error):
       if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}war <user>``` User should be a ping')
         await ctx.channel.send(embed=embed)
@@ -256,6 +258,144 @@ class WarCog(commands.Cog):
       elif isinstance(error, commands.CommandOnCooldown):
             em = discord.Embed(title="Hey!",description=f'''You can't wage war right now! Try again in `{error.retry_after:.2f}`s.''')
             await ctx.send(embed=em)
+
+
+  @commands.command()
+  async def guess_capital(self, ctx, *arg):
+      the_author = ctx.message.author
+      channel = ctx.message.channel
+
+      await ctx.channel.send("How long should the time limit be (**in seconds**)")
+
+      def check1(m):
+        return m.content.isdigit() and m.author == the_author and m.channel == channel and int(m.content) <= 300
+
+      msg1 = await self.bot.wait_for("message", check=check1)
+
+      length = int(msg1.content)
+
+      
+      correct_ans = {}
+
+      
+
+      if len(arg) == 0 or len(arg) >= 1 and arg[0].lower() != 'reverse':
+        count = 0
+        bol = True
+        while bol:
+          random_country = random.choice(quiz_country_list)
+          country_capital1 = CountryInfo(random_country)
+          country_capital = country_capital1.capital()
+
+          if not country_capital:
+            random_country = random.choice(quiz_country_list)
+            country_capital1 = CountryInfo(random_country)
+            country_capital = country_capital1.capital()
+
+
+          country_capital = unicodedata.normalize('NFKD', country_capital).encode('ascii', 'ignore').decode('utf-8')
+          
+          #try:
+
+          result4 = coco.convert(names=random_country, to='ISO2')
+
+          await ctx.channel.send(f"What is the capital of....... `{random_country.title()}` {lookup(result4)}")
+
+          #except:
+            #await ctx.channel.send(f"What is the capital of....... `{random_country}`")
+
+
+          
+
+          
+
+          def check(m):
+            return fuzz.ratio(country_capital.lower(), m.content.lower()) > 85 or m.content.lower() == 'quit' and m.channel == channel
+
+          try:
+            msg = await self.bot.wait_for('message', check=check, timeout=length)
+
+            if msg.content == 'quit':
+              await ctx.channel.send("Game Over")
+              break
+
+            count += 1
+
+            if msg.author.id not in correct_ans:
+              correct_ans[msg.author.id] = 1
+
+            else:
+              correct_ans[msg.author.id] += 1
+
+            await ctx.channel.send(f"That is the correct answer!!! 🏆 Good Job <@{msg.author.id}>")
+            
+            bol = True
+
+          except asyncio.TimeoutError:
+            try:
+              await ctx.channel.send(f'''Time has run out!! ***Game Over***. Total score: `{count}` 
+    The highest scorer in this match was <@{max(correct_ans, key=lambda key: correct_ans[key])}> with a score of `{correct_ans[msg.author.id]}` GG''')
+              break 
+            except:
+              await ctx.channel.send("No one scored in this match. :cry: Total score `0`")
+              break
+
+          
+
+      elif len(arg) == 1 and arg[0].lower() == 'reverse':
+        count = 0
+        bol = True
+        while bol:
+
+          random_country = random.choice(quiz_country_list)
+
+          country_capital1 = CountryInfo(random_country)
+
+          country_capital = country_capital1.capital()
+
+          
+
+          result4 = coco.convert(names=random_country, to='ISO2')
+
+          await ctx.channel.send(f"What Country has `{country_capital.title()}` as its capital. Here is a hint: {lookup(result4)}")
+
+        
+
+          
+
+          def check(m):
+            return fuzz.ratio(random_country.lower(), m.content.lower()) > 82 and m.channel == channel
+
+          try:
+            msg = await self.bot.wait_for('message', check=check, timeout=length)
+
+            count += 1
+
+            if msg.author.id not in correct_ans:
+              correct_ans[msg.author.id] = 1
+
+            else:
+              correct_ans[msg.author.id] += 1
+
+            await ctx.channel.send(f"That is the correct answer!!! 🏆 Good Job <@{msg.author.id}>")
+            
+            bol = True
+
+          except asyncio.TimeoutError:
+            try:
+              await ctx.channel.send(f'''Time has run out!! ***Game Over***. Total score: `{count}` 
+    The highest scorer in this match was <@{max(correct_ans, key=lambda key: correct_ans[key])}> with a score of `{correct_ans[msg.author.id]}` GG''')
+              break 
+            except:
+              await ctx.channel.send("No one scored in this match. :cry: Total score `0`")
+              break
+
+
+
+
+  
+
+
 
 
 def setup(bot):
