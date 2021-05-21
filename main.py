@@ -128,6 +128,11 @@ async def on_guild_join(guild):
 @bot.event
 async def on_guild_remove(guild):
   del db[guild.id]
+
+
+#req = requests.get("https://discord.com/api/path/", data=data)
+
+#print(req.headers["X-RateLimit-Reset-After"] )
   
 
  
@@ -144,222 +149,14 @@ def start_extensions(bot):
   bot.load_extension("extensions.gambling")
   bot.load_extension("extensions.economy")
   bot.load_extension("extensions.memes")
+  bot.load_extension("extensions.games")
+  bot.load_extension("extensions.general")
 
 
 
 
-
-
-@bot.command()
-@commands.cooldown(1, 3600, commands.BucketType.user)
-async def tax(ctx):
-  try:
-    a = reading(ctx.author.id)
-
-  except:
-    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type {db[str(ctx.guild.id)]} to start one!")
-
-    await ctx.send(embed=embed)
-    return
-
-  if a[0][11] > 1000000000:
-    embed = discord.Embed(title='Hey!', description="You can't tax more. You have emptied the money supply!")
-    await ctx.send(embed=embed)
-    return
-
-  
-  tax1 = round((round((a[0][1] ** 0.5)/ 100)  * a[0][5] + 1))
-
-  await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
-
-  update_coins((ctx.author.id, tax1 + a[0][11]))
-
-@tax.error
-async def tax_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="Hey!",description=f'''You can't collect taxes now! Try again in `{error.retry_after:.2f}`s.''')
-        await ctx.send(embed=em)
-
-
-@bot.command()
-@commands.cooldown(1, 15, commands.BucketType.user)
-async def hunt(ctx):
-  try:
-    a = find_inventory(ctx.author.id)
-
-  except:
-    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
-    await ctx.send(embed=embed)
-    return
-
-  lst = list(hunt_animals.keys())
-  lst.append(' ')
-  animal = random.choice(lst)
-
-  if animal == ' ':
-    embed = discord.Embed(title='Hunting', description='While hunting you found nothing :C')
-
-    await ctx.send(embed=embed)
-
-  else:
-    embed = discord.Embed(title='Hunting', description=f"While hunting you found an {hunt_animals[animal][0]} {animal} worth {hunt_animals[animal][1]}")
-
-    await ctx.send(embed=embed)
-
-    if f'{hunt_animals[animal][0]} {animal}' not in a.keys():
-      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': 1, 'value': hunt_animals[animal][1]}
-
-    else:
-      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': a[f'{hunt_animals[animal][0]} {animal}']['amount'] + 1, 'value': a[f'{hunt_animals[animal][0]} {animal}']['value'] + hunt_animals[animal][1]}
-
-    update_inventory((ctx.author.id, a))
-
-      
-
-@hunt.error
-async def hunt_error(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="Hey!",description=f'''You can't hunt right now! Try again in `{error.retry_after:.2f}`s.''')
-        await ctx.send(embed=em) 
-
-@bot.command()
-async def sell(ctx, *item1):
-  try:
-    a = find_inventory(ctx.author.id)
-    ab = reading(ctx.author.id)
-
-  except:
-    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
-    await ctx.send(embed=embed)
-    return
-
-  if len(item1) == 1:
-    item = None
-    for i in a.keys():
-      if item1[0].lower() in i:
-        item = i
-
-    if item == None:
-      await ctx.send(":x: You don't own that!")
-      return
-
-    else:
-      value = a[item]['value']
-      if a[item]['amount'] == 1:
-        del a[item]
-        update_inventory((ctx.author.id, a))
-
-        await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
-
-        update_coins((ctx.author.id, ab[0][11] + value))
-
-      else:
-        pass
-
-    
-
-@bot.command(aliases=['inv'])
-async def inventory(ctx):
-  try:
-    a = find_inventory(ctx.author.id)
-
-  except:
-    embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{db[str(ctx.guild.id)]}start` to start one''')
-    await ctx.send(embed=embed)
-    return
-
-  
-  string = ''''''
-  for x, i in enumerate(a.items()):
-    amount = i[1]['amount']
-    value = i[1]['value']
-    string = string + f'**{x + 1}.** {i[0]} | Amount: {amount} : Worth: {value}\n'
-
-  if len(a) == 0:
-    string = ":x: You don't have anything in your inventory. Buy things from the shop with coins!"
-
-  embed = discord.Embed(title='Inventory', description=string)
-  await ctx.send(embed=embed)
-
-
-
-@bot.command()
-async def profile_name(ctx, name):
-  try:
-      a = search_name(name)
-      name = a[0][0]
-      
-      embed = discord.Embed(title=f'''{name}''', description=f'''Population: `{"{:,}".format(a[0][1])}`
-                      Multiplier: `{"{:,}".format(a[0][2])}`
-                      Job: `{a[0][3]}`
-                      Work Ethic: `{a[0][4]}`
-                      Office: `{dic[a[0][4]]}`
-                      Work Commands Issued: 
-                      `{a[0][10]}`
-                      {a[0][11]} :coin:
-                     ''')
-      
-      
-      embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
-                      Wars Won: `{a[0][8]}`
-                      Wars Lost: `{a[0][9]}`
-                      ''')
-
-      embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
-                      Prestige Requirement `{a[0][6]}` population''')
-
-      embed.set_thumbnail(url=ctx.author.avatar_url)
-      if dic[a[0][4]] == "Mom's basement":
-        embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
-      elif dic[a[0][4]] == 'Apartment (with roomate)': 
-        embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
-      
-      elif dic[a[0][4]] == 'Mansion':
-        embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
-
-      
-      elif dic[a[0][4]] == 'Home Office':
-        embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
-
-      elif dic[a[0][4]] == 'Space Base':
-        embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
-      
-      await ctx.channel.send(embed=embed)
-  except:
-      embed = discord.Embed(title='Sorry', description=f''':x: There is no country with this name''')
-      await ctx.send(embed=embed)
-
-
-
-  #command to get information about the bot
-
-
-@bot.command()
-async def flag(ctx, *country: str):
-  if len(country) == 0:
-    country = random.choice(quiz_country_list)
-    result4 = coco.convert(names=country, to='ISO2')
-    url = f'https://flagcdn.com/w320/{result4.lower()}.jpg'
-    e = discord.Embed(title=f'Flag of {country.title()}')
-    e.set_image(url=url)
-    await ctx.send(embed=e)
-  else:
-    country = ' '.join(country)
-    
-    result4 = coco.convert(names=country, to='ISO2')
-    
-    
-    url = f'https://flagcdn.com/w320/{result4.lower()}.jpg'
-    e = discord.Embed(title=f'Flag of {country.title()}')
-    e.set_image(url=url)
-    try:
-      await ctx.send(embed=e)
-    except:
-      embed = discord.Embed(title='Error', description=':x: Country not found')
-      await ctx.send(embed=embed)
-      
-
-@bot.command()
+@commands.command()
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def war(ctx, user):
   b = user
   b = b.replace("<","")
@@ -535,11 +332,182 @@ async def war(ctx, user):
       update_war((b, user2[0][0], user2[0][1] - user2_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8], user2[0][9] + 1))
     
   else:
-    
       await ctx.channel.send(f'{user} you gave the answer first. You won the war!!! :crown:')
       update_war((ctx.message.author.id, user1[0][0], user1[0][1] - user1_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8], user1[0][9] + 1))
 
       update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
+
+
+
+@war.error
+async def war_error(ctx, error):
+  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}war <user>``` User should be a ping')
+    await ctx.channel.send(embed=embed)
+
+  elif isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="Hey!",description=f'''You can't wage war right now! Try again in `{error.retry_after:.2f}`s.''')
+        await ctx.send(embed=em)
+
+
+
+@bot.command()
+@commands.cooldown(1, 15, commands.BucketType.user)
+async def hunt(ctx):
+  try:
+    a = find_inventory(ctx.author.id)
+
+  except:
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    await ctx.send(embed=embed)
+    return
+
+  lst = list(hunt_animals.keys())
+  lst.append(' ')
+  animal = random.choice(lst)
+
+  if animal == ' ':
+    embed = discord.Embed(title='Hunting', description='While hunting you found nothing :C')
+
+    await ctx.send(embed=embed)
+
+  else:
+    embed = discord.Embed(title='Hunting', description=f"While hunting you found an {hunt_animals[animal][0]} {animal} worth {hunt_animals[animal][1]}")
+
+    await ctx.send(embed=embed)
+
+    if f'{hunt_animals[animal][0]} {animal}' not in a.keys():
+      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': 1, 'value': hunt_animals[animal][1]}
+
+    else:
+      a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': a[f'{hunt_animals[animal][0]} {animal}']['amount'] + 1, 'value': a[f'{hunt_animals[animal][0]} {animal}']['value'] + hunt_animals[animal][1]}
+
+    update_inventory((ctx.author.id, a))
+
+      
+
+@hunt.error
+async def hunt_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        em = discord.Embed(title="Hey!",description=f'''You can't hunt right now! Try again in `{error.retry_after:.2f}`s.''')
+        await ctx.send(embed=em) 
+
+@bot.command()
+async def sell(ctx, *item1):
+  try:
+    a = find_inventory(ctx.author.id)
+    ab = reading(ctx.author.id)
+
+  except:
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    await ctx.send(embed=embed)
+    return
+
+  if len(item1) == 1:
+    item = None
+    for i in a.keys():
+      if item1[0].lower() in i:
+        item = i
+
+    if item == None:
+      await ctx.send(":x: You don't own that!")
+      return
+
+    else:
+      value = a[item]['value']
+      if a[item]['amount'] == 1:
+        del a[item]
+        update_inventory((ctx.author.id, a))
+
+        await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+
+        update_coins((ctx.author.id, ab[0][11] + value))
+
+      else:
+        pass
+
+    
+
+@bot.command(aliases=['inv'])
+async def inventory(ctx):
+  try:
+    a = find_inventory(ctx.author.id)
+
+  except:
+    embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{db[str(ctx.guild.id)]}start` to start one''')
+    await ctx.send(embed=embed)
+    return
+
+  
+  string = ''''''
+  for x, i in enumerate(a.items()):
+    amount = i[1]['amount']
+    value = i[1]['value']
+    string = string + f'**{x + 1}.** {i[0]} | Amount: {amount} : Worth: {value}\n'
+
+  if len(a) == 0:
+    string = ":x: You don't have anything in your inventory. Buy things from the shop with coins!"
+
+  embed = discord.Embed(title='Inventory', description=string)
+  await ctx.send(embed=embed)
+
+
+
+@bot.command()
+async def profile_name(ctx, name):
+  try:
+      a = search_name(name)
+      name = a[0][0]
+      
+      embed = discord.Embed(title=f'''{name}''', description=f'''Population: `{"{:,}".format(a[0][1])}`
+                      Multiplier: `{"{:,}".format(a[0][2])}`
+                      Job: `{a[0][3]}`
+                      Work Ethic: `{a[0][4]}`
+                      Office: `{dic[a[0][4]]}`
+                      Work Commands Issued: 
+                      `{a[0][10]}`
+                      {a[0][11]} :coin:
+                     ''')
+      
+      
+      embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
+                      Wars Won: `{a[0][8]}`
+                      Wars Lost: `{a[0][9]}`
+                      ''')
+
+      embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
+                      Prestige Requirement `{a[0][6]}` population''')
+
+      embed.set_thumbnail(url=ctx.author.avatar_url)
+      if dic[a[0][4]] == "Mom's basement":
+        embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
+      elif dic[a[0][4]] == 'Apartment (with roomate)': 
+        embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
+      
+      elif dic[a[0][4]] == 'Mansion':
+        embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
+
+      
+      elif dic[a[0][4]] == 'Home Office':
+        embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
+
+      elif dic[a[0][4]] == 'Space Base':
+        embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
+      
+      await ctx.channel.send(embed=embed)
+  except:
+      embed = discord.Embed(title='Sorry', description=f''':x: There is no country with this name''')
+      await ctx.send(embed=embed)
+
+
+
+  #command to get information about the bot
+
+
+
+      
+
+
   
 
 
@@ -998,11 +966,6 @@ async def capital_error(ctx, error):
     await ctx.channel.send(embed=embed)
 
 
-@war.error
-async def work_error(ctx, error):
-  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}war <user>``` User should be a ping')
-    await ctx.channel.send(embed=embed)
   
 
 
@@ -1412,7 +1375,9 @@ async def profile(ctx, *arg):
       a = reading(ctx.message.author.id)
       name = a[0][0]
       
-      embed = discord.Embed(title=f'''{name}''', description=f'''Population: `{"{:,}".format(a[0][1])}`
+      amount12 = 36 + len(str(ctx.author.id))
+      url = f'https://cbotdiscord.npcool.repl.co/{ctx.author.id}/{str(ctx.author.avatar_url)[amount12:][:-15]}'
+      embed = discord.Embed(title=f'''{name}''', url=url, description=f'''Population: `{"{:,}".format(a[0][1])}`
                       Multiplier: `{"{:,}".format(a[0][2])}`
                       Job: `{a[0][3]}`
                       Work Ethic: `{a[0][4]}`
@@ -1844,9 +1809,10 @@ async def buy(ctx, *id):
     await ctx.channel.send(embed=embed)
     return
 
-
+  
   if len(id) == 2:
     amount = id[1]
+    amount = amount.strip(',')
     if id[0] == '1':
         if a[0][1] - (10000 * int(amount)) < 0:
           embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
@@ -2975,13 +2941,7 @@ async def help(ctx, *arg):
           
           await ctx.channel.send(embed=embed)
 
-        elif arg == 'youtube_search':
-          embed=discord.Embed(title='Youtube Search', description=f'''**Usage: `{prefix}youtube_search <search query>`
-          Returns information about a video based on thesearch query**''', color=Color.teal())
-
-          embed.set_thumbnail(url=main_url)
-          
-          await ctx.channel.send(embed=embed)
+    
 
         elif arg == 'color':
           embed=discord.Embed(title='Color', description=f'''**Usage: `{prefix}color <rgb or hex>`

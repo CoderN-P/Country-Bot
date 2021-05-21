@@ -42,7 +42,7 @@ games = discord.Embed(title=':video_game: 6/10 Games', description='`guess_capit
 
 gambling = discord.Embed(title=':game_die: 8/10 Gambling', description='`coinflip`', color=0xFF5733)
 
-misc = discord.Embed(title=':file_folder: 7/10 Misc', description='`color`, `youtube_search`, `ping`, `lol`', color=0xFF5733)
+misc = discord.Embed(title=':file_folder: 7/10 Misc', description='`color`, `ping`, `lol`', color=0xFF5733)
 
 meme_commands = discord.Embed(title='🤣 9/10 Meme Commands/Animals', description='`dog`, `meme`, `cat`, `snake`, `aww`', color=0xFF5733)
 developer_commands = discord.Embed(title=':tools: 10/10 Developer Commands', description='`eval`, `stop_drops`', color=0xFF5733)

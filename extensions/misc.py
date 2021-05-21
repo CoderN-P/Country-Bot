@@ -1,42 +1,16 @@
 from discord.ext import commands
 import discord
-from youtube_api import YoutubeDataApi
 import requests, os
 import datetime
 from replit import db
 
-@commands.command()
-async def youtube_search(ctx, *, query):
-  YT_KEY = os.environ['YOUTUBEKEY']
-  yt = YoutubeDataApi(YT_KEY)
-  results = yt.search(q=query,max_results=1)
-  vid = results[0]
-  
-
-  dateTimeObj = datetime.datetime.fromtimestamp(results[0]['video_publish_date'])
-
-  timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
-  embed = discord.Embed(title=query)
-  
-
-  embed.add_field(name=vid['video_title'], value=f'''**Channel:** {vid['channel_title']} 
-  **Published:** {timestampStr}
-''')
-
-  embed.set_thumbnail(url=results[0]['video_thumbnail'])
-
-  await ctx.channel.send(embed=embed)
 
 
 
 
 
 
-@youtube_search.error 
-async def youtube_search_error(ctx, error):
-  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}youtube_search <search query>```')
-      await ctx.channel.send(embed=embed)
+
 
 @commands.command()
 async def color(ctx, *, rgb):
@@ -125,6 +99,5 @@ async def lol(ctx):
 
 
 def setup(bot):
-  bot.add_command(youtube_search)
   bot.add_command(color)
   bot.add_command(lol)

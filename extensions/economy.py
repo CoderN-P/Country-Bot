@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import country_converter as coco
 from replit import db
+
 from countryinfo import CountryInfo
 import wbdata, pycountry, re
 
@@ -288,8 +289,11 @@ async def inflation_error(ctx, error):
 
 
 
+
+
 def setup(bot):
   bot.add_command(currency)
   bot.add_command(gdp_percap)
   bot.add_command(inflation)
   bot.add_command(gni_percap)
+  
