@@ -9,7 +9,17 @@ from replit import db
 
 
 
+class PingCog(commands.Cog):
+  def __init__(self, bot):
+    self.bot = bot
 
+  @commands.command()
+  async def ping(self, ctx):
+    embed = discord.Embed(title='Pong', description=f'''```ini
+[{self.bot.latency * 1000} ms]
+```''')
+
+    await ctx.channel.send(embed=embed)
 
 
 @commands.command()
@@ -94,10 +104,21 @@ async def lol(ctx):
 
 
 
-
+@commands.command()
+async def changelog(ctx):
+  embed = discord.Embed(title='Changelog', description='''**1.** Added new `.meme` feature
+  **2.** New `.coinflip` feature
+  **3.** Added statistics for `work commands issued`
+  **4.** Added Statistics for `war` on country profiles
+  **5.** Added a special feature only in the support server
+  **6.** Added new feature `.gift` (allows you to gift population to other users
+  **7.** New autocorrect when you misspell a command''')
+  await ctx.send(embed=embed)
 
 
 
 def setup(bot):
   bot.add_command(color)
   bot.add_command(lol)
+  bot.add_cog(PingCog(bot))
+  bot.add_command(changelog)

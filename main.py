@@ -155,199 +155,7 @@ def start_extensions(bot):
 
 
 
-@commands.command()
-@commands.cooldown(1, 60, commands.BucketType.user)
-async def war(ctx, user):
-  b = user
-  b = b.replace("<","")
-  b = b.replace(">","")
-  b = b.replace("@","")
-  b = b.replace("!", "")
 
-  
-  try:
-
-    if int(b) == int(ctx.message.author.id):
-      embed = discord.Embed(title='Stop!', description=":x: You can't wage war on yourself!")
-      await ctx.channel.send(embed=embed)
-      return
-  except:
-    embed= discord.Embed(title='Sorry', description=f''':x: This user doesn't have a country yet''')
-
-    await ctx.channel.send(embed=embed)
-    return
-  try:
-    user1 = reading(ctx.message.author.id)
-  except:
-    embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
-
-    await ctx.channel.send(embed=embed)
-    return
-  try:
-    user2 = reading(b)
-  except:
-    embed= discord.Embed(title='Sorry', description=f''':x: This user doesn't have a country yet''')
-
-    await ctx.channel.send(embed=embed)
-    return
-  
-  await ctx.channel.send(f"{user}, you have 20 seconds to accept <@!{ctx.message.author.id}> request to war. Type `accept` in the chat to accept, or type `deny` in the chat to end the conflict")
-
-  opponent = await bot.fetch_user(b)
-  def check(m):
-    return m.channel == ctx.channel and m.author == opponent and m.content.lower() == 'accept' or m.content.lower() == 'deny'
-  try:
-    msg = await bot.wait_for('message', check=check, timeout=20)
-  except asyncio.TimeoutError:
-    embed = discord.Embed(title='Whoops', description=':x: Time ran out. The war preperations took too long. No war')
-    await ctx.channel.send(embed=embed)
-    return
-
-
-  if msg.content.lower() == 'accept':
-    embed = discord.Embed(title='Accepted', description=f"<@!{ctx.message.author.id}> your opponent accepted!!")
-    await ctx.channel.send(embed=embed)
-  else:
-    embed=discord.Embed(title='Phew', dsescription='Crisis averted. There is no war')
-    await ctx.channel.send(embed=embed)
-    return
-
-  
-  def check(m):
-    return m.channel == ctx.channel and m.author == ctx.message.author
-  n = True  
-  while n:
-    await ctx.channel.send(f"<@!{ctx.message.author.id}> how many troops do you want to deploy, type `quit` to end")
-    try:
-      msg = await bot.wait_for('message', check=check, timeout=20)
-    except asyncio.TimeoutError:
-        await ctx.channel.send("Time ran out. No war :(")
-        return
-
-   
-    
-    try:
-      num = float(msg.content)
-      
-      if num == 0:
-        await ctx.channel.send("You can't go to war with 0 people smh")
-        continue
-        
-      else:
-        pass
-
-      
-    except:
-      if msg.content.lower().startswith('quit'):
-        await ctx.send(':x: Game quit')
-        return
-      await ctx.channel.send("That is not a valid amount!!")
-      continue
-
-    if num.is_integer():
-      if int(msg.content) < user1[0][1]:
-        await ctx.channel.send(f"{msg.content} people deployed")
-        user1_troops = int(msg.content)
-        break
-      else:
-        await ctx.channel.send(f":x: <@!{ctx.message.author.id}> you dont have enough people!!!!")
-        continue
-    else:
-      await ctx.channel.send(f"{msg.content} is not a valid amount")
-      continue
-
-
-  def check(m):
-    return m.channel == ctx.channel and m.author == opponent
-
-  while n:
-    await ctx.channel.send(f"{user} how many troops do you want to deploy, type `quit` to end")
-    try:
-      msg = await bot.wait_for('message', check=check, timeout=20)
-    except asyncio.TimeoutError:
-        await ctx.channel.send("Time ran out. No war :(")
-        return
-    try:
-      num = float(msg.content)
-
-      if num == 0:
-        await ctx.channel.send("You can't go to war with 0 people smh")
-        continue
-    except:
-      await ctx.channel.send("That is not a valid amount!!")
-      continue
-
-    if num.is_integer():
-      if int(msg.content) < user2[0][1]:
-        await ctx.channel.send(f"{msg.content} people deployed")
-        user2_troops = int(msg.content)
-        break
-      else:
-        await ctx.channel.send(f":x: {user} you dont have enough people!!!!")
-        continue
-    else:
-      await ctx.channel.send(f"{msg.content} is not a valid amount")
-      continue
-
-  random_country = random.choice(quiz_country_list)
-  country_capital1 = CountryInfo(random_country)
-  country_capital = country_capital1.capital()
-
-  if not country_capital:
-    random_country = random.choice(quiz_country_list)
-    country_capital1 = CountryInfo(random_country)
-    country_capital = country_capital1.capital()
-
-
-  country_capital = unicodedata.normalize('NFKD', country_capital).encode('ascii', 'ignore').decode('utf-8')
-  
-
-
-  #try:
-
-  result4 = coco.convert(names=random_country, to='ISO2')
-
-  await ctx.channel.send(f"What is the capital of....... `{random_country.title()}` {lookup(result4)}")
-
-  #except:
-    #await ctx.channel.send(f"What is the capital of....... `{random_country}`")
-
-  
-  def check(m):
-    
-    return m.content.lower() == country_capital.lower() and m.channel == ctx.channel and int(m.author.id) in [int(b), int(ctx.message.author.id)]
-
-  try:
-    msg = await bot.wait_for('message', check=check, timeout=30)
-    
-    
-  except asyncio.TimeoutError:
-    await ctx.channel.send('Time ran out. Draw!!!')
-    return
-
-  if msg.author == ctx.author:
-      await ctx.channel.send(f'<@!{ctx.message.author.id}> you gave the answer first. You won the war!!! :crown:')
-      update_war((ctx.message.author.id, user1[0][0], user1[0][1] + user2_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8] + 1, user1[0][9]))
-
-      update_war((b, user2[0][0], user2[0][1] - user2_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8], user2[0][9] + 1))
-    
-  else:
-      await ctx.channel.send(f'{user} you gave the answer first. You won the war!!! :crown:')
-      update_war((ctx.message.author.id, user1[0][0], user1[0][1] - user1_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8], user1[0][9] + 1))
-
-      update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
-
-
-
-@war.error
-async def war_error(ctx, error):
-  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}war <user>``` User should be a ping')
-    await ctx.channel.send(embed=embed)
-
-  elif isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title="Hey!",description=f'''You can't wage war right now! Try again in `{error.retry_after:.2f}`s.''')
-        await ctx.send(embed=em)
 
 
 
@@ -561,13 +369,7 @@ async def stats(ctx):
   await ctx.channel.send(embed=embed)
 
 
-@bot.command()
-async def ping(ctx):
-  embed = discord.Embed(title='Pong', description=f'''```ini
-[{bot.latency * 1000} ms]
-```''')
 
-  await ctx.channel.send(embed=embed)
 async def presence():
   while True:
       await bot.change_presence(activity=discord.Game(name=".help"))
@@ -608,16 +410,7 @@ async def drake(ctx, *, arg):
   
 
     
-@bot.command()
-async def changelog(ctx):
-  embed = discord.Embed(title='Changelog', description='''**1.** Added new `.meme` feature
-  **2.** New `.coinflip` feature
-  **3.** Added statistics for `work commands issued`
-  **4.** Added Statistics for `war` on country profiles
-  **5.** Added a special feature only in the support server
-  **6.** Added new feature `.gift` (allows you to gift population to other users
-  **7.** New autocorrect when you misspell a command''')
-  await ctx.send(embed=embed)
+
 
 
 #setting the status of the bot and sending a message if the guild is not in db
@@ -1369,111 +1162,71 @@ async def unconfigure_error(ctx, error):
     await ctx.channel.send(embed=embed)
 
 @bot.command()
-async def profile(ctx, *arg):
-  if len(arg) == 0:
-    try:
-      a = reading(ctx.message.author.id)
-      name = a[0][0]
-      
-      amount12 = 36 + len(str(ctx.author.id))
-      url = f'https://cbotdiscord.npcool.repl.co/{ctx.author.id}/{str(ctx.author.avatar_url)[amount12:][:-15]}'
-      embed = discord.Embed(title=f'''{name}''', url=url, description=f'''Population: `{"{:,}".format(a[0][1])}`
-                      Multiplier: `{"{:,}".format(a[0][2])}`
-                      Job: `{a[0][3]}`
-                      Work Ethic: `{a[0][4]}`
-                      Office: `{dic[a[0][4]]}`
-                      Work Commands Issued: 
-                      `{a[0][10]}`
-                      Coins: {a[0][11]} :coin:
-                     ''')
-      
-      
-      embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
-                      Wars Won: `{a[0][8]}`
-                      Wars Lost: `{a[0][9]}`
-                      ''')
+async def profile(ctx, member: discord.Member=None):
+  if member == None:
+    id = ctx.author.id
+    member = ctx.author
 
-      embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
-                      Prestige Requirement `{a[0][6]}` population''')
-
-      embed.set_thumbnail(url=ctx.author.avatar_url)
-      if dic[a[0][4]] == "Mom's basement":
-        embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
-      elif dic[a[0][4]] == 'Apartment (with roomate)': 
-        embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
-      
-      elif dic[a[0][4]] == 'Mansion':
-        embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
-
-      
-      elif dic[a[0][4]] == 'Home Office':
-        embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
-
-      elif dic[a[0][4]] == 'Space Base':
-        embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
-
-      embed.set_footer(text=f'Tax your citizens with `{db[str(ctx.guild.id)]}tax` to earn coins!')
-      
-      await ctx.channel.send(embed=embed)
-
-    except:
-      embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
-
-      await ctx.channel.send(embed=embed)
   else:
-    b = arg[0]
-    b = b.replace("<","")
-    b = b.replace(">","")
-    b = b.replace("@","")
-    b = b.replace("!", "")
+    id = member.id
+
+  try:
+    a = reading(id)
+    name = a[0][0]
+    username = member.name 
+    discriminator = member.discriminator
+
+    username = username.replace(' ', '%20')
     
+    amount12 = 36 + len(str(ctx.author.id))
+    url = f'https://cbotdiscord.npcool.repl.co/{id}/{str(member.avatar_url)[amount12:][:-15]}/{str(username)}/{str(discriminator)}'
+    embed = discord.Embed(title=f'''{name}''', url=url, description=f'''Population: `{"{:,}".format(a[0][1])}`
+                    Multiplier: `{"{:,}".format(a[0][2])}`
+                    Job: `{a[0][3]}`
+                    Work Ethic: `{a[0][4]}`
+                    Office: `{dic[a[0][4]]}`
+                    Work Commands Issued: 
+                    `{a[0][10]}`
+                    Coins: {a[0][11]} :coin:
+                    ''')
+    
+    
+    embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
+                    Wars Won: `{a[0][8]}`
+                    Wars Lost: `{a[0][9]}`
+                    ''')
+
+    embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
+                    Prestige Requirement `{a[0][6]}` population''')
+
+    embed.set_thumbnail(url=member.avatar_url)
+    if dic[a[0][4]] == "Mom's basement":
+      embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
+    elif dic[a[0][4]] == 'Apartment (with roomate)': 
+      embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
+    
+    elif dic[a[0][4]] == 'Mansion':
+      embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
+
+    
+    elif dic[a[0][4]] == 'Home Office':
+      embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
+
+    elif dic[a[0][4]] == 'Space Base':
+      embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
+
     try:
-      a = reading(b)
-
-      name = a[0][0]
-
-
-      embed = discord.Embed(title=f'''{name}''', description=f'''Population: `{a[0][1]}`
-                      Multiplier: `{a[0][2]}`
-                      Job: `{a[0][3]}`
-                      Work Ethic: `{a[0][4]}`
-                      Office: `{dic[a[0][4]]}`
-                      Work Commands Issued: 
-                      `{a[0][10]}`
-                      Coins: {a[0][11]} :coin:
-                      ''')
-      
-      username = await bot.fetch_user(b)
-      
-      embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
-                      Wars Won: `{a[0][8]}`
-                      Wars Lost: `{a[0][9]}`
-                      ''')
-
-      embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
-                      Prestige Requirement `{a[0][6]}` population''')
-      
-
-      
-      if dic[a[0][4]] == "Mom's basement":
-        embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
-
-      elif dic[a[0][4]] == 'Apartment (with roomate)':
-        embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
-      elif dic[a[0][4]] == 'Home Office':
-        embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
-
-      elif dic[a[0][4]] == 'Mansion':
-        embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
-      elif dic[a[0][4]] == 'Space Base':
-        embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
-
-      embed.set_thumbnail(url=username.avatar_url)
-      await ctx.channel.send(embed=embed)
+      embed.set_footer(text=f'Tax your citizens with `{db[str(ctx.guild.id)]}tax` to earn coins!')
     except:
-      embed = discord.Embed(title='Sorry', description=":x: This user doesn't have a country")
+      pass
+    
+    await ctx.channel.send(embed=embed)
 
-      await ctx.channel.send(embed=embed)
+  except:
+    embed= discord.Embed(title='Sorry', description=f''':x: You or the person you are viewing don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
+
+    await ctx.channel.send(embed=embed)
+  
 
 @bot.command(aliases=['shop'])
 async def store(ctx):
@@ -3035,8 +2788,8 @@ async def help(ctx, *arg):
 
 if not os.getenv("TOKEN"):
   print("HEYYYYY. DONT TRY TO STEAL MY TOKEN OK")
-  quit()
-if __name__ == '__main__':
-  start_extensions(bot)
-  keep_alive.keep_alive()
-  bot.run(os.getenv("TOKEN"))
+else:
+  if __name__ == '__main__':
+    start_extensions(bot)
+    keep_alive.keep_alive()
+    bot.run(os.getenv("TOKEN"))
