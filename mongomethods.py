@@ -1,3 +1,4 @@
+import motor.motor_asyncio
 import pymongo
 import dns, os
 

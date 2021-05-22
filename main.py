@@ -64,7 +64,10 @@ main_url = 'https://www.bergerpaints.com/imaginecolours/wp-content/uploads/2016/
 
 #getting the prefix of the guild from the JSON file
 def get_prefix(bot, msg):
-    if not msg.guild:
+  
+
+    if str(msg.guild.id) not in db.keys():
+      db[str(msg.guild.id)] = '.'
       return '.'
       
     else:
@@ -108,7 +111,7 @@ main_up = time.time()
 
 @bot.event
 async def on_guild_join(guild):
-  db[guild.id] = '.'
+  db[str(guild.id)] = '.'
   
   
  
@@ -116,10 +119,11 @@ async def on_guild_join(guild):
 #remove guild.id from JSON file on guild remove
 @bot.event
 async def on_guild_remove(guild):
-  del db[guild.id]
+  del db[str(guild.id)]
 
 
-  
+
+
 
  
   
@@ -198,6 +202,11 @@ async def sell(ctx, *item1):
     await ctx.send(embed=embed)
     return
 
+  if len(item1) == 0:
+    await ctx.send(f'''[] = optional
+    <> = mandatory
+    Invalid Usage: ```{db[ctx.guild.id]}sell <item> [amount]''')
+
   if len(item1) == 1:
     item = None
     for i in a.keys():
@@ -219,7 +228,19 @@ async def sell(ctx, *item1):
         update_coins((ctx.author.id, ab[0][11] + value))
 
       else:
-        pass
+        value = a[item]['value']/a[item]['amount']
+        a[item] = {'amount': a[item]['amount'] - 1, 'value': a[item]['value'] - value}
+      
+        update_inventory((ctx.author.id, a))
+
+        await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+
+        update_coins((ctx.author.id, ab[0][11] + value))
+
+  else:
+      pass
+
+
 
     
 
@@ -248,51 +269,7 @@ async def inventory(ctx):
 
 
 
-@bot.command()
-async def profile_name(ctx, name):
-  try:
-      a = search_name(name)
-      name = a[0][0]
-      
-      embed = discord.Embed(title=f'''{name}''', description=f'''Population: `{"{:,}".format(a[0][1])}`
-                      Multiplier: `{"{:,}".format(a[0][2])}`
-                      Job: `{a[0][3]}`
-                      Work Ethic: `{a[0][4]}`
-                      Office: `{dic[a[0][4]]}`
-                      Work Commands Issued: 
-                      `{a[0][10]}`
-                      {a[0][11]} :coin:
-                     ''')
-      
-      
-      embed.add_field(name='War', value=f'''Wars Played: `{a[0][7]}`
-                      Wars Won: `{a[0][8]}`
-                      Wars Lost: `{a[0][9]}`
-                      ''')
 
-      embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
-                      Prestige Requirement `{a[0][6]}` population''')
-
-      embed.set_thumbnail(url=ctx.author.avatar_url)
-      if dic[a[0][4]] == "Mom's basement":
-        embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
-      elif dic[a[0][4]] == 'Apartment (with roomate)': 
-        embed.set_image(url='https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg')
-      
-      elif dic[a[0][4]] == 'Mansion':
-        embed.set_image(url='https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652')
-
-      
-      elif dic[a[0][4]] == 'Home Office':
-        embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
-
-      elif dic[a[0][4]] == 'Space Base':
-        embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
-      
-      await ctx.channel.send(embed=embed)
-  except:
-      embed = discord.Embed(title='Sorry', description=f''':x: There is no country with this name''')
-      await ctx.send(embed=embed)
 
 
 
@@ -484,13 +461,7 @@ async def _eval(ctx, *, code):
     await ctx.send(embed=embed)
 
 
-      
-@bot.event
-async def on_ready():  
-    global task
-    task = bot.loop.create_task(refugee_drops())
-    bot.loop.create_task(presence())
-    for i in bot.guilds:
+'''for i in bot.guilds:
       if str(i.id) not in db:
         for channel in i.channels:
             if channel.type == discord.ChannelType.text:
@@ -500,10 +471,14 @@ async def on_ready():
                 await main_channel.send("To continue using this bot, please `kick` it and `add it again`. This could have been caused because the `bot was added when it was offline`.")
                 break
               except:
-                pass
+                pass'''
       
-          
-    
+@bot.event
+async def on_ready():  
+    global task
+    task = bot.loop.create_task(refugee_drops())
+    bot.loop.create_task(presence())
+
 
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")
@@ -1479,6 +1454,10 @@ async def buy(ctx, *id):
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Space Base')
       await ctx.channel.send(embed=embed)
+
+    else:
+      embed = discord.Embed(title='ummmm', description="This ID doesn't exist. Check out the shop command to see all the available IDs")
+      await ctx.send(embed=embed)
       
 
 @bot.command()
