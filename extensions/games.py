@@ -5,6 +5,7 @@ import country_converter as coco
 
 from emojiflags.lookup import lookup
 
+
 import unicodedata, asyncio
 
 from countryinfo import CountryInfo
@@ -30,7 +31,7 @@ from discord.ext import commands
 @commands.cooldown(1, 3600, commands.BucketType.user)
 async def tax(ctx):
   try:
-    a = reading(ctx.author.id)
+    a = await reading(ctx.author.id)
 
   except:
     embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type {db[str(ctx.guild.id)]} to start one!")
@@ -48,7 +49,7 @@ async def tax(ctx):
 
   await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
 
-  update_coins((ctx.author.id, tax1 + a[0][11]))
+  await update_coins((ctx.author.id, tax1 + a[0][11]))
 
 @tax.error
 async def tax_error(ctx, error):
@@ -86,14 +87,14 @@ class WarCog(commands.Cog):
 
       
     try:
-      user1 = reading(ctx.message.author.id)
+      user1 = await reading(ctx.message.author.id)
     except:
       embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
 
       await ctx.channel.send(embed=embed)
       return
     try:
-      user2 = reading(b)
+      user2 = await reading(b)
     except:
       embed= discord.Embed(title='Sorry', description=f''':x: This user doesn't have a country yet''')
 
@@ -237,15 +238,15 @@ class WarCog(commands.Cog):
 
     if msg.author == ctx.author:
         await ctx.channel.send(f'<@!{ctx.message.author.id}> you gave the answer first. You won the war!!! :crown:')
-        update_war((ctx.message.author.id, user1[0][0], user1[0][1] + user2_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8] + 1, user1[0][9]))
+        await update_war((ctx.message.author.id, user1[0][0], user1[0][1] + user2_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8] + 1, user1[0][9]))
 
-        update_war((b, user2[0][0], user2[0][1] - user2_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8], user2[0][9] + 1))
+        await update_war((b, user2[0][0], user2[0][1] - user2_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8], user2[0][9] + 1))
       
     else:
         await ctx.channel.send(f'{user} you gave the answer first. You won the war!!! :crown:')
-        update_war((ctx.message.author.id, user1[0][0], user1[0][1] - user1_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8], user1[0][9] + 1))
+        await update_war((ctx.message.author.id, user1[0][0], user1[0][1] - user1_troops, user1[0][2], user1[0][3], user1[0][4], user1[0][5], user1[0][6], user1[0][7] + 1, user1[0][8], user1[0][9] + 1))
 
-        update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
+        await update_war((b, user2[0][0], user2[0][1] + user1_troops, user2[0][2], user2[0][3], user2[0][4], user2[0][5], user2[0][6], user2[0][7] + 1, user2[0][8] + 1, user2[0][9]))
 
 
 

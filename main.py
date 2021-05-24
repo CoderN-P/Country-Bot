@@ -154,7 +154,7 @@ def start_extensions(bot):
 @commands.cooldown(1, 15, commands.BucketType.user)
 async def hunt(ctx):
   try:
-    a = find_inventory(ctx.author.id)
+    a = await find_inventory(ctx.author.id)
 
   except:
     embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
@@ -181,7 +181,7 @@ async def hunt(ctx):
     else:
       a[f'{hunt_animals[animal][0]} {animal}'] = {'amount': a[f'{hunt_animals[animal][0]} {animal}']['amount'] + 1, 'value': a[f'{hunt_animals[animal][0]} {animal}']['value'] + hunt_animals[animal][1]}
 
-    update_inventory((ctx.author.id, a))
+    await update_inventory((ctx.author.id, a))
 
       
 
@@ -194,8 +194,8 @@ async def hunt_error(ctx, error):
 @bot.command()
 async def sell(ctx, *item1):
   try:
-    a = find_inventory(ctx.author.id)
-    ab = reading(ctx.author.id)
+    a = await find_inventory(ctx.author.id)
+    ab = await reading(ctx.author.id)
 
   except:
     embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
@@ -221,21 +221,21 @@ async def sell(ctx, *item1):
       value = a[item]['value']
       if a[item]['amount'] == 1:
         del a[item]
-        update_inventory((ctx.author.id, a))
+        await update_inventory((ctx.author.id, a))
 
         await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
 
-        update_coins((ctx.author.id, ab[0][11] + value))
+        await update_coins((ctx.author.id, ab[0][11] + value))
 
       else:
         value = a[item]['value']/a[item]['amount']
         a[item] = {'amount': a[item]['amount'] - 1, 'value': a[item]['value'] - value}
       
-        update_inventory((ctx.author.id, a))
+        await update_inventory((ctx.author.id, a))
 
         await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
 
-        update_coins((ctx.author.id, ab[0][11] + value))
+        await update_coins((ctx.author.id, ab[0][11] + value))
 
   else:
       pass
@@ -247,7 +247,7 @@ async def sell(ctx, *item1):
 @bot.command(aliases=['inv'])
 async def inventory(ctx):
   try:
-    a = find_inventory(ctx.author.id)
+    a = await find_inventory(ctx.author.id)
 
   except:
     embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{db[str(ctx.guild.id)]}start` to start one''')
@@ -311,7 +311,7 @@ async def stats(ctx):
 ```''')
   
   embed.add_field(name='User Countries', value=f'''```ini
-[{count()}]
+[{await count()}]
 ```''')
 
   embed.add_field(name='Creator', value=f'''```ini
@@ -402,13 +402,13 @@ async def refugee_drops():
           msg = await bot.wait_for('message', check=check, timeout = 30)
 
           try: 
-            a = reading(msg.author.id)
+            a = await reading(msg.author.id)
           except:
             embed = discord.Embed(title='Sorry', description=":x: You don't have a country. Type `.start` to start one")
             await msg.channel.send(embed=embed)
             n = True
 
-          update((msg.author.id, a[0][0], a[0][1] + amount, a[0][2], a[0][3], a[0][4], a[0][10]))
+          await update((msg.author.id, a[0][0], a[0][1] + amount, a[0][2], a[0][3], a[0][4], a[0][10]))
           await msg.reply(embed=discord.Embed(title='Hooray', description=f'{amount} more people added to your country!'))
 
           break
@@ -871,7 +871,7 @@ async def start(ctx):
 
     msg = await bot.wait_for('message', check=check, timeout=100)
 
-    writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 1000000000, 0, 0, 0, 0, 0))
+    await writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 1000000000, 0, 0, 0, 0, 0))
 
     await ctx.channel.send('Hooray, Country Created!!!!')
   except:
@@ -902,7 +902,7 @@ async def configurechannel(ctx, channel):
     return
 
   try:
-    create_update(channel)
+    await create_update(channel)
   except:
     await ctx.send(embed=discord.Embed(title='Hey!', description='This channel has already been configured!'))
 
@@ -926,10 +926,9 @@ async def unconfigurechannel(ctx, channel):
   channel = channel.strip('>')
   channel = channel.strip('#')
   try:
-    delete_update(int(channel))
+    await delete_update(int(channel))
 
   except Exception as e:
-    print(e)
     await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: Please provide a valid channel!"))
     return
 
@@ -954,7 +953,7 @@ async def profile(ctx, member: discord.Member=None):
     id = member.id
 
   try:
-    a = reading(id)
+    a = await reading(id)
     name = a[0][0]
     username = member.name 
     discriminator = member.discriminator
@@ -1014,7 +1013,7 @@ async def profile(ctx, member: discord.Member=None):
 @bot.command(aliases=['shop'])
 async def store(ctx):
   try: 
-     a = reading(ctx.message.author.id)
+     a = await reading(ctx.message.author.id)
   except:
     embed = discord.Embed(title='Whoops', description=f"You haven't started a country yet. Type `{db[ctx.guild.id]}start` to create your amazing country!!!!")
     await ctx.channel.send(embed=embed)
@@ -1090,46 +1089,46 @@ async def store(ctx):
 async def work(ctx):
   chance = random.randint(1, 10)
   try:
-    a = reading(ctx.message.author.id)
+    a = await (reading(ctx.message.author.id))
   except:
     embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{db[str(ctx.guild.id)]}start`. Have fun with your amazing country!!!")
     await ctx.channel.send(embed=embed)
     return
 
   if a[0][1] > 30000000000000000000000000000000000:
-    embed = discord.Embed(title='Woah!', description='You have the max amount of populatio even possible! You better prestige!')
+    embed = discord.Embed(title='Woah!', description='You have the max amount of population even possible! You better prestige!')
     await ctx.channel.send(embed=embed)
     return
   if a[0][1] >= 100 and a[0][3] == 'Mayor':
     embed = discord.Embed(title='Promotion!!!!', description='Congratulations!!, You have been promoted to `State Senator`')
     await ctx.channel.send(embed=embed)
-    update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'State Senator', a[0][4], a[0][10]))
-    a = reading(ctx.message.author.id)
+    await update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'State Senator', a[0][4], a[0][10]))
+    a = await reading(ctx.message.author.id)
 
   elif a[0][1] >= 10000 and a[0][3] == 'State Senator':
     embed = discord.Embed(title='Promotion!!!!', description='Congratulations!!, You have been promoted to `Governor`')
     await ctx.channel.send(embed=embed)
-    update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Governor', a[0][4], a[0][10]))
-    a = reading(ctx.message.author.id)
+    await update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Governor', a[0][4], a[0][10]))
+    a = await reading(ctx.message.author.id)
 
   elif a[0][1] >= 50000 and a[0][3] == 'Governor':
     embed = discord.Embed(title='Promotion!!!!', description='Congratulations!!, You have been promoted to `Senator`')
     await ctx.channel.send(embed=embed)
-    update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Senator', a[0][4], a[0][10]))
-    a = reading(ctx.message.author.id)
+    await update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Senator', a[0][4], a[0][10]))
+    a = await reading(ctx.message.author.id)
 
   elif a[0][1] >= 200000 and a[0][3] == 'Senator':
     embed = discord.Embed(title='Promotion!!!!', description='Congratulations!!, You have been promoted to `Vice President`')
 
     await ctx.channel.send(embed=embed)
-    update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Vice President', a[0][4], a[0][10]))
-    a = reading(ctx.message.author.id)
+    await update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'Vice President', a[0][4], a[0][10]))
+    a = await reading(ctx.message.author.id)
 
   elif a[0][1] >= 2500000 and a[0][3] == 'Vice President':
     embed = discord.Embed(title='Promotion!!!!', description=f'Congratulations!!, You have been promoted to `President` You are now the leader of {a[0][0]}')
     await ctx.channel.send(embed=embed)
-    update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'President', a[0][4], a[0][10]))
-    a = reading(ctx.message.author.id)
+    await update((ctx.message.author.id, a[0][0], a[0][1],a[0][2],'President', a[0][4], a[0][10]))
+    a = await reading(ctx.message.author.id)
 
 
   
@@ -1148,7 +1147,7 @@ async def work(ctx):
 
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + (a[0][5] +1)/10))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'Mayor', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'Mayor', a[0][4], a[0][10] + 1))
 
     
 
@@ -1156,8 +1155,8 @@ async def work(ctx):
 
     await ctx.channel.send(embed=embed)
     if chance == 5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
 
@@ -1172,14 +1171,14 @@ async def work(ctx):
 
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'State Senator', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'State Senator', a[0][4], a[0][10] + 1))
 
     embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
 
     await ctx.channel.send(embed=embed)
     if chance ==  5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
   
@@ -1195,14 +1194,14 @@ async def work(ctx):
 
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'Governor', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'Governor', a[0][4], a[0][10] + 1))
 
     embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
 
     await ctx.channel.send(embed=embed)
     if chance == 5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
   
@@ -1216,14 +1215,14 @@ async def work(ctx):
       amount1 = amount1 * a[0][2]
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'Senator', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'Senator', a[0][4], a[0][10] + 1))
 
     embed = discord.Embed(title='Work Work Work :zap:!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
 
     await ctx.channel.send(embed=embed)
     if chance == 5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
   
@@ -1238,14 +1237,14 @@ async def work(ctx):
 
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'Vice President', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'Vice President', a[0][4], a[0][10] + 1))
 
     embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
 
     await ctx.channel.send(embed=embed)
     if chance == 5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
 
@@ -1258,14 +1257,14 @@ async def work(ctx):
       amount1 = amount1 * a[0][2]
     amount = amount1 + int(a[0][1])
     multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    update((ctx.message.author.id, a[0][0], amount,multi, 'President', a[0][4], a[0][10] + 1))
+    await update((ctx.message.author.id, a[0][0], amount,multi, 'President', a[0][4], a[0][10] + 1))
 
     embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
 
     await ctx.channel.send(embed=embed)
     if chance == 5:
-      a = reading(ctx.message.author.id)
-      update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+      a = await reading(ctx.message.author.id)
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
       embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
       await ctx.channel.send(embed=embed_chance)
   
@@ -1280,7 +1279,7 @@ async def command_name_error(ctx, error):
 @bot.command()
 async def prestige(ctx):
   try:
-    a = reading(ctx.message.author.id)
+    a = await reading(ctx.message.author.id)
   except:
     embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{db[str(ctx.guild.id)]}start`. Have fun with your amazing country!!!")
     await ctx.channel.send(embed=embed)
@@ -1297,11 +1296,11 @@ async def prestige(ctx):
     msg = await bot.wait_for('message', check=check, timeout=100)
 
     if msg.content == 'n':
-      embed = discord.Embed(title='Ok', description=':x: Prestige cancelled')
+      embed = discord.Embed(title='ok', description=':x: Prestige cancelled')
       await ctx.channel.send(embed=embed)
 
     elif msg.content == 'y':
-      update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
+      await update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
       embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
       await ctx.channel.send(embed=embed)
       
@@ -1319,9 +1318,9 @@ async def quit(ctx):
     return m.content == 'y' or m.content == 'n' and m.channel == thechannel and m.author == theauthor 
   msg = await bot.wait_for('message', check=check, timeout=100)
   try:
-    a = reading(ctx.message.author.id)
+    a = await reading(ctx.message.author.id)
     if msg.content == 'y':
-      delete_task(ctx.message.author.id)
+      await delete_task(ctx.message.author.id)
       embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{db[str(ctx.guild.id)]}start`")
       await ctx.channel.send(embed=embed)
     elif msg.content == 'n':
@@ -1336,7 +1335,7 @@ async def quit(ctx):
 async def buy(ctx, *id):
 
   try:
-    a = reading(ctx.message.author.id)
+    a = await reading(ctx.message.author.id)
   except:
     embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{db[str(ctx.guild.id)]}start`''')
     await ctx.channel.send(embed=embed)
@@ -1360,7 +1359,7 @@ async def buy(ctx, *id):
           await ctx.channel.send(embed=embed)
           return
 
-        update((ctx.message.author.id, a[0][0], a[0][1] - (10000 * int(amount)), a[0][2] + (1 * int(amount)), a[0][3], a[0][4], a[0][10]))
+        await update((ctx.message.author.id, a[0][0], a[0][1] - (10000 * int(amount)), a[0][2] + (1 * int(amount)), a[0][3], a[0][4], a[0][10]))
 
         embed = discord.Embed(title='Congratulations',
           description=f'You have bought {amount} Multiplier Boosts')
@@ -1386,7 +1385,7 @@ async def buy(ctx, *id):
         return
 
       
-      update((ctx.message.author.id, a[0][0], a[0][1] - (1000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1] - (1000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Apartment (with roomate)')
@@ -1407,7 +1406,7 @@ async def buy(ctx, *id):
         return
 
       
-      update((ctx.message.author.id, a[0][0], a[0][1] - (10000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1] - (10000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Home Office')
@@ -1428,7 +1427,7 @@ async def buy(ctx, *id):
         return
 
       
-      update((ctx.message.author.id, a[0][0], a[0][1] - (50000), a[0][2], a[0][3], (a[0][4] + 2), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1] - (50000), a[0][2], a[0][3], (a[0][4] + 2), a[0][10]))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Mansion')
@@ -1449,7 +1448,7 @@ async def buy(ctx, *id):
         return
 
       
-      update((ctx.message.author.id, a[0][0], a[0][1] - (100000), a[0][2], a[0][3], (a[0][4] + 5), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1] - (100000), a[0][2], a[0][3], (a[0][4] + 5), a[0][10]))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Space Base')
@@ -1470,7 +1469,7 @@ async def gift(ctx, user1, amount):
 
     
 
-    a = reading(user)
+    a = await reading(user)
 
   except:
     embed = discord.Embed(title='Whoops', description=':x: This person doesnt have a country!!')
@@ -1485,7 +1484,7 @@ async def gift(ctx, user1, amount):
       return
 
   try:
-    b = reading(ctx.author.id)
+    b = await reading(ctx.author.id)
 
   except:
     embed = discord.Embed(title='Whoops', description=f":x: You don't have a country!! Type `{db(str(ctx.guild.id))}start` to start your country!")
@@ -1500,27 +1499,27 @@ async def gift(ctx, user1, amount):
       return
 
     else:
-        update((ctx.author.id, b[0][0], b[0][1] - int(amount), b[0][2], b[0][3], b[0][4], b[0][10]))
+        await update((ctx.author.id, b[0][0], b[0][1] - int(amount), b[0][2], b[0][3], b[0][4], b[0][10]))
 
-        update((user, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update((user, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {amount} people to {user1}'s country!"))
     
   else:
     
     if amount.lower() == 'half':
-        update((ctx.author.id, b[0][0], int(b[0][1]/2), b[0][2], b[0][3], b[0][4], b[0][10]))
+        await update((ctx.author.id, b[0][0], int(b[0][1]/2), b[0][2], b[0][3], b[0][4], b[0][10]))
 
-        update((user, a[0][0], a[0][1] + int(b[0][1]/2), a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update((user, a[0][0], a[0][1] + int(b[0][1]/2), a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1]/2)} people to {user1}'s country!"))
 
         return
 
     elif amount.lower() == 'all':
-        update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10]))
+        await update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10]))
 
-        update((user, a[0][0], a[0][1] + b[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update((user, a[0][0], a[0][1] + b[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1])} people to {user1}'s country!"))
 
@@ -1537,7 +1536,7 @@ async def gift(ctx, user1, amount):
 @bot.command()
 async def change(ctx, *, arg):
   try:
-    a = reading(ctx.message.author.id)
+    a = await reading(ctx.message.author.id)
   except:
     embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{db[str(ctx.guild.id)]}start`''')
     await ctx.channel.send(embed=embed)
@@ -1548,7 +1547,7 @@ async def change(ctx, *, arg):
     return
 
   arg = arg.replace("'", "`")
-  update((ctx.message.author.id, arg, a[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
+  await update((ctx.message.author.id, arg, a[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
   embed = discord.Embed(title='Success', description=f'Country name Has been succesfully changed to {arg}')
 
   await ctx.channel.send(embed=embed)
@@ -1562,12 +1561,12 @@ async def change_error(ctx, error):
 @commands.cooldown(1, 86400, commands.BucketType.user)
 @bot.command()
 async def daily(ctx):
-  a = reading(ctx.message.author.id)
-  update((ctx.message.author.id, a[0][0], a[0][1] + 100, a[0][2], a[0][3], a[0][4], a[0][10]))
+  a = await reading(ctx.message.author.id)
+  await update((ctx.message.author.id, a[0][0], a[0][1] + 100, a[0][2], a[0][3], a[0][4], a[0][10]))
 
-  b = reading(ctx.message.author.id)
+  
 
-  embed = discord.Embed(title='Daily', description=f'`100` more people joined your country!! Your new population is `{b[0][1]}`')
+  embed = discord.Embed(title='Daily', description=f'`100` more people joined your country!! Your new population is `{a[0][1] + 100}`')
 
   await ctx.channel.send(embed=embed)
 
