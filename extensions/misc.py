@@ -3,6 +3,7 @@ import discord
 import requests, os
 import datetime
 from replit import db
+import time
 
 
 
@@ -11,17 +12,18 @@ async def invite(ctx):
   await ctx.send(embed=discord.Embed(title='Invite link', description='Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands'))
 
 
-class PingCog(commands.Cog):
-  def __init__(self, bot):
-    self.bot = bot
 
-  @commands.command()
-  async def ping(self, ctx):
-    embed = discord.Embed(title='Pong', description=f'''```ini
-[{self.bot.latency * 1000} ms]
-```''')
 
-    await ctx.channel.send(embed=embed)
+
+@commands.command()
+async def ping(ctx):
+    """ Pong! """
+    before = time.monotonic()
+    message = await ctx.send("Pong!")
+    ping = (time.monotonic() - before) * 1000
+    await message.edit(content=f"Pong!  `{int(ping)}ms`")
+     
+
 
 
 @commands.command()
@@ -126,7 +128,7 @@ async def my_command(ctx, *, arg):
 def setup(bot):
   bot.add_command(color)
   bot.add_command(lol)
-  bot.add_cog(PingCog(bot))
+  bot.add_command(ping)
   bot.add_command(changelog)
   bot.add_command(my_command)
   bot.add_command(invite)

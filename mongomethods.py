@@ -10,7 +10,8 @@ my_collection = db1.collection_name
 
 
 
-
+async def main():
+  await my_collection.update_many({'inventory': {'$exists': False}}, {'$set': {'inventory': {}}})
 
 
 async def delete_task(user_id):

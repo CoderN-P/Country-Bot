@@ -3,7 +3,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 from discord.ext.commands import has_permissions
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory, main
 import textwrap, contextlib
 from traceback import format_exception
 from discord.ext import tasks
@@ -142,6 +142,7 @@ def start_extensions(bot):
   bot.load_extension("extensions.games")
   bot.load_extension("extensions.general")
   bot.load_extension("extensions.help_page")
+  bot.load_extension("jishaku")
 
 
 
@@ -318,7 +319,7 @@ async def stats(ctx):
 [Coder N#0659]
 ```''', inline=True)
 
-  embed.add_field(name='Ping', value=f'''```ini
+  embed.add_field(name='Websocket Ping', value=f'''```ini
 [{bot.latency * 1000} ms]
 ```''')
 
@@ -1374,7 +1375,7 @@ async def buy(ctx, *id):
       embed = discord.Embed(title='Error', description=':x: How much multiplier are you buying!')
       await ctx.channel.send(embed=embed)
 
-    if id[0] == '2':
+    elif id[0] == '2':
       if a[0][4] >= 2:
         embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
         await ctx.channel.send(embed=embed)
@@ -1391,7 +1392,7 @@ async def buy(ctx, *id):
         description=f'You have bought the Apartment (with roomate)')
       await ctx.channel.send(embed=embed)
 
-    if id[0] == '3':
+    elif id[0] == '3':
       if a[0][4] >= 3:
         embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
         await ctx.channel.send(embed=embed)
@@ -1412,7 +1413,7 @@ async def buy(ctx, *id):
         description=f'You have bought the Home Office')
       await ctx.channel.send(embed=embed)
 
-    if id[0] == '4':
+    elif id[0] == '4':
       if a[0][4] >= 5:
         embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
         await ctx.channel.send(embed=embed)
@@ -1433,7 +1434,7 @@ async def buy(ctx, *id):
         description=f'You have bought the Mansion')
       await ctx.channel.send(embed=embed)
     
-    if id[0] == '5':
+    elif id[0] == '5':
       if a[0][4] >= 10:
         embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
         await ctx.channel.send(embed=embed)
@@ -1977,6 +1978,12 @@ async def on_command_error(ctx, error):
 
     elif isinstance(error, discord.ext.commands.CommandOnCooldown):
        pass
+      
+    elif isinstance(error, discord.errors.Forbidden):
+      await ctx.author.send("I don't have permission to talk there!!!")
+
+    elif isinstance(error, discord.ext.commands.errors.CommandInvokeError):
+      await ctx.author.send("I don't have permission to talk there!!!")
 
     else:
        raise error
