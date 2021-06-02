@@ -1,4 +1,4 @@
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory
+from mongomethods import *
 
 from fuzzywuzzy import fuzz
 import country_converter as coco
@@ -100,6 +100,10 @@ class WarCog(commands.Cog):
 
       await ctx.channel.send(embed=embed)
       return
+
+    if user1[0][1] == 0 or user2[0][1] == 0:
+      await ctx.send(":x: Hey! One of you has only 0 population! You can't go to war like that smh")
+      return
     
     await ctx.channel.send(f"<@!{b}>, you have 20 seconds to accept <@!{ctx.message.author.id}> request to war. Type `accept` in the chat to accept, or type `deny` in the chat to end the conflict")
 
@@ -113,6 +117,8 @@ class WarCog(commands.Cog):
       embed = discord.Embed(title='Whoops', description=':x: Time ran out. The war preperations took too long. No war')
       await ctx.channel.send(embed=embed)
       return
+
+    
 
 
     if msg.content.lower() == 'accept':
@@ -140,12 +146,14 @@ class WarCog(commands.Cog):
       try:
         num = float(msg.content)
         
-        if num == 0:
-          await ctx.channel.send("You can't go to war with 0 people smh")
+        if num <= 0:
+          await ctx.channel.send("You can't go to war with less than 0 people smh")
           continue
           
         else:
           pass
+
+      
 
         
       except:
@@ -169,7 +177,7 @@ class WarCog(commands.Cog):
 
 
     def check(m):
-      return m.channel == ctx.channel and m.author == opponent
+      return m.channel == ctx.channel and m.author == opponent 
 
     while n:
       await ctx.channel.send(f"{user} how many troops do you want to deploy, type `quit` to end")
@@ -181,10 +189,13 @@ class WarCog(commands.Cog):
       try:
         num = float(msg.content)
 
-        if num == 0:
-          await ctx.channel.send("You can't go to war with 0 people smh")
+        if num <= 0:
+          await ctx.channel.send("You can't go to war with less than 0 people smh")
           continue
       except:
+        if msg.content.lower() == 'quit':
+          await ctx.send(':x: Game Quit')
+          return
         await ctx.channel.send("That is not a valid amount!!")
         continue
 
@@ -285,8 +296,14 @@ class WarCog(commands.Cog):
         bol = True
         while bol:
           random_country = random.choice(quiz_country_list)
-          country_capital1 = CountryInfo(random_country)
-          country_capital = country_capital1.capital()
+          try:
+            country_capital1 = CountryInfo(random_country)
+            
+            country_capital = country_capital1.capital()
+          except:
+            country_capital1 = CountryInfo(random_country)
+            
+            country_capital = country_capital1.capital()
 
           if not country_capital:
             random_country = random.choice(quiz_country_list)

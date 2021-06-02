@@ -52,7 +52,7 @@ admin_stuff.set_thumbnail(
 
 games = discord.Embed(title=':video_game: 6/11 Games', description='`guess_capital`, `work`, `start`, `store`, `profile`, `daily`, `change`, `quit`, `war`, `gift`, `tax`', color=0xFF5733)
 
-gambling = discord.Embed(title=':game_die: 8/11 Gambling', description='`coinflip`', color=0xFF5733)
+gambling = discord.Embed(title=':game_die: 8/11 Gambling', description='`coinflip`, `dice`', color=0xFF5733)
 
 misc = discord.Embed(title=':file_folder: 7/11 Misc', description='`color`, `ping`, `lol`', color=0xFF5733)
 

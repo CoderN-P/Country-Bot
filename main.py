@@ -1,71 +1,83 @@
-#importing dependecies
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
+#imports form dicord.py
+
 from discord.ext.commands import has_permissions
 import discord
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, find_inventory, create_update, findall, delete_update, update_inventory, main
-import textwrap, contextlib
-from traceback import format_exception
-from discord.ext import tasks
 from discord import Color
-import regex as re
-import keep_alive
-import io
-import os
-from pathlib import Path
-import motor.motor_asyncio
-from countryinfo import CountryInfo
 from discord.ext import commands
 from discord.ext.commands import cooldown, BucketType
+
+
+#imports for eval command
+from pathlib import Path
+import textwrap, contextlib
+from traceback import format_exception
+
+
+
+
+#imports for mongodb
+import motor.motor_asyncio
+
+#imports for data on countries
+from countryinfo import CountryInfo
 import country_converter as coco
 import pycountry
-import datetime
-import requests
-import json
 import wbdata
-import random
-import time
-import unicodedata
-global cc
-import resource, psutil
-from replit import db
-from fuzzywuzzy import fuzz
-import asyncio
 from emojiflags.lookup import lookup
 
+#imports for json
+import json
 
+#imports for checking text
+from fuzzywuzzy import fuzz
+import unicodedata
+import regex as re
+
+#other
+import random
+import resource, psutil
+import time
+import datetime
+import requests
+import io
+import os
+
+#asyncio
+import asyncio
+
+#replit db
+from replit import db
+
+#internal imports
+from mongomethods import *
+
+#global vars
 global main_url
-
 global quiz_country_list
 quiz_country_list = list(CountryInfo().all().keys())
-
 main_url = 'https://www.bergerpaints.com/imaginecolours/wp-content/uploads/2016/09/flags-of-the-world-1170x693.png'
-
-
-
-
-# Find the document
-
-#client1 = pymongo.MongoClient(os.environ['MONGO'])
-
-#db1 = client1.db_name
-
-#my_collection = db1.collection_name
-
-#my_collection.update_many({}, {'$set': {"inventory": {}}})
-
-
-#my_collection.insert_many([{"_id": str(i[0]), "data": {"name": i[1], "population": i[2], "multiplier": i[3], "job": i[4], "work_ethic": i[5], "prestige": i[6], "requirement": i[7], "wars_played": i[8], "wars_won": i[9], "wars_lost": i[10], "times_worked": i[11]}} for i in reading2()])
+global dic
+dic = {1 : "Mom's basement", 2 : 'Apartment (with roomate)', 3 : 'Home Office', 5 : 'Mansion', 10 : 'Space Base'}
+global username, password
+username = os.environ['USERNAME']
+password = os.environ['PASSWORD']
+global hunt_animals
+hunt_animals = {'Boar': [':boar:', 1000], 'Deer': [':deer:', 400], 'Crocodile': [':crocodile:', 750]}
+global cc
+cc = coco.CountryConverter()
+global main_up
+main_up = time.time()
 
 
 
 
 
 
-#getting the prefix of the guild from the JSON file
+
+
+#getting the prefix of the guild from replit db
 def get_prefix(bot, msg):
   
-
     if str(msg.guild.id) not in db.keys():
       db[str(msg.guild.id)] = '.'
       return '.'
@@ -75,48 +87,24 @@ def get_prefix(bot, msg):
       return prefixes
 
    
-  
-
-global dic
-dic = {1 : "Mom's basement", 2 : 'Apartment (with roomate)', 3 : 'Home Office', 5 : 'Mansion', 10 : 'Space Base'}
-
-
-#Initiating flask app
-
-
-
-#initiating country_converter
-cc = coco.CountryConverter()
-
-global username, password, userAgent
-
-username = os.environ['USERNAME']
-password = os.environ['PASSWORD']
-
-
-
-
+#creating bot instance
 
 
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, help_command=None)
 
 
 
-global main_up
-main_up = time.time()
 
 
 
-#add guild.id to JSON file on guild join
 
+
+
+#add guild id to replit db when bot is added
 @bot.event
 async def on_guild_join(guild):
   db[str(guild.id)] = '.'
-  
-  
- 
-
-#remove guild.id from JSON file on guild remove
+#eremov guild id from replit db when bot is kicked
 @bot.event
 async def on_guild_remove(guild):
   del db[str(guild.id)]
@@ -128,8 +116,7 @@ async def on_guild_remove(guild):
  
   
 #A command to change the prefix of the bot in that guild
-global hunt_animals
-hunt_animals = {'Boar': [':boar:', 1000], 'Deer': [':deer:', 400], 'Crocodile': [':crocodile:', 750]}
+
 
 def start_extensions(bot):
   bot.load_extension("extensions.adminstuff")
@@ -149,6 +136,29 @@ def start_extensions(bot):
 
 
 
+
+@bot.command(aliases=['lb'])
+async def leaderboard(ctx):
+  data = await find_lb()
+  
+  
+
+  for i in data:
+    i['_id'] =  await bot.fetch_user(int(i['_id']))
+  
+  string = ''''''
+  for x, i in enumerate(data):
+    prestige = i['data']['prestige']
+    name = i['_id']
+    name2 = i['data']['name']
+    string = string + f'**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n'
+
+  embed = discord.Embed(title='Global Leaderboard', description=string)
+  await ctx.send(embed=embed)
+
+@leaderboard.error
+async def lb_error(ctx, error):
+  raise error
 
 
 @bot.command()
@@ -982,7 +992,9 @@ async def profile(ctx, member: discord.Member=None):
     embed.add_field(name='Prestige', value=f'''Prestige Level: `{a[0][5]}`
                     Prestige Requirement `{a[0][6]}` population''')
 
-    embed.set_thumbnail(url=member.avatar_url)
+   
+    embed.set_thumbnail(url=ctx.author.avatar_url)
+    
     if dic[a[0][4]] == "Mom's basement":
       embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
     elif dic[a[0][4]] == 'Apartment (with roomate)': 
@@ -993,7 +1005,7 @@ async def profile(ctx, member: discord.Member=None):
 
     
     elif dic[a[0][4]] == 'Home Office':
-      embed.set_image(url='https://blog-www.pods.com/wp-content/uploads/2020/07/Feature-Home-Office-GEtty-Resized.jpg')
+      embed.set_image(url='https://cdn1.epicgames.com/ue/product/Screenshot/01B-1920x1080-6fd10f5c37639159b1d7a57a869aa3ed.png?resize=1&w=1600')
 
     elif dic[a[0][4]] == 'Space Base':
       embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
@@ -1136,145 +1148,149 @@ async def work(ctx):
  
   
   
+  try:
+    if a[0][3] == 'Mayor':
+      amount1 = random.randint(0, 5)
+      amount1 = amount1 * a[0][4]
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+
+
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + (a[0][5] +1)/10))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'Mayor', a[0][4], a[0][10] + 1))
+
+      
+
+      embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance == 5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
+
+    elif a[0][3] == 'State Senator':
+      amount1 = random.randint(50, 100)
+      amount1 = amount1 * a[0][4]
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+
+
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'State Senator', a[0][4], a[0][10] + 1))
+
+      embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance ==  5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
+
+    elif a[0][3] == 'Governor':
+      amount1 = random.randint(100, 1000)
+      amount1 = amount1 * a[0][4]
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+
+      
+
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'Governor', a[0][4], a[0][10] + 1))
+
+      embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance == 5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
+
+    elif a[0][3] == 'Senator':
+      amount1 = random.randint(1000, 10000)
+      amount1 = amount1 * a[0][4]
+
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time :zap:!!!!!', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'Senator', a[0][4], a[0][10] + 1))
+
+      embed = discord.Embed(title='Work Work Work :zap:!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance == 5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
+
+    elif a[0][3] == 'Vice President':
+      amount1 = random.randint(10000, 100000)
+      amount1 = amount1 * a[0][4]
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time :zap:!!!!!', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+
+
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'Vice President', a[0][4], a[0][10] + 1))
+
+      embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance == 5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
+
+    elif a[0][3] == 'President':
+      amount1 = random.randint(100000, 1000000)
+      amount1 = amount1 * a[0][4]
+      if float(a[0][2]).is_integer():
+        embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
+        await ctx.channel.send(embed=embed)
+        amount1 = amount1 * a[0][2]
+      amount = amount1 + int(a[0][1])
+      multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
+      await update((ctx.message.author.id, a[0][0], amount,multi, 'President', a[0][4], a[0][10] + 1))
+
+      embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
+
+      await ctx.channel.send(embed=embed)
+      if chance == 5:
+        a = await reading(ctx.message.author.id)
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
+        embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
+        await ctx.channel.send(embed=embed_chance)
   
-  if a[0][3] == 'Mayor':
-    amount1 = random.randint(0, 5)
-    amount1 = amount1 * a[0][4]
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-
-
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + (a[0][5] +1)/10))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'Mayor', a[0][4], a[0][10] + 1))
-
-    
-
-    embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance == 5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
-
-  elif a[0][3] == 'State Senator':
-    amount1 = random.randint(50, 100)
-    amount1 = amount1 * a[0][4]
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-
-
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'State Senator', a[0][4], a[0][10] + 1))
-
-    embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance ==  5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
   
-  elif a[0][3] == 'Governor':
-    amount1 = random.randint(100, 1000)
-    amount1 = amount1 * a[0][4]
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-
-    
-
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'Governor', a[0][4], a[0][10] + 1))
-
-    embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance == 5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
-  
-  elif a[0][3] == 'Senator':
-    amount1 = random.randint(1000, 10000)
-    amount1 = amount1 * a[0][4]
- 
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time :zap:!!!!!', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'Senator', a[0][4], a[0][10] + 1))
-
-    embed = discord.Embed(title='Work Work Work :zap:!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance == 5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
-  
-  elif a[0][3] == 'Vice President':
-    amount1 = random.randint(10000, 100000)
-    amount1 = amount1 * a[0][4]
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time :zap:!!!!!', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-
-
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'Vice President', a[0][4], a[0][10] + 1))
-
-    embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance == 5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
-
-  elif a[0][3] == 'President':
-    amount1 = random.randint(100000, 1000000)
-    amount1 = amount1 * a[0][4]
-    if float(a[0][2]).is_integer():
-      embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
-      await ctx.channel.send(embed=embed)
-      amount1 = amount1 * a[0][2]
-    amount = amount1 + int(a[0][1])
-    multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1)/10)))
-    await update((ctx.message.author.id, a[0][0], amount,multi, 'President', a[0][4], a[0][10] + 1))
-
-    embed = discord.Embed(title='Work Work Work!!!!!', description=f'''During your work shift, you got `{amount1}` more people into your country!!''')
-
-    await ctx.channel.send(embed=embed)
-    if chance == 5:
-      a = await reading(ctx.message.author.id)
-      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + 1, a[0][3], a[0][4], a[0][10]))
-      embed_chance = discord.Embed(title='Hooray', description='While working you found 1 multiplier boost :zap:')
-      await ctx.channel.send(embed=embed_chance)
-  
-
+  except OverflowError:
+   await ctx.send(" :x: You have WAY too much population. You better prestige or you won't be able to work!")
 @work.error
 async def command_name_error(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title="Too tired",description=f'''You are too tired to work again. You can work in `{error.retry_after:.2f}`s.''')
         await ctx.send(embed=em)
+
+    
 
 
 @bot.command()
@@ -1349,6 +1365,14 @@ async def buy(ctx, *id):
   if len(id) == 2:
     amount = id[1]
     amount = amount.strip(',')
+
+    try:
+      int(amount)
+    except:
+      await ctx.send(':x: uhhhh. Thats not a valid amount')
+
+    
+
     if id[0] == '1':
         if a[0][1] - (10000 * int(amount)) < 0:
           embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
@@ -1356,6 +1380,14 @@ async def buy(ctx, *id):
           return
 
         if a[0][2] > 10000000:
+          embed = discord.Embed(title='Stop!', description="You can't buy anymore multiplier!!")
+          await ctx.channel.send(embed=embed)
+          return
+
+        if int(amount) <= 0:
+          await ctx.send(":x: You can't buy this amount of multiplier smh")
+          return
+        if (int(amount)) + a[0][2] > 10000000:
           embed = discord.Embed(title='Stop!', description="You can't buy anymore multiplier!!")
           await ctx.channel.send(embed=embed)
           return
@@ -1492,41 +1524,45 @@ async def gift(ctx, user1, amount):
     await ctx.channel.send(embed=embed)
     return
 
-  amount = amount.strip(',')
-  if amount.isnumeric():
-    if int(amount) > b[0][1]:
-      embed = discord.Embed(title="Hey!", description=":x: You don't have that many people!")
-      await ctx.channel.send(embed=embed)
-      return
+  try:
 
+    amount = amount.strip(',')
+    if amount.isnumeric():
+      if int(amount) > b[0][1]:
+        embed = discord.Embed(title="Hey!", description=":x: You don't have that many people!")
+        await ctx.channel.send(embed=embed)
+        return
+
+      else:
+          await update((ctx.author.id, b[0][0], b[0][1] - int(amount), b[0][2], b[0][3], b[0][4], b[0][10]))
+
+          await update((user, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
+
+          await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {amount} people to {user1}'s country!"))
+      
     else:
-        await update((ctx.author.id, b[0][0], b[0][1] - int(amount), b[0][2], b[0][3], b[0][4], b[0][10]))
+      
+      if amount.lower() == 'half':
+          await update((ctx.author.id, b[0][0], int(b[0][1]/2), b[0][2], b[0][3], b[0][4], b[0][10]))
 
-        await update((user, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
+          await update((user, a[0][0], a[0][1] + int(b[0][1]/2), a[0][2], a[0][3], a[0][4], a[0][10]))
 
-        await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {amount} people to {user1}'s country!"))
-    
-  else:
-    
-    if amount.lower() == 'half':
-        await update((ctx.author.id, b[0][0], int(b[0][1]/2), b[0][2], b[0][3], b[0][4], b[0][10]))
+          await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1]/2)} people to {user1}'s country!"))
 
-        await update((user, a[0][0], a[0][1] + int(b[0][1]/2), a[0][2], a[0][3], a[0][4], a[0][10]))
+          return
 
-        await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1]/2)} people to {user1}'s country!"))
+      elif amount.lower() == 'all':
+          await update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10]))
 
-        return
+          await update((user, a[0][0], a[0][1] + b[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
 
-    elif amount.lower() == 'all':
-        await update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10]))
+          await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1])} people to {user1}'s country!"))
 
-        await update((user, a[0][0], a[0][1] + b[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
-
-        await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1])} people to {user1}'s country!"))
-
-        return
-    embed = discord.Embed(title='Hey!', description=":x: That is not a valid amount!")
-    await ctx.channel.send(embed=embed)
+          return
+      embed = discord.Embed(title='Hey!', description=":x: That is not a valid amount!")
+      await ctx.channel.send(embed=embed)
+  except OverflowError:
+    await ctx.send(":x: You can't gift that much at a time")
 
     
     
@@ -1973,17 +2009,17 @@ async def on_command_error(ctx, error):
       except:
         await ctx.channel.send(f"Did you mean {similar}")
 
-    elif isinstance(error, discord.ext.commands.CommandOnCooldown):
+    elif isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
        pass
 
-    elif isinstance(error, discord.ext.commands.CommandOnCooldown):
-       pass
-      
-    elif isinstance(error, discord.errors.Forbidden):
-      await ctx.author.send("I don't have permission to talk there!!!")
+    
 
     elif isinstance(error, discord.ext.commands.errors.CommandInvokeError):
-      await ctx.author.send("I don't have permission to talk there!!!")
+      raise error
+      await ctx.author.send(":thinking: Something went wrong...")
+
+    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      pass
 
     else:
        raise error
@@ -1997,5 +2033,4 @@ if not os.getenv("TOKEN"):
 else:
   if __name__ == '__main__':
     start_extensions(bot)
-    keep_alive.keep_alive()
     bot.run(os.getenv("TOKEN"))

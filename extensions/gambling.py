@@ -5,6 +5,49 @@ import discord, random
 import asyncio
 
 
+@commands.command()
+async def dice(ctx, amount):
+  try: 
+    amount = int(amount) 
+  except:
+    await ctx.send(":x: That isn't a valid amount") 
+    return
+ 
+  if amount <= 0:
+    await ctx.send(":x: That isnt a valid amount")
+    return
+  try:
+    a = await reading(ctx.author.id)
+  except:
+    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{db[str(ctx.guild.id)]}start`")
+    await ctx.channel.send(embed=embed)
+    return
+  if amount >= a[0][1]:
+    await ctx.send(':x: You do not have that much population to bet')
+    return
+  else:
+    user_dice1 = random.randint(1, 6)
+    user_dice2 = random.randint(1, 6)
+    await ctx.send(f'You rolled {user_dice1} and {user_dice2} :game_die:')
+    await asyncio.sleep(1)
+    dice1 = random.randint(1, 6)
+    dice2 = random.randint(1, 6)
+    await ctx.send(f"I rolled {dice1} and {dice2} :game_die:")
+    if (dice1 + dice2) < (user_dice1 + user_dice2):
+      await ctx.send(':cry: I lost again! When will i win! Well gg tho')
+      await update((ctx.author.id, a[0][0], a[0][1] + amount, a[0][2], a[0][3], a[0][4], a[0][10]))
+    elif (dice1 + dice2) == (user_dice1 + user_dice2):
+      await ctx.send(':thinking: Its a draw. so no one won :slight_frown:')
+    else:
+      await ctx.send('YES. I WON!!!! WOHOOOOOO :partying_face:')
+      await update((ctx.author.id, a[0][0], a[0][1] - amount, a[0][2], a[0][3], a[0][4], a[0][10]))
+
+
+@dice.error
+async def dice_error(ctx, error):
+  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}dice <amount>```')
+    await ctx.channel.send(embed=embed)
 
 @commands.command()
 async def coinflip(ctx, *amount1):
@@ -73,6 +116,10 @@ async def coinflip(ctx, *amount1):
       embed = discord.Embed(title='Error', description=':x: You have entered an invalid amount!')
       await ctx.send(embed=embed)
       return
+    
+    if amount[1] < 1:
+      await ctx.send(":x: You can't bet with this amount smh")
+      return
 
 
     if a[0][1] <= int(amount[1]):
@@ -105,3 +152,4 @@ async def coinflip(ctx, *amount1):
 
 def setup(bot):
   bot.add_command(coinflip)
+  bot.add_command(dice)

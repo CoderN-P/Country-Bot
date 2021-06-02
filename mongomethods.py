@@ -10,9 +10,18 @@ my_collection = db1.collection_name
 
 
 
-async def main():
-  await my_collection.update_many({'inventory': {'$exists': False}}, {'$set': {'inventory': {}}})
+async def find_flag(id):
+  data = await my_collection.find_one({"_id": str(id)})
+  return data['data']['flag']
 
+async def find_lb():
+  data = my_collection.find({}).sort("data.prestige", -1)
+  data = await data.to_list(10)
+  return data
+
+
+
+  
 
 async def delete_task(user_id):
   await my_collection.delete_one({"_id": str(user_id)})
