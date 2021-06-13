@@ -23,7 +23,10 @@ async def ping(ctx):
     ping = (time.monotonic() - before) * 1000
     await message.edit(content=f"Pong!  `{int(ping)}ms`")
      
-
+@commands.command()
+async def nothing(ctx):
+  await ctx.send('⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀')
+  
 
 
 @commands.command()
@@ -125,6 +128,11 @@ async def my_command(ctx, *, arg):
     result = eval(arg)
     await ctx.send(result)
 
+@commands.command()
+async def backwards(ctx, *, arg):
+
+  await ctx.send(arg[::-1].strip('@'))
+
 def setup(bot):
   bot.add_command(color)
   bot.add_command(lol)
@@ -132,3 +140,5 @@ def setup(bot):
   bot.add_command(changelog)
   bot.add_command(my_command)
   bot.add_command(invite)
+  bot.add_command(nothing)
+  bot.add_command(backwards)

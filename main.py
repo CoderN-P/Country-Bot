@@ -214,9 +214,10 @@ async def sell(ctx, *item1):
     return
 
   if len(item1) == 0:
-    await ctx.send(f'''[] = optional
+    await ctx.send(embed=discord.Embed(title='Bad Usage', description=f'''[] = optional
     <> = mandatory
-    Invalid Usage: ```{db[ctx.guild.id]}sell <item> [amount]''')
+    Invalid Usage: ```{db[ctx.guild.id]}sell <item> [amount]```'''))
+    return
 
   if len(item1) == 1:
     item = None
@@ -249,7 +250,54 @@ async def sell(ctx, *item1):
         await update_coins((ctx.author.id, ab[0][11] + value))
 
   else:
-      pass
+    try:
+      amount = int(item1[1])
+    except:
+      await ctx.send(':x: That is not a valid amount')
+      return
+    if amount <= 0:
+      await ctx.send(':x: That is not a valid amount')
+      return
+    
+    item = None
+    for i in a.keys():
+      if item1[0].lower() in i:
+        item = i
+
+    if item == None:
+      await ctx.send(":x: You don't own that!")
+      return
+    
+    
+    amount1 = a[item]['amount']
+
+
+
+    if amount1 < amount:
+      await ctx.send(":x: You don't have that much of this item")
+      return
+
+    value = a[item]['value']/a[item]['amount'] * amount
+    if a[item]['amount'] - amount == 0:
+      del a[item]
+    else:
+      a[item]['amount'] = a[item]['amount'] - amount 
+
+
+    await update_inventory((ctx.author.id, a))
+
+    await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+
+    await update_coins((ctx.author.id, ab[0][11] + value))
+
+
+    
+
+    
+
+    
+
+    
 
 
 
@@ -393,7 +441,7 @@ async def drake(ctx, *, arg):
 async def refugee_drops():
 
 
-  words = ['come here!', 'more people!', ':-D', "hello!"]
+  words = ['come here!', 'more people!', '🙂', "hello!"]
 
  
 
@@ -1060,13 +1108,13 @@ async def store(ctx):
   
   embed = discord.Embed(title='Store', description=f'''**1. Multiplier Boost `1` :zap: ID = 1**
   To buy this item type: `{db[str(ctx.guild.id)]}buy 1 <amount>`
-  Cost: 10,000 people in your country will leave
+  Cost: 500 :coin:
   Increases your multiplier by 1
   
   **2. Apartment (with roomate) ID = `2` Status: [{status}]**
   To buy this item type: `{db[str(ctx.guild.id)]}buy 2`
 
-  Cost:  1000 people think you spend too much and they leave.
+  Cost:  1000 :coin:
   
   Your work ethic becomes 2 
   
@@ -1074,7 +1122,7 @@ async def store(ctx):
   3. **Home Office :homes:  ID = `3` Status: [{status2}]**
   To buy this item type: `{db[str(ctx.guild.id)]}buy 3`
 
-  Cost: 10,000 people think you spend too much and they leave.
+  Cost: 10,000 :coin:
   
   Your work ethic becomes 3 
   
@@ -1082,17 +1130,23 @@ async def store(ctx):
   4. **Mansion :homes:  ID = `4` Status: [{status3}]**
   To buy this item type: `{db[str(ctx.guild.id)]}buy 4`
 
-  Cost: 50,000 people think you spend too much and they leave.
+  Cost: 50,000 :coin:
   
   Your work ethic becomes 5 
   
   5. **Space Base :crescent_moon:  ID = 5 Status: [{status4}]**
   To buy this item type: `{db[str(ctx.guild.id)]}buy 5`
 
-  Cost: 100,000 people think you spend too much and they leave.
+  Cost: 100,000 :coin:
   
-  Your work ethic becomes 10 ''')
+  Your work ethic becomes 10 
+  
+  
+  
+  ''')
+  
 
+  
   await ctx.channel.send(embed=embed)
 
 
@@ -1196,7 +1250,7 @@ async def work(ctx):
         await ctx.channel.send(embed=embed_chance)
 
     elif a[0][3] == 'Governor':
-      amount1 = random.randint(100, 1000)
+      amount1 = random.randint(100, 500)
       amount1 = amount1 * a[0][4]
       if float(a[0][2]).is_integer():
         embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
@@ -1219,7 +1273,7 @@ async def work(ctx):
         await ctx.channel.send(embed=embed_chance)
 
     elif a[0][3] == 'Senator':
-      amount1 = random.randint(1000, 10000)
+      amount1 = random.randint(1000, 5000)
       amount1 = amount1 * a[0][4]
 
       if float(a[0][2]).is_integer():
@@ -1240,7 +1294,7 @@ async def work(ctx):
         await ctx.channel.send(embed=embed_chance)
 
     elif a[0][3] == 'Vice President':
-      amount1 = random.randint(10000, 100000)
+      amount1 = random.randint(10000, 50000)
       amount1 = amount1 * a[0][4]
       if float(a[0][2]).is_integer():
         embed=discord.Embed(title='Boost Time :zap:!!!!!', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
@@ -1262,7 +1316,7 @@ async def work(ctx):
         await ctx.channel.send(embed=embed_chance)
 
     elif a[0][3] == 'President':
-      amount1 = random.randint(100000, 1000000)
+      amount1 = random.randint(50000, 100000)
       amount1 = amount1 * a[0][4]
       if float(a[0][2]).is_integer():
         embed=discord.Embed(title='Boost Time!!!!! :zap:', description=f'''Your work will be multiplied by `{str(a[0][2])}`''')
@@ -1310,16 +1364,24 @@ async def prestige(ctx):
     def check(m):
       return m.channel == ctx.channel and m.author == ctx.message.author
 
-    msg = await bot.wait_for('message', check=check, timeout=100)
+    try:
+        msg = await bot.wait_for('message', check=check, timeout=100)
 
-    if msg.content == 'n':
-      embed = discord.Embed(title='ok', description=':x: Prestige cancelled')
-      await ctx.channel.send(embed=embed)
+        if msg.content.lower() == 'n':
+          embed = discord.Embed(title='ok', description=':x: Prestige cancelled')
+          await ctx.channel.send(embed=embed)
+          
 
-    elif msg.content == 'y':
-      await update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
-      embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
-      await ctx.channel.send(embed=embed)
+        elif msg.content.lower() == 'y':
+          await update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
+          embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
+          await ctx.channel.send(embed=embed)
+          
+        else:
+          await ctx.send('That isnt a valid option!')
+    except asyncio.TimeoutError:
+        await ctx.send('Time ran out :C')
+       
       
   else:
     embed = discord.Embed(title='Oh No', description=''':x: you haven't met the requirements to prestige''')
@@ -1374,8 +1436,8 @@ async def buy(ctx, *id):
     
 
     if id[0] == '1':
-        if a[0][1] - (10000 * int(amount)) < 0:
-          embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
+        if a[0][11] - (500 * int(amount)) < 0:
+          embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
           await ctx.channel.send(embed=embed)
           return
 
@@ -1392,7 +1454,9 @@ async def buy(ctx, *id):
           await ctx.channel.send(embed=embed)
           return
 
-        await update((ctx.message.author.id, a[0][0], a[0][1] - (10000 * int(amount)), a[0][2] + (1 * int(amount)), a[0][3], a[0][4], a[0][10]))
+        await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2] + (1 * int(amount)), a[0][3], a[0][4], a[0][10]))
+
+        await update_coins((ctx.author.id, a[0][11] - (500 * int(amount))))
 
         embed = discord.Embed(title='Congratulations',
           description=f'You have bought {amount} Multiplier Boosts')
@@ -1412,13 +1476,15 @@ async def buy(ctx, *id):
         embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
         await ctx.channel.send(embed=embed)
         return
-      if (a[0][1] - 1000) < 0:
-        embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
+      if (a[0][11] - 1000) < 0:
+        embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
         await ctx.channel.send(embed=embed)
         return
 
       
-      await update((ctx.message.author.id, a[0][0], a[0][1] - (1000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+
+      await update_coins((ctx.author.id, a[0][11] - 1000))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Apartment (with roomate)')
@@ -1433,13 +1499,15 @@ async def buy(ctx, *id):
         embed = discord.Embed(title='Hey', description=':x: You need to buy the apartment first!!!')
         await ctx.channel.send(embed=embed)
         return
-      if (a[0][1] - 10000) < 0:
-        embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
+      if (a[0][11] - 10000) < 0:
+        embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
         await ctx.channel.send(embed=embed)
         return
 
       
-      await update((ctx.message.author.id, a[0][0], a[0][1] - (10000), a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1] , a[0][2], a[0][3], (a[0][4] + 1), a[0][10]))
+
+      await update_coins((ctx.author.id, a[0][11] - 10000))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Home Office')
@@ -1454,13 +1522,15 @@ async def buy(ctx, *id):
         embed = discord.Embed(title='Hey', description=':x: You need to buy the Home Office first!!!')
         await ctx.channel.send(embed=embed)
         return
-      if (a[0][1] - 50000) < 0:
-        embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
+      if (a[0][11] - 50000) < 0:
+        embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
         await ctx.channel.send(embed=embed)
         return
 
       
-      await update((ctx.message.author.id, a[0][0], a[0][1] - (50000), a[0][2], a[0][3], (a[0][4] + 2), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2], a[0][3], (a[0][4] + 2), a[0][10]))
+
+      await update_coins((ctx.author.id, a[0][11] - 50000))
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Mansion')
@@ -1475,17 +1545,22 @@ async def buy(ctx, *id):
         embed = discord.Embed(title='Hey', description=':x: You need to buy the Mansion first!!!')
         await ctx.channel.send(embed=embed)
         return
-      if (a[0][1] - 100000) < 0:
-        embed = discord.Embed(title='Oh no', description=''':x: You don't have a big enough population''')
+      if (a[0][11] - 100000) < 0:
+        embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
         await ctx.channel.send(embed=embed)
         return
 
       
-      await update((ctx.message.author.id, a[0][0], a[0][1] - (100000), a[0][2], a[0][3], (a[0][4] + 5), a[0][10]))
+      await update((ctx.message.author.id, a[0][0], a[0][1], a[0][2], a[0][3], (a[0][4] + 5), a[0][10]))
+
+      await update_coins((ctx.author.id, a[0][11] - 100000))
+
+
 
       embed = discord.Embed(title='Congratulations',
         description=f'You have bought the Space Base')
       await ctx.channel.send(embed=embed)
+
 
     else:
       embed = discord.Embed(title='ummmm', description="This ID doesn't exist. Check out the shop command to see all the available IDs")
@@ -2015,11 +2090,13 @@ async def on_command_error(ctx, error):
     
 
     elif isinstance(error, discord.ext.commands.errors.CommandInvokeError):
-      raise error
-      await ctx.author.send(":thinking: Something went wrong...")
+      
+      await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there.")
+      
 
     elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
       pass
+    
 
     else:
        raise error
