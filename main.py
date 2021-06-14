@@ -374,7 +374,7 @@ async def stats(ctx):
 ```''')
 
   embed.add_field(name='Creator', value=f'''```ini
-[Coder N#0659]
+[Coder N#0001]
 ```''', inline=True)
 
   embed.add_field(name='Websocket Ping', value=f'''```ini
