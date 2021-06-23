@@ -21,14 +21,14 @@ import random
 import discord
 from discord.ext import commands
 
-
+dic2 = {'Mayor': 1, 'State Senator': 2, 'Governor': 3, 'Senator': 4, 'Vice President': 5, 'President': 6}
 
 
 
 
 
 @commands.command()
-@commands.cooldown(1, 3600, commands.BucketType.user)
+@commands.cooldown(1, 300, commands.BucketType.user)
 async def tax(ctx):
   try:
     a = await reading(ctx.author.id)
@@ -45,7 +45,9 @@ async def tax(ctx):
     return
 
   
-  tax1 = round((round((a[0][1] ** 0.5)/ 100)  * a[0][5] + 1))
+  tax1 = round((round((a[0][1] ** 0.5)/ 50)  * (a[0][5] + 1)))
+
+  tax1 *= dic2[a[0][3]] 
 
   await ctx.send(embed=discord.Embed(title='Tax', description=f'You got {tax1} :coin: from taxing your population'))
 
@@ -67,7 +69,7 @@ class WarCog(commands.Cog):
     self.bot = bot
 
   
-  @commands.command()
+  @commands.command(cooldown_after_parsing=True)
   @commands.cooldown(1, 60, commands.BucketType.user)
   async def war(self, ctx, user: discord.Member):
     b = user.id

@@ -538,7 +538,6 @@ async def on_ready():
     task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
 
-
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")
 
@@ -1373,7 +1372,7 @@ async def prestige(ctx):
           
 
         elif msg.content.lower() == 'y':
-          await update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 1000000000)))
+          await update_prestige((ctx.message.author.id, a[0][0], 0, 1, 'Mayor', 1, a[0][5] + 1, (a[0][6] + 50000000)))
           embed = discord.Embed(title='Congratulations', description=':tada: You prestiged!!')
           await ctx.channel.send(embed=embed)
           

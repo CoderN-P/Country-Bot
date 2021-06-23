@@ -155,4 +155,5 @@ async def delete_update(channel):
 
 
 
-
+async def do():
+  await my_collection.update_many({}, {'$set': {"data.requirement": 50000000}})
