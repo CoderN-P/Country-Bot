@@ -11,9 +11,18 @@ import time
 async def invite(ctx):
   await ctx.send(embed=discord.Embed(title='Invite link', description='Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands'))
 
+@commands.command()
+async def bruh(ctx):
+  embed = discord.Embed(title='bruh')
+  embed.set_image(url='https://media1.tenor.com/images/8daeb547b121eef5f34e7d4e0b88ea35/tenor.gif?itemid=5156041')
+  await ctx.send(embed=embed)
 
 
 
+@commands.command()
+async def vote(ctx):
+  embed = discord.Embed(title='Vote For Country Bot :)', description='You can vote for country bot [here](https://top.gg/bot/810662403217948672/vote)').set_image(url='https://top.gg/images/dblnew.png').set_footer(text='You can vote every 12 hours')
+  await ctx.send(embed=embed)
 
 @commands.command()
 async def ping(ctx):
@@ -142,3 +151,5 @@ def setup(bot):
   bot.add_command(invite)
   bot.add_command(nothing)
   bot.add_command(backwards)
+  bot.add_command(bruh)
+  bot.add_command(vote)

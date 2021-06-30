@@ -86,6 +86,8 @@ class HelpCog(commands.Cog):
             Forgot the bot's prefix?
             Don't worry type **<@!810662403217948672> prefix** and Country Bot will tell you its prefix for this server**
 
+            __Country Bot Partners!__
+            [**Check out TestPreparer today!**](https://testpreparer.gq)
 
             **Links: [vote (top.gg)](https://top.gg/bot/810662403217948672/vote) | [invite](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands) | [top.gg](https://top.gg/bot/810662403217948672#/) | [support server](https://discord.gg/hCgh9wngkS) | [discordbotlist](https://discord.ly/country-bot)** | [Github Repo](https://github.com/Codern-P/Country-Bot)
             

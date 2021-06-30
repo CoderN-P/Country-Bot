@@ -48,7 +48,7 @@ async def currency(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -115,13 +115,14 @@ async def gdp_percap(ctx, arg, arg2):
 
   except:
       embed = discord.Embed(
-          title="Sorry",
-            description="**We couldn't find data for that year**",
+            title="Sorry",
+            description="** We could not find data for {country}**".format(
+                country=country),
             color=0xFF5733)
 
       embed.set_thumbnail(
             url=
-           'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
         )
 
       await ctx.channel.send(embed=embed)
@@ -192,13 +193,14 @@ async def gni_percap(ctx, arg, arg2):
   except:
         embed = discord.Embed(
             title="Sorry",
-            description="**We could not find data for that year",
+            description="** We could not find data for {country}**".format(
+                country=country),
             color=0xFF5733)
 
         embed.set_thumbnail(
             url=
-            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg')
-        
+            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+        )
 
         await ctx.channel.send(embed=embed)
 
@@ -268,13 +270,15 @@ async def inflation(ctx, arg, arg2):
 
   except:
     embed = discord.Embed(
-    title="Sorry",
-    description="**We could not find data for that year**",
+            title="Sorry",
+            description="** We could not find data for {country}**".format(
+                country=country),
             color=0xFF5733)
 
     embed.set_thumbnail(
             url=
-            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg')
+            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+        )
 
     await ctx.channel.send(embed=embed)
 

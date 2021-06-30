@@ -40,7 +40,7 @@ import time
 import datetime
 import requests
 import io
-import os
+import os, topgg
 
 #asyncio
 import asyncio
@@ -92,11 +92,34 @@ def get_prefix(bot, msg):
 
 bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, help_command=None)
 
+dbl_token = os.environ['TOPGGTOKEN']
 
+bot.topggpy = topgg.DBLClient(bot, dbl_token, autopost=True, post_shard_count=True)
 
+@bot.event
+async def on_autopost_success():
+    print(f'Posted server count ({bot.topggpy.guild_count}), shard count ({bot.shard_count})')
 
+bot.topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "dbl_password")
+bot.topgg_webhook.run(5000)  # this method can be awaited as well
 
+@bot.event
+async def on_dbl_vote(data):
+    """An event that is called whenever someone votes for the bot on Top.gg."""
+    if data["type"] == "test":
+        # this is roughly equivalent to
+        # return await on_dbl_test(data) in this case
+        return bot.dispatch('dbl_test', data)
+    user = await bot.fetch_user(data['user'])
+    await user.send('Thanks for voting, I apreciate it! We will have rewards up and running soon! :slight_smile:')
+    print(f"Received a vote:\n{data}")
 
+@bot.event
+async def on_dbl_test(data):
+    """An event that is called whenever someone tests the webhook system for your bot on Top.gg."""
+    user = await bot.fetch_user(data['user'])
+    await user.send('Thanks for voting, I apreciate it! We will have rewards up and running soon! :slight_smile:')
+    print(f"Received a test vote:\n{data}")
 
 
 
@@ -120,7 +143,7 @@ async def on_guild_remove(guild):
 
 def start_extensions(bot):
   bot.load_extension("extensions.adminstuff")
-  bot.load_extension("extensions.topgg")
+  #bot.load_extension("extensions.topgg")
   bot.load_extension("extensions.misc")
   bot.load_extension("extensions.country_database")
   bot.load_extension("extensions.gambling")
@@ -147,7 +170,7 @@ async def leaderboard(ctx):
     i['_id'] =  await bot.fetch_user(int(i['_id']))
   
   string = ''''''
-  for x, i in enumerate(data):
+  for x, i in enumerate(data, start=1):
     prestige = i['data']['prestige']
     name = i['_id']
     name2 = i['data']['name']
@@ -640,7 +663,7 @@ async def population(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -687,9 +710,10 @@ async def area(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description=" **{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
+
         embed.set_thumbnail(
             url=
             'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
@@ -739,7 +763,7 @@ async def states(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -811,7 +835,7 @@ async def language(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -855,9 +879,10 @@ async def region(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
+
         embed.set_thumbnail(
             url=
             'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
@@ -898,7 +923,7 @@ async def subregion(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -1040,7 +1065,7 @@ async def profile(ctx, member: discord.Member=None):
                     Prestige Requirement `{a[0][6]}` population''')
 
    
-    embed.set_thumbnail(url=ctx.author.avatar_url)
+    embed.set_thumbnail(url=member.avatar_url)
     
     if dic[a[0][4]] == "Mom's basement":
       embed.set_image(url='http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg')
@@ -1736,7 +1761,7 @@ async def timezone(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -1828,7 +1853,7 @@ async def borders(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 
@@ -1881,7 +1906,7 @@ async def coords(ctx, *, country):
     except:
         embed = discord.Embed(
             title="Sorry",
-            description="**{country} is not a country**".format(
+            description="** We could not find data for {country}**".format(
                 country=country),
             color=0xFF5733)
 

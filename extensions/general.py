@@ -67,8 +67,8 @@ async def cap(ctx, *, country):
 
     except:
         embed = discord.Embed(
-           title="Sorry",
-            description="**{country} is not a country**".format(
+            title="Sorry",
+            description="** We could not find data for   {country}**".format(
                 country=country),
             color=0xFF5733)
 

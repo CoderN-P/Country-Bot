@@ -44,8 +44,10 @@ async def tax(ctx):
     await ctx.send(embed=embed)
     return
 
+  prestige = a[0][5] + 1
+
   
-  tax1 = round((round((a[0][1] ** 0.5)/ 50)  * (a[0][5] + 1)))
+  tax1 = round(((a[0][1] ** 0.5)/50) * prestige)
 
   tax1 *= dic2[a[0][3]] 
 
