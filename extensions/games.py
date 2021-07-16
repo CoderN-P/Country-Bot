@@ -34,7 +34,7 @@ async def tax(ctx):
     a = await reading(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type {db[str(ctx.guild.id)]} to start one!")
+    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type `{db[str(ctx.guild.id)]}start` to start one!")
 
     await ctx.send(embed=embed)
     return

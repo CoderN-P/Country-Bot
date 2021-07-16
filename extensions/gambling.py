@@ -34,12 +34,16 @@ async def dice(ctx, amount):
     dice2 = random.randint(1, 6)
     await ctx.send(f"I rolled {dice1} and {dice2} :game_die:")
     if (dice1 + dice2) < (user_dice1 + user_dice2):
-      await ctx.send(':cry: I lost again! When will i win! Well gg tho')
+      await ctx.send(':( I lost again! I WILL NEVER WIN! GG, ugh.')
+      await ctx.send('<:angrycbot:863148860616212501> <:angrycbot:863148860616212501> <:angrycbot:863148860616212501>')
       await update((ctx.author.id, a[0][0], a[0][1] + amount, a[0][2], a[0][3], a[0][4], a[0][10]))
     elif (dice1 + dice2) == (user_dice1 + user_dice2):
-      await ctx.send(':thinking: Its a draw. so no one won :slight_frown:')
+      await ctx.send('<:Thinkingcbot:863151583294521344> Its a draw. so no one won')
+      await ctx.send('<:sadcbot:863150212989845514> <:sadcbot:863150212989845514> <:sadcbot:863150212989845514>')
+      
     else:
       await ctx.send('YES. I WON!!!! WOHOOOOOO :partying_face:')
+      await ctx.send('<:laughcbot:863151389042933800> <:laughcbot:863151389042933800> <:laughcbot:863151389042933800>')
       await update((ctx.author.id, a[0][0], a[0][1] - amount, a[0][2], a[0][3], a[0][4], a[0][10]))
 
 

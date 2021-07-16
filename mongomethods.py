@@ -19,7 +19,10 @@ async def find_lb():
   data = await data.to_list(10)
   return data
 
-
+async def find_lb2():
+  data = my_collection.find({}).sort("data.coins", -1)
+  data = await data.to_list(10)
+  return data
 
   
 

@@ -78,6 +78,7 @@ class HelpCog(commands.Cog):
   async def help(self, ctx, *arg):
       prefix = db[str(ctx.guild.id)]
       if len(arg) == 0:
+          
           main = discord.Embed(title="Country Bot Help",
                                 description=f'''**Prefix = `{prefix}`
         
@@ -89,19 +90,24 @@ class HelpCog(commands.Cog):
             __Country Bot Partners!__
             [**Check out TestPreparer today!**](https://testpreparer.gq)
 
-            **Links: [vote (top.gg)](https://top.gg/bot/810662403217948672/vote) | [invite](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands) | [top.gg](https://top.gg/bot/810662403217948672#/) | [support server](https://discord.gg/hCgh9wngkS) | [discordbotlist](https://discord.ly/country-bot)** | [Github Repo](https://github.com/Codern-P/Country-Bot)
-            
-            Tip: Use `{db[ctx.guild.id]}war @Player` to wage war on your friends countries!!
-
-            Tip2: Use `{db[ctx.guild.id]}daily` to receive 100 population every day!
-
-            **Check out `.changelog` to see new features that have come out!!!**
-
-            Use the `{db[ctx.guild.id]}configurechannel <channel>` and `{db[ctx.guild.id]}unconfigurechannel <channel>` command to receive updates about the bot in that channel
+            **Links: [vote (top.gg)](https://top.gg/bot/810662403217948672/vote) | [invite](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands) | [top.gg](https://top.gg/bot/810662403217948672#/) | [discordbotlist](https://discord.ly/country-bot)** | [Github Repo](https://github.com/Codern-P/Country-Bot)
 
 
 
         ''', color=0xFF5733)
+
+          main.add_field(name='Tips', value=
+        f'''1. Use `{db[ctx.guild.id]}war @Player` to wage war on your friends countries!!
+
+            2. Use `{db[ctx.guild.id]}daily` to receive 100 population every day!''')
+
+
+
+          main.add_field(name='More Tips', value=f'''3. **Check out `.changelog` to see new features that have come out!!!**''')
+
+          main.add_field(name='Need additional help!', value='Join the [support server](https://discord.gg/hCgh9wngkS)')
+
+          
 
           main.set_thumbnail(
               url= main_url
@@ -111,11 +117,12 @@ class HelpCog(commands.Cog):
           
           message = await ctx.channel.send(embed=main)
                               
-          await ctx.author.send('''Need additional help? Join the support server! 
-https://discord.gg/qQ6ga4uK6d''')
+    
             
 
           contents = [main, geographical, economy, general, country_database, admin_stuff, games, misc, gambling, meme_commands, developer_commands, configuration]
+
+          
 
           pages = len(contents)
           cur_page = 1
@@ -224,6 +231,8 @@ https://discord.gg/qQ6ga4uK6d''')
 async def update_help(ctx, item, arg, arg2):
   file = json.load(open("help_page1.json"))
   file[item] = [arg, arg2]
+  with open("help_page1.json", "w") as f:
+    f.write(json.dumps(file))
   await ctx.send(embed=discord.Embed(title=file[item][0], description=file[item][1]))
 
 def setup(bot):

@@ -4,8 +4,16 @@ import requests, os
 import datetime
 from replit import db
 import time
+import random, json
 
 
+
+@commands.command(name='cat-fact')
+async def catfact(ctx):
+  r = requests.get('https://catfact.ninja/fact?max_length=140')
+  r = r.json()['fact']
+  embed = discord.Embed(title='Cat Fact', description=r)
+  await ctx.send(embed=embed)
 
 @commands.command()
 async def invite(ctx):
@@ -18,6 +26,51 @@ async def bruh(ctx):
   await ctx.send(embed=embed)
 
 
+@commands.command()
+async def joke(ctx, *arg):
+  def jokes(f):
+    data = requests.get(f)
+    tt = json.loads(data.text)
+    return tt
+  error_embed = discord.Embed(title='Error', description=':x: That is not a valid option! The valid options are, `knock-knock` `general` and `programming`')
+  if len(arg) > 1:
+    if ' '.join(arg) == 'knock knock':
+      f = f"https://official-joke-api.appspot.com/jokes/knock-knock/random"
+      a = jokes(f)
+
+    
+
+      for i in (a):
+        await ctx.channel.send(embed=discord.Embed(title=i["setup"], description=i['punchline']))
+    else:
+      await ctx.send(embed=error_embed)
+  elif len(arg) == 1:
+    arg = arg[0] 
+    if arg not in ['knock-knock', 'general', 'programming']:
+      await ctx.send(embed=error_embed)
+      return
+    f = f"https://official-joke-api.appspot.com/jokes/{arg}/random"
+    a = jokes(f)
+
+    
+
+    for i in (a):
+      await ctx.channel.send(embed=discord.Embed(title=i["setup"], description=i['punchline']))
+
+  else:
+    joke = random.choice(['knock-knock', 'general', 'programming'])
+
+    f = f"https://official-joke-api.appspot.com/jokes/{joke}/random"
+    a = jokes(f)
+
+    
+
+    for i in (a):
+      embed = discord.Embed(title=i["setup"], description=i['punchline'])
+      embed.set_footer(text=f'This was a {joke} joke')
+      await ctx.channel.send(embed=embed)
+
+     
 
 @commands.command()
 async def vote(ctx):
@@ -153,3 +206,5 @@ def setup(bot):
   bot.add_command(backwards)
   bot.add_command(bruh)
   bot.add_command(vote)
+  bot.add_command(catfact)
+  bot.add_command(joke)

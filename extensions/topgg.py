@@ -14,17 +14,6 @@ class TopGG1(commands.Cog):
     async def on_guild_post(self):
         print("Server count posted successfully")
 
-    
-    @commands.Cog.listener()
-    async def on_dbl_vote(self, data):
-        print("Received an upvote:", data)
-
-    
-    @commands.Cog.listener()
-    async def on_dbl_test(self, data):
-        print("TEST VOTE")
-        """An event that is called whenever someone tests the webhook system for your bot on top.gg."""
-        print("Received a test upvote:", "\n", data, sep="")
 
 
 def setup(bot):

@@ -94,14 +94,15 @@ bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, help_comman
 
 dbl_token = os.environ['TOPGGTOKEN']
 
-bot.topggpy = topgg.DBLClient(bot, dbl_token, autopost=True, post_shard_count=True)
 
-@bot.event
-async def on_autopost_success():
-    print(f'Posted server count ({bot.topggpy.guild_count}), shard count ({bot.shard_count})')
+
+
 
 bot.topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "dbl_password")
-bot.topgg_webhook.run(5000)  # this method can be awaited as well
+bot.topgg_webhook.run(4355)  # this method can be awaited as well
+
+
+
 
 @bot.event
 async def on_dbl_vote(data):
@@ -110,15 +111,30 @@ async def on_dbl_vote(data):
         # this is roughly equivalent to
         # return await on_dbl_test(data) in this case
         return bot.dispatch('dbl_test', data)
+
     user = await bot.fetch_user(data['user'])
-    await user.send('Thanks for voting, I apreciate it! We will have rewards up and running soon! :slight_smile:')
+    try:
+      a = await reading(user.id)
+    except:
+      await user.send("Thanks for voting! Unfortunately since you have not made a country, you can't redeem any rewards :( To create a country type `.start` Remember, replace `.` with the prefix of the bot in the server you are in!")
+      return
+    await update((user.id, a[0][0], a[0][1] + (1000 * (a[0][5] + 1)), a[0][2], a[0][3], a[0][4], a[0][10]))
+    await update_coins((user.id, a[0][11] + (100 * a[0][5])))
+    await user.send('Thanks for voting, I apreciate it! Check your profile to see the received rewards!')
     print(f"Received a vote:\n{data}")
 
 @bot.event
 async def on_dbl_test(data):
     """An event that is called whenever someone tests the webhook system for your bot on Top.gg."""
     user = await bot.fetch_user(data['user'])
-    await user.send('Thanks for voting, I apreciate it! We will have rewards up and running soon! :slight_smile:')
+    try:
+      a = await reading(user.id)
+    except:
+      await user.send("Thanks for voting! Unfortunately since you have not made a country, you can't redeem any rewards :( To create a country type `.start` Remember, replace `.` with the prefix of the bot in the server you are in!")
+      return
+    await update((user.id, a[0][0], a[0][1] + (1000 * (a[0][5] + 1)), a[0][2], a[0][3], a[0][4], a[0][10]))
+    await update_coins((user.id, a[0][11] + (100 * (a[0][5] + 1))))
+    await user.send('Thanks for voting, I apreciate it! Check your profile to see the received rewards!')
     print(f"Received a test vote:\n{data}")
 
 
@@ -152,6 +168,7 @@ def start_extensions(bot):
   bot.load_extension("extensions.games")
   bot.load_extension("extensions.general")
   bot.load_extension("extensions.help_page")
+  bot.load_extension("extensions.topgg")
   bot.load_extension("jishaku")
 
 
@@ -161,23 +178,49 @@ def start_extensions(bot):
 
 
 @bot.command(aliases=['lb'])
-async def leaderboard(ctx):
-  data = await find_lb()
-  
-  
+async def leaderboard(ctx, *arg):
 
-  for i in data:
-    i['_id'] =  await bot.fetch_user(int(i['_id']))
-  
-  string = ''''''
-  for x, i in enumerate(data, start=1):
-    prestige = i['data']['prestige']
-    name = i['_id']
-    name2 = i['data']['name']
-    string = string + f'**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n'
+  if len(arg) == 0:
 
-  embed = discord.Embed(title='Global Leaderboard', description=string)
-  await ctx.send(embed=embed)
+    data = await find_lb()
+    
+    
+
+    for i in data:
+      i['_id'] =  await bot.fetch_user(int(i['_id']))
+    
+    string = ''''''
+    for x, i in enumerate(data, start=1):
+      prestige = i['data']['prestige']
+      name = i['_id']
+      name2 = i['data']['name']
+      string = string + f'**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n'
+
+    embed = discord.Embed(title='Global Leaderboard (prestige)', description=string)
+    await ctx.send(embed=embed)
+
+  elif len(arg) == 1:
+
+    if arg[0] == 'coins':
+      data = await find_lb2()
+      
+      
+
+      for i in data:
+        i['_id'] =  await bot.fetch_user(int(i['_id']))
+      
+      string = ''''''
+      for x, i in enumerate(data, start=1):
+        prestige = i['data']['coins']
+        name = i['_id']
+        name2 = i['data']['name']
+        string = string + f'**{x}.** {name}: `{name2}`| `{prestige}` :coin:\n'
+
+      embed = discord.Embed(title='Global Leaderboard (prestige)', description=string)
+      await ctx.send(embed=embed)
+
+  else:
+    await ctx.send(':x: uhhhhhh thats not not an option')
 
 @leaderboard.error
 async def lb_error(ctx, error):
@@ -422,6 +465,8 @@ async def presence():
       await asyncio.sleep(10)
       await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="@Country Bot prefix"))
       await asyncio.sleep(10)
+      await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{len(bot.guilds)} guilds"))
+      await asyncio.sleep(10)
 
 
 
@@ -560,7 +605,6 @@ async def on_ready():
     global task
     task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
-
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")
 
