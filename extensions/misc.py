@@ -15,6 +15,16 @@ async def catfact(ctx):
   embed = discord.Embed(title='Cat Fact', description=r)
   await ctx.send(embed=embed)
 
+
+@commands.command(name='dog-fact')
+async def dogfact(ctx):
+  r = requests.get('http://dog-api.kinduff.com/api/facts?number=1')
+  r = r.json()['facts'][0]
+  embed = discord.Embed(title='Dog Fact', description=r)
+  await ctx.send(embed=embed)
+
+
+
 @commands.command()
 async def invite(ctx):
   await ctx.send(embed=discord.Embed(title='Invite link', description='Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands'))
@@ -208,3 +218,4 @@ def setup(bot):
   bot.add_command(vote)
   bot.add_command(catfact)
   bot.add_command(joke)
+  bot.add_command(dogfact)

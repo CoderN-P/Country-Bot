@@ -2160,6 +2160,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, discord.ext.commands.errors.CommandInvokeError):
       
       await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there.")
+      raise error
       
 
     elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
