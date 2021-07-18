@@ -41,7 +41,8 @@ import datetime
 import requests
 import io
 import os, topgg
-
+from dotenv import load_dotenv
+load_dotenv()
 #asyncio
 import asyncio
 
