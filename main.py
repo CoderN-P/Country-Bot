@@ -2159,11 +2159,12 @@ async def on_command_error(ctx, error):
       similar = []
       other=[]
       
-     
+     prefix = await get_prefix(ctx.guild.id)
+
       for commands in bot.commands:
         
         if fuzz.ratio(main_message, commands.name) > 50:
-          similar.append(f'`{db[ctx.guild.id]}{commands.name}`')
+          similar.append(f'`{prefix}{commands.name}`')
           other.append(commands)
       
       
@@ -2174,21 +2175,8 @@ async def on_command_error(ctx, error):
       
      
       
-      if similar == '`.work`':
-        await ctx.channel.send(f"Did you mean {similar}")
-        return
-
-      elif similar == '`.tax`':
-        await ctx.channel.send(f"Did you mean {similar}")
-        return
-      elif similar == '`.daily`' or '`.hunt`':
-        await ctx.channel.send(f"Did you mean {similar}")
-        return
-      try:
-        await ctx.invoke(other[0])
-
-      except:
-        await ctx.channel.send(f"Did you mean {similar}")
+    
+      await ctx.channel.send(f"Did you mean {similar}")
 
     elif isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
        pass
