@@ -1148,10 +1148,10 @@ async def profile(ctx, member: discord.Member=None):
 
 @bot.command(aliases=['shop'])
 async def store(ctx):
+  prefix = await get_prefix(ctx.guild.id)
   try: 
      a = await reading(ctx.message.author.id)
   except:
-    prefix = await get_prefix(ctx.guild.id)
     embed = discord.Embed(title='Whoops', description=f"You haven't started a country yet. Type `{prefix}start` to create your amazing country!!!!")
     await ctx.channel.send(embed=embed)
     return
@@ -1183,12 +1183,12 @@ async def store(ctx):
     status4 = 'OWNED'
   
   embed = discord.Embed(title='Store', description=f'''**1. Multiplier Boost `1` :zap: ID = 1**
-  To buy this item type: `{db[str(ctx.guild.id)]}buy 1 <amount>`
+  To buy this item type: `{prefix}buy 1 <amount>`
   Cost: 500 :coin:
   Increases your multiplier by 1
   
   **2. Apartment (with roomate) ID = `2` Status: [{status}]**
-  To buy this item type: `{db[str(ctx.guild.id)]}buy 2`
+  To buy this item type: `{prefix}buy 2`
 
   Cost:  1000 :coin:
   
@@ -1196,7 +1196,7 @@ async def store(ctx):
   
   
   3. **Home Office :homes:  ID = `3` Status: [{status2}]**
-  To buy this item type: `{db[str(ctx.guild.id)]}buy 3`
+  To buy this item type: `{prefix}buy 3`
 
   Cost: 10,000 :coin:
   
@@ -1204,14 +1204,14 @@ async def store(ctx):
   
   
   4. **Mansion :homes:  ID = `4` Status: [{status3}]**
-  To buy this item type: `{db[str(ctx.guild.id)]}buy 4`
+  To buy this item type: `{prefix}buy 4`
 
   Cost: 50,000 :coin:
   
   Your work ethic becomes 5 
   
   5. **Space Base :crescent_moon:  ID = 5 Status: [{status4}]**
-  To buy this item type: `{db[str(ctx.guild.id)]}buy 5`
+  To buy this item type: `{prefix}buy 5`
 
   Cost: 100,000 :coin:
   
