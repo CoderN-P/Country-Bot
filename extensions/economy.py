@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import country_converter as coco
+from mongomethods import get_prefix
 
 
 
@@ -62,7 +63,8 @@ async def currency(ctx, *, country):
 @currency.error
 async def currency_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}currency <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}currency <country>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -132,7 +134,8 @@ async def gdp_percap(ctx, arg, arg2):
 @gdp_percap.error
 async def gdp_percap_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}gdp_percap <country> <year>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gdp_percap <country> <year>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -207,7 +210,8 @@ async def gni_percap(ctx, arg, arg2):
 @gni_percap.error
 async def gni_percap_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}gni_percap <country> <year>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gni_percap <country> <year>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -286,7 +290,8 @@ async def inflation(ctx, arg, arg2):
 @inflation.error
 async def inflation_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}inflation <country> <year>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}inflation <country> <year>```')
     await ctx.channel.send(embed=embed)
 
 

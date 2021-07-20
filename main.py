@@ -281,9 +281,10 @@ async def sell(ctx, *item1):
     return
 
   if len(item1) == 0:
+    prefix = await get_prefix(ctx.guild.id)
     await ctx.send(embed=discord.Embed(title='Bad Usage', description=f'''[] = optional
     <> = mandatory
-    Invalid Usage: ```{db[ctx.guild.id]}sell <item> [amount]```'''))
+    Invalid Usage: ```{prefix}sell <item> [amount]```'''))
     return
 
   if len(item1) == 1:
@@ -533,8 +534,7 @@ async def refugee_drops():
           try: 
             a = await reading(msg.author.id)
           except:
-            prefix = await get_prefix(ctx.guild.id)
-            embed = discord.Embed(title='Sorry', description=f":x: You don't have a country. Type `{prefix}start` to start one")
+            embed = discord.Embed(title='Sorry', description=f":x: You don't have a country. Type `.start` to start one")
             await msg.channel.send(embed=embed)
             n = True
 
@@ -727,7 +727,8 @@ async def population(ctx, *, country):
 @population.error
 async def population_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}population <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}population <country>```')
     await ctx.channel.send(embed=embed)
 
 #a command to give the area of a country, in sq. km
@@ -774,7 +775,8 @@ async def area(ctx, *, country):
 @area.error
 async def area_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}area <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}area <country>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -828,7 +830,8 @@ async def states(ctx, *, country):
 @states.error
 async def states_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}states <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}states <country>```')
     await ctx.channel.send(embed=embed)
 
 @bot.command()
@@ -900,7 +903,8 @@ async def language(ctx, *, country):
 @language.error
 async def language_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}language <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}language <country>```')
     await ctx.channel.send(embed=embed)
 
 @bot.command()
@@ -943,7 +947,8 @@ async def region(ctx, *, country):
 @region.error
 async def region_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}region <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}region <country>```')
     await ctx.channel.send(embed=embed)
 
 @bot.command()
@@ -987,7 +992,8 @@ async def subregion(ctx, *, country):
 @subregion.error
 async def subregion_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}subregion <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}subregion <country>```')
     await ctx.channel.send(embed=embed)
 
 @bot.command()
@@ -1046,7 +1052,8 @@ async def configure_error(ctx, error):
        await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
 
    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}configurechannel <channel>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}configurechannel <channel>```')
     await ctx.channel.send(embed=embed)
 
    
@@ -1073,7 +1080,8 @@ async def unconfigure_error(ctx, error):
        await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
 
    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}unconfigurechannel <channel>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}unconfigurechannel <channel>```')
     await ctx.channel.send(embed=embed)
 
 @bot.command()
@@ -1652,6 +1660,7 @@ async def buy(ctx, *id):
 
 @bot.command()
 async def gift(ctx, user1, amount):
+
   try:
     b = user1.replace("<","")
     b = b.replace(">","")
@@ -1724,7 +1733,7 @@ async def gift(ctx, user1, amount):
     await ctx.send(":x: You can't gift that much at a time")
 
     
-    
+
   
 
   
@@ -1752,7 +1761,8 @@ async def change(ctx, *, arg):
 @change.error
 async def change_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}change <new country name>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}change <new country name>```')
     await ctx.channel.send(embed=embed)
 
 @commands.cooldown(1, 86400, commands.BucketType.user)
@@ -1788,7 +1798,8 @@ async def daily_error(ctx, error):
 @gift.error
 async def gift_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}gift <user> <amount>```')
+      prefix = await get_prefix(ctx.guild.id)
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gift <user> <amount>```')
       await ctx.channel.send(embed=embed)
 
 
@@ -1842,7 +1853,8 @@ async def timezone(ctx, *, country):
 @timezone.error
 async def timezone_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}timezone <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}timezone <country>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -1934,7 +1946,8 @@ async def borders(ctx, *, country):
 @borders.error
 async def borders_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}borders <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}borders <country>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -1988,7 +2001,8 @@ async def coords(ctx, *, country):
 @coords.error
 async def coords_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}coords <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}coords <country>```')
     await ctx.channel.send(embed=embed)
 
 
@@ -2126,7 +2140,8 @@ async def covid(ctx, *, arg):
 @covid.error
 async def covid_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}covid <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}covid <country>```')
     await ctx.channel.send(embed=embed)
 
 #city_weather command

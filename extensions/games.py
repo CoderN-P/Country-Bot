@@ -268,7 +268,8 @@ class WarCog(commands.Cog):
   @war.error
   async def war_error(self, ctx, error):
       if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}war <user>``` User should be a ping')
+        prefix = await get_prefix(ctx.guild.id)
+        embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}war <user>``` User should be a ping')
         await ctx.channel.send(embed=embed)
 
       elif isinstance(error, commands.CommandOnCooldown):

@@ -51,7 +51,8 @@ async def dice(ctx, amount):
 @dice.error
 async def dice_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}dice <amount>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}dice <amount>```')
     await ctx.channel.send(embed=embed)
 
 @commands.command()

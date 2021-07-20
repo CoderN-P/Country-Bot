@@ -3,7 +3,7 @@ from discord.ext import commands
 import country_converter as coco
 import random
 from fuzzywuzzy import fuzz
-
+from monogmethods import get_prefix
 from countryinfo import CountryInfo
 
 global quiz_country_list
@@ -81,7 +81,8 @@ async def cap(ctx, *, country):
 @cap.error
 async def capital_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}capital <country>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}capital <country>```')
     await ctx.channel.send(embed=embed)
 
 def setup(bot):

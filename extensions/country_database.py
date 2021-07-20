@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+from mongomethods import get_prefix
 import pycountry, re
 
 
@@ -61,7 +62,8 @@ async def list(ctx, arg):
 @list.error
 async def list_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}list <letter>```')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}list <letter>```')
     await ctx.channel.send(embed=embed)
 
 
