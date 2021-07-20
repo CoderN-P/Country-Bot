@@ -2159,7 +2159,7 @@ async def on_command_error(ctx, error):
       similar = []
       other=[]
       
-     prefix = await get_prefix(ctx.guild.id)
+      prefix = await get_prefix(ctx.guild.id)
 
       for commands in bot.commands:
         
