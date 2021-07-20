@@ -1,6 +1,6 @@
 from discord.ext import commands
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins
-from replit import db
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, get_prefix
+
 import discord, random
 import asyncio
 
@@ -19,6 +19,7 @@ async def dice(ctx, amount):
   try:
     a = await reading(ctx.author.id)
   except:
+    prefix = await get_prefix(id)
     embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{db[str(ctx.guild.id)]}start`")
     await ctx.channel.send(embed=embed)
     return
@@ -59,7 +60,8 @@ async def coinflip(ctx, *amount1):
   try:
     a = await reading(ctx.author.id)
   except:
-    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{db[str(ctx.guild.id)]}start`")
+    prefix = await get_prefix(id)
+    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{prefix}start`")
     await ctx.channel.send(embed=embed)
     return
 

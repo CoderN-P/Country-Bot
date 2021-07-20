@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import country_converter as coco
-from replit import db
+
 
 
 from countryinfo import CountryInfo

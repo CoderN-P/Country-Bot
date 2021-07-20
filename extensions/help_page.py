@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from replit import db
+from mongomethods import get_prefix
 import asyncio
 import json
 from discord import Color
@@ -76,7 +76,7 @@ class HelpCog(commands.Cog):
 
   @commands.command()
   async def help(self, ctx, *arg):
-      prefix = db[str(ctx.guild.id)]
+      prefix = await get_prefix(id)
       if len(arg) == 0:
           
           main = discord.Embed(title="Country Bot Help",
@@ -209,8 +209,9 @@ class HelpCog(commands.Cog):
 
           
           else:
+
               embed = discord.Embed(title="Country Bot Help",
-                                    description=f'''**Prefix = `{db[ctx.guild.id]}`
+                                    description=f'''**Prefix = `{prefix}`
 
           ```diff\n- Woops!, the command "{arg}" doesn't exist  
           ```

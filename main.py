@@ -47,7 +47,6 @@ load_dotenv()
 import asyncio
 
 #replit db
-from replit import db
 
 #internal imports
 from mongomethods import *
@@ -77,21 +76,20 @@ main_up = time.time()
 
 
 #getting the prefix of the guild from replit db
-def get_prefix(bot, msg):
-  
-    if str(msg.guild.id) not in db.keys():
-      db[str(msg.guild.id)] = '.'
+def get_prefix123(bot, msg):
+    try:
+      prefix = get_prefix2(msg.guild.id)
+    except:
+      create_prefix2(msg.guild.id, '.')
       return '.'
-      
-    else:
-      prefixes = db[str(msg.guild.id)]
-      return prefixes
+    return prefix
+    
 
    
 #creating bot instance
 
 
-bot = commands.Bot(command_prefix=get_prefix, case_insensitive=True, help_command=None)
+bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_command=None)
 
 dbl_token = os.environ['TOPGGTOKEN']
 
@@ -143,11 +141,11 @@ async def on_dbl_test(data):
 #add guild id to replit db when bot is added
 @bot.event
 async def on_guild_join(guild):
-  db[str(guild.id)] = '.'
+  await create_prefix(guild.id, '.')
 #eremov guild id from replit db when bot is kicked
 @bot.event
 async def on_guild_remove(guild):
-  del db[str(guild.id)]
+  await delete_prefix(guild.id)
 
 
 
@@ -235,7 +233,8 @@ async def hunt(ctx):
     a = await find_inventory(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{prefix}start` to start your country!')
     await ctx.send(embed=embed)
     return
 
@@ -276,7 +275,8 @@ async def sell(ctx, *item1):
     ab = await reading(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{db[ctx.guild.id]}start` to start your country!')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{prefix}start` to start your country!')
     await ctx.send(embed=embed)
     return
 
@@ -376,7 +376,8 @@ async def inventory(ctx):
     a = await find_inventory(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{db[str(ctx.guild.id)]}start` to start one''')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{prefix}start` to start one''')
     await ctx.send(embed=embed)
     return
 
@@ -532,7 +533,8 @@ async def refugee_drops():
           try: 
             a = await reading(msg.author.id)
           except:
-            embed = discord.Embed(title='Sorry', description=":x: You don't have a country. Type `.start` to start one")
+            prefix = await get_prefix(ctx.guild.id)
+            embed = discord.Embed(title='Sorry', description=f":x: You don't have a country. Type `{prefix}start` to start one")
             await msg.channel.send(embed=embed)
             n = True
 
@@ -604,10 +606,12 @@ async def _eval(ctx, *, code):
 @bot.event
 async def on_ready():  
     global task
+    print('hi')
     task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")
+
 
 #commands for the bot
 
@@ -618,7 +622,8 @@ async def on_ready():
 async def on_message(msg):
 
   if msg.content == "<@!810662403217948672> prefix":
-    await msg.channel.send(f'The prefix of this bot on this server is `{db[str(msg.guild.id)]}`')
+    prefix = await get_prefix(msg.guild.id)
+    await msg.channel.send(f'The prefix of this bot on this server is `{prefix}`')
 
   
 
@@ -1135,7 +1140,8 @@ async def profile(ctx, member: discord.Member=None):
     await ctx.channel.send(embed=embed)
 
   except:
-    embed= discord.Embed(title='Sorry', description=f''':x: You or the person you are viewing don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
+    prefix = await get_prefix(ctx.guild.id)
+    embed= discord.Embed(title='Sorry', description=f''':x: You or the person you are viewing don't have a country yet. Type {prefix}start to create your amazing country!!!''')
 
     await ctx.channel.send(embed=embed)
   
@@ -1145,7 +1151,8 @@ async def store(ctx):
   try: 
      a = await reading(ctx.message.author.id)
   except:
-    embed = discord.Embed(title='Whoops', description=f"You haven't started a country yet. Type `{db[ctx.guild.id]}start` to create your amazing country!!!!")
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Whoops', description=f"You haven't started a country yet. Type `{prefix}start` to create your amazing country!!!!")
     await ctx.channel.send(embed=embed)
     return
 
@@ -1227,7 +1234,8 @@ async def work(ctx):
   try:
     a = await (reading(ctx.message.author.id))
   except:
-    embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{db[str(ctx.guild.id)]}start`. Have fun with your amazing country!!!")
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{prefix}start`. Have fun with your amazing country!!!")
     await ctx.channel.send(embed=embed)
     return
 
@@ -1421,7 +1429,8 @@ async def prestige(ctx):
   try:
     a = await reading(ctx.message.author.id)
   except:
-    embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{db[str(ctx.guild.id)]}start`. Have fun with your amazing country!!!")
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{prefix}start`. Have fun with your amazing country!!!")
     await ctx.channel.send(embed=embed)
     return
   
@@ -1458,6 +1467,7 @@ async def prestige(ctx):
     
 @bot.command()
 async def quit(ctx):
+  prefix = await get_prefix(ctx.guild.id)
   embed = discord.Embed(title='quit', description=':x: Are you really sure you want to quit your country. You will lose all your data (`y`,`n`)')
   await ctx.channel.send(embed=embed)
   thechannel = ctx.channel
@@ -1469,13 +1479,13 @@ async def quit(ctx):
     a = await reading(ctx.message.author.id)
     if msg.content == 'y':
       await delete_task(ctx.message.author.id)
-      embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{db[str(ctx.guild.id)]}start`")
+      embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{prefix}start`")
       await ctx.channel.send(embed=embed)
     elif msg.content == 'n':
       embed = discord.Embed(title='Phew', description=f'Your country is not deleted :DD')
       await ctx.channel.send(embed=embed)
   except:
-    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{db[str(ctx.guild.id)]}start`''')
+    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
     await ctx.channel.send(embed=embed)
 
 
@@ -1485,7 +1495,8 @@ async def buy(ctx, *id):
   try:
     a = await reading(ctx.message.author.id)
   except:
-    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{db[str(ctx.guild.id)]}start`''')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
     await ctx.channel.send(embed=embed)
   if len(id) == 0:
     embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}buy <ID> <amount>```')
@@ -1664,7 +1675,8 @@ async def gift(ctx, user1, amount):
     b = await reading(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Whoops', description=f":x: You don't have a country!! Type `{db(str(ctx.guild.id))}start` to start your country!")
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Whoops', description=f":x: You don't have a country!! Type `{prefix}start` to start your country!")
     await ctx.channel.send(embed=embed)
     return
 
@@ -1719,7 +1731,8 @@ async def change(ctx, *, arg):
   try:
     a = await reading(ctx.message.author.id)
   except:
-    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{db[str(ctx.guild.id)]}start`''')
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
     await ctx.channel.send(embed=embed)
 
   if len(arg) > 50:
@@ -1742,6 +1755,12 @@ async def change_error(ctx, error):
 @commands.cooldown(1, 86400, commands.BucketType.user)
 @bot.command()
 async def daily(ctx):
+  try:
+    a = await reading(ctx.message.author.id)
+  except:
+    prefix = await get_prefix(ctx.guild.id)
+    embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
+    
   a = await reading(ctx.message.author.id)
   await update((ctx.message.author.id, a[0][0], a[0][1] + 100, a[0][2], a[0][3], a[0][4], a[0][10]))
 

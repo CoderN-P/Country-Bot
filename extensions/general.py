@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import country_converter as coco
 import random
-from replit import db
 from fuzzywuzzy import fuzz
 
 from countryinfo import CountryInfo

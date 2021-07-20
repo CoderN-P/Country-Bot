@@ -1,11 +1,11 @@
 from discord.ext import commands
 import discord
-from replit import db
+from mongomethods import create_prefix
 
 @commands.command()
 async def changeprefix(ctx, *, prefix):  
     if ctx.message.author.guild_permissions.administrator:
-      db[ctx.guild.id] = prefix
+      await create_prefix(ctx.guild.id, prefix)
 
       await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
     else:

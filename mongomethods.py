@@ -158,5 +158,31 @@ async def delete_update(channel):
 
 
 
-async def do():
-  await my_collection.update_many({}, {'$set': {"data.requirement": 50000000}})
+
+
+prefixes_db = client1.prefixes.main
+
+
+
+async def create_prefix(id, prefix):
+  await prefixes_db.insert_one({'_id': str(id), 'prefix': prefix})
+
+async def get_prefix(id):
+  prefix = await prefixes_db.find_one({'_id': str(id)})
+  return prefix['prefix']
+
+async def update_prefix(id, prefix):
+  await prefixes_db.update_one({'_id': str(id)}, {'$set': {'prefix': prefix}})
+
+async def delete_prefix(id):
+  await prefixes_db.delete_one({'_id': str(id)})
+
+client3 = pymongo.MongoClient(os.getenv('MONGO'))
+prefixes_db2 = client3.prefixes.main
+def create_prefix2(id, prefix):
+  prefixes_db2.insert_one({'_id': str(id), 'prefix': prefix})
+
+
+def get_prefix2(id):
+  prefix = prefixes_db2.find_one({'_id': str(id)})
+  return prefix['prefix']

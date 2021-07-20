@@ -13,8 +13,6 @@ from countryinfo import CountryInfo
 from main import quiz_country_list
 
 
-from replit import db
-
 import random
 
 
@@ -34,7 +32,8 @@ async def tax(ctx):
     a = await reading(ctx.author.id)
 
   except:
-    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type `{db[str(ctx.guild.id)]}start` to start one!")
+    prefix = await get_prefix(id)
+    embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type `{prefix}start` to start one!")
 
     await ctx.send(embed=embed)
     return
@@ -93,7 +92,8 @@ class WarCog(commands.Cog):
     try:
       user1 = await reading(ctx.message.author.id)
     except:
-      embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {db[str(ctx.guild.id)]}start to create your amazing country!!!''')
+      prefix = await get_prefix(id)
+      embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {prefix}start to create your amazing country!!!''')
 
       await ctx.channel.send(embed=embed)
       return
