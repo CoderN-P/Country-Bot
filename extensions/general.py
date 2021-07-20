@@ -3,7 +3,7 @@ from discord.ext import commands
 import country_converter as coco
 import random
 from fuzzywuzzy import fuzz
-from monogmethods import get_prefix
+from mongomethods import get_prefix
 from countryinfo import CountryInfo
 
 global quiz_country_list
