@@ -76,7 +76,7 @@ class HelpCog(commands.Cog):
 
   @commands.command()
   async def help(self, ctx, *arg):
-      prefix = await get_prefix(id)
+      prefix = await get_prefix(ctx.guild.id)
       if len(arg) == 0:
           
           main = discord.Embed(title="Country Bot Help",
