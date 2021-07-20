@@ -97,9 +97,9 @@ class HelpCog(commands.Cog):
         ''', color=0xFF5733)
 
           main.add_field(name='Tips', value=
-        f'''1. Use `{db[ctx.guild.id]}war @Player` to wage war on your friends countries!!
+        f'''1. Use `{prefix}war @Player` to wage war on your friends countries!!
 
-            2. Use `{db[ctx.guild.id]}daily` to receive 100 population every day!''')
+            2. Use `{prefix}daily` to receive 100 population every day!''')
 
 
 
@@ -216,7 +216,7 @@ class HelpCog(commands.Cog):
           ```diff\n- Woops!, the command "{arg}" doesn't exist  
           ```
         
-            Type `{db[ctx.guild.id]}help <command>` for more information on a specific  command.**
+            Type `{prefix}help <command>` for more information on a specific  command.**
             
             '''.format(arg=arg),
                                     color=0xFF5733)
