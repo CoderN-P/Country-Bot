@@ -1491,15 +1491,15 @@ async def quit(ctx):
 
 @bot.command()
 async def buy(ctx, *id):
-
+  prefix = await get_prefix(ctx.guild.id)
   try:
     a = await reading(ctx.message.author.id)
   except:
-    prefix = await get_prefix(ctx.guild.id)
+    
     embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
     await ctx.channel.send(embed=embed)
   if len(id) == 0:
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}buy <ID> <amount>```')
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}buy <ID> <amount>```')
     await ctx.channel.send(embed=embed)
     return
 
@@ -1645,6 +1645,9 @@ async def buy(ctx, *id):
     else:
       embed = discord.Embed(title='ummmm', description="This ID doesn't exist. Check out the shop command to see all the available IDs")
       await ctx.send(embed=embed)
+
+
+
       
 
 @bot.command()
