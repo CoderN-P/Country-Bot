@@ -621,9 +621,9 @@ async def on_ready():
 @bot.listen()
 async def on_message(msg):
 
-  if msg.content == "<@!810662403217948672> prefix":
-    prefix = await get_prefix(msg.guild.id)
-    await msg.channel.send(f'The prefix of this bot on this server is `{prefix}`')
+  if bot.user.mentioned_in(message) and message.mention_everyone is False and 'prefix' in message:
+        prefix = await get_prefix(msg.guild.id)
+        await message.channel.send(f"My prefix in this server is {prefix}")
 
   
 
