@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 import requests, os
 import datetime
+from mongomethods import get_prefix
 import time
 import random, json
 
@@ -162,7 +163,8 @@ async def color(ctx, *, rgb):
 @color.error 
 async def color_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}color <rgb or hex>```')
+      prefix = await get_prefix(ctx.guild.id)
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}color <rgb or hex>```')
       await ctx.channel.send(embed=embed)
 
 
