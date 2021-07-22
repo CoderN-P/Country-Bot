@@ -629,7 +629,7 @@ async def on_message(msg):
         prefix = await get_prefix(msg.guild.id)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
-  elif bot.user.mention == msg.content and msg.mention_everyone is False:
+  elif msg.content == '<@810662403217948672>' or msg.content == '<@!810662403217948672>':
         prefix = await get_prefix(msg.guild.id)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
