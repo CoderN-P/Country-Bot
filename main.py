@@ -621,7 +621,10 @@ async def on_ready():
 @bot.listen()
 async def on_message(msg):
 
-  if bot.user.mentioned_in(msg) and msg.mention_everyone is False:
+  if bot.user.mention in msg.content.split()[0] and msg.mention_everyone is False:
+        prefix = await get_prefix(msg.guild.id)
+        await msg.channel.send(f"My prefix in this server is `{prefix}`")
+  elif bot.user.mention in msg.content.split()[0] and msg.mention_everyone is False and 'prefix' in msg.content.split()[1]:
         prefix = await get_prefix(msg.guild.id)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
