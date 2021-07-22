@@ -7,6 +7,7 @@ async def changeprefix(ctx, *, prefix):
     if ctx.message.author.guild_permissions.administrator:
       if '<@810662403217948672>' in prefix or '<@!810662403217948672>' in prefix:
         await ctx.send('Invalid prefix')
+        return
       await update_prefix(ctx.guild.id, prefix)
 
       await ctx.channel.send(f"Prefix has been changed to `{prefix}`")

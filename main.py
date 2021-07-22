@@ -621,11 +621,15 @@ async def on_ready():
 @bot.listen()
 async def on_message(msg):
 
-  if msg.content == f'{bot.user.mention} prefix' or msg.content == f'{bot.user.mention}prefix':
+  if msg.content == f'<@810662403217948672> prefix' or msg.content == f'<@!810662403217948672> prefix':
         prefix = await get_prefix(msg.guild.id)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
-  elif bot.user.mention in msg.content and msg.mention_everyone is False:
+  elif msg.content == f'<@810662403217948672>prefix' or msg.content == f'<@!810662403217948672>prefix':
+        prefix = await get_prefix(msg.guild.id)
+        await msg.channel.send(f"My prefix in this server is `{prefix}`")
+
+  elif bot.user.mention == msg.content and msg.mention_everyone is False:
         prefix = await get_prefix(msg.guild.id)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
