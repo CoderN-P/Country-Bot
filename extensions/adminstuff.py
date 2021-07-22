@@ -1,11 +1,11 @@
 from discord.ext import commands
 import discord
-from mongomethods import create_prefix
+from mongomethods import update_prefix, get_prefix
 
 @commands.command()
 async def changeprefix(ctx, *, prefix):  
     if ctx.message.author.guild_permissions.administrator:
-      await create_prefix(ctx.guild.id, prefix)
+      await update_prefix(ctx.guild.id, prefix)
 
       await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
     else:
@@ -14,7 +14,8 @@ async def changeprefix(ctx, *, prefix):
 @changeprefix.error
 async def changeprefix_error(ctx, error):
   if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {db[str(ctx.guild.id)]}changeprefix <prefix>```')
+    prefix = await get_prefix(ctx.guld.id)
+    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}changeprefix <prefix>```')
     await ctx.channel.send(embed=embed)
 
   else:
