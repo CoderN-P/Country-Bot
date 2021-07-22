@@ -5,7 +5,7 @@ from mongomethods import update_prefix, get_prefix
 @commands.command()
 async def changeprefix(ctx, *, prefix):  
     if ctx.message.author.guild_permissions.administrator:
-      if prefix == '<@810662403217948672>' or prefix == '<@!810662403217948672>':
+      if '<@810662403217948672>' in prefix or '<@!810662403217948672>' in prefix:
         await ctx.send('Invalid prefix')
       await update_prefix(ctx.guild.id, prefix)
 
