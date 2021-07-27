@@ -1785,11 +1785,11 @@ async def daily(ctx):
     embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
     
   a = await reading(ctx.message.author.id)
-  await update((ctx.message.author.id, a[0][0], a[0][1] + (100 * ((a[0][1]**0.5)/100)) * (a[0][5] +1), a[0][2], a[0][3], a[0][4], a[0][10]))
+  await update((ctx.message.author.id, a[0][0], a[0][1] + int((100 * (((a[0][1]**0.5)/100)) * (a[0][5] +1))), a[0][2], a[0][3], a[0][4], a[0][10]))
 
   
 
-  embed = discord.Embed(title='Daily', description=f'`100` more people joined your country!! Your new population is `{a[0][1] + 100}`')
+  embed = discord.Embed(title='Daily', description=f'`{int((100 * ((a[0][1]**0.5)/100)) * (a[0][5] +1))}` more people joined your country!! Your new population is `{a[0][1] + int((100 * ((a[0][1]**0.5)/100)) * (a[0][5] +1))}`')
 
   await ctx.channel.send(embed=embed)
 
