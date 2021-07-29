@@ -546,7 +546,6 @@ async def refugee_drops():
 
         except asyncio.TimeoutError:
           await message.delete()
-          await message.channel.send('This message was deleted. No one answered in time :slight_frown:')
           break
 
       await asyncio.sleep(300)
