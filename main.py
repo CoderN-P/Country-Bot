@@ -1020,7 +1020,7 @@ async def start(ctx):
 
     msg = await bot.wait_for('message', check=check, timeout=100)
 
-    await writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 1000000000, 0, 0, 0, 0, 0))
+    await writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 50000000, 0, 0, 0, 0, 0))
 
     await ctx.channel.send('Hooray, Country Created!!!!')
   except:
