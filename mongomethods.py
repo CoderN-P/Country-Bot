@@ -10,6 +10,8 @@ my_collection = db1.collection_name
 
 
 
+
+
 async def find_flag(id):
   data = await my_collection.find_one({"_id": str(id)})
   return data['data']['flag']

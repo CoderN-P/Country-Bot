@@ -1,29 +1,86 @@
 from discord.ext import commands
 import discord
-from mongomethods import update_prefix, get_prefix
+from mongomethods import update_prefix, get_prefix, create_update, delete_update
 
-@commands.command()
-async def changeprefix(ctx, *, prefix):  
-    if ctx.message.author.guild_permissions.administrator:
-      if '<@810662403217948672>' in prefix or '<@!810662403217948672>' in prefix:
-        await ctx.send('Invalid prefix')
-        return
-      await update_prefix(ctx.guild.id, prefix)
+class AdminCommands(commands.Cog, name='Admin/Configuration', description='Commands only for admins'):
+  def __init__(self, bot):
+    self.bot = bot
 
-      await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
+  @commands.command(brief='Change the prefix of the bot on your server', description='Change the prefix of the bot on your server')
+  async def changeprefix(self, ctx, *, prefix):  
+      if ctx.message.author.guild_permissions.administrator:
+        if '<@810662403217948672>' in prefix or '<@!810662403217948672>' in prefix:
+          await ctx.send('Invalid prefix')
+          return
+        await update_prefix(ctx.guild.id, prefix)
+
+        await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
+      else:
+        await ctx.channel.send("You don't have sufficient permissions to do that")
+
+  @changeprefix.error
+  async def changeprefix_error(self, ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      prefix = await get_prefix(ctx.guld.id)
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}changeprefix <prefix>```')
+      await ctx.channel.send(embed=embed)
+
     else:
-      await ctx.channel.send("You don't have sufficient permissions to do that")
+      embed = discord.Embed(title='Error', description=f'''```-diff
+      {error}''', color=0xe74c3c)
 
-@changeprefix.error
-async def changeprefix_error(ctx, error):
-  if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-    prefix = await get_prefix(ctx.guld.id)
-    embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}changeprefix <prefix>```')
-    await ctx.channel.send(embed=embed)
+  
+  @commands.command(brief='Set up a channel to receive updates about the bot', description='Set up a channel to receive updates about the bot')
+  @commands.has_permissions(administrator=True)
+  async def configurechannel(self, ctx, channel: discord.TextChannel):
+    
+    try:
+      await channel.send(embed=discord.Embed(title='Success', description='Channel is configured to receive updates about the bot!'))
 
-  else:
-    embed = discord.Embed(title='Error', description=f'''```-diff
-    {error}''', color=0xe74c3c)
+    except:
+      await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: I couldn't send mesages in that channel. Please provide a valid channel!"))
+      return
+
+    try:
+      await create_update(channel)
+    except:
+      await ctx.send(embed=discord.Embed(title='Hey!', description='This channel has already been configured!'))
+
+
+  @configurechannel.error
+  async def configure_error(ctx, error):
+    if isinstance(error, discord.ext.commands.MissingPermissions):
+        await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
+
+    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      prefix = await get_prefix(ctx.guild.id)
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}configurechannel <channel>```')
+      await ctx.channel.send(embed=embed)
+
+   
+
+
+  @commands.command(brief='Make a channel not receive updates about the bot', description='Make a channel not receive updates about the bot')
+  @commands.has_permissions(administrator=True)
+  async def unconfigurechannel(self, ctx, channel: discord.TextChannel):
+    try:
+      await delete_update(int(channel.id))
+
+    except:
+      await ctx.send(embed=discord.Embed(title='Oh No!', description=":x: Please provide a valid channel!"))
+      return
+
+    await ctx.send(embed=discord.Embed(title='Success', description=f" {channel} won't receive update messages"))
+
+  @unconfigurechannel.error
+  async def unconfigure_error(self, ctx, error):
+    if isinstance(error, discord.ext.commands.MissingPermissions):
+        await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
+
+    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      prefix = await get_prefix(ctx.guild.id)
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}unconfigurechannel <channel>```')
+      await ctx.channel.send(embed=embed)
 
 def setup(bot):
-    bot.add_command(changeprefix)
+    bot.add_cog(AdminCommands(bot))
