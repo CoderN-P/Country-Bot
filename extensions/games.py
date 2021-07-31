@@ -733,7 +733,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
     
     if len(amount) == 1:
-      amount = id[1]
+      amount = amount[0]
       amount = amount.strip(',')
 
       try:
@@ -775,12 +775,12 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         
 
     elif len(amount) == 0:
-      id = [id, None]
-      if id[0] == '1':
-        embed = discord.Embed(title='Error', description=':x: How much multiplier are you buying!')
+    
+      if id == '1':
+        embed = discord.Embed(title='Error', description=':x: How much multipliere are you buying!')
         await ctx.channel.send(embed=embed)
 
-      elif id[0] == '2':
+      elif id == '2':
         if a[0][4] >= 2:
           embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
           await ctx.channel.send(embed=embed)
@@ -799,7 +799,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
           description=f'You have bought the Apartment (with roomate)')
         await ctx.channel.send(embed=embed)
 
-      elif id[0] == '3':
+      elif id == '3':
         if a[0][4] >= 3:
           embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
           await ctx.channel.send(embed=embed)
@@ -822,7 +822,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
           description=f'You have bought the Home Office')
         await ctx.channel.send(embed=embed)
 
-      elif id[0] == '4':
+      elif id == '4':
         if a[0][4] >= 5:
           embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
           await ctx.channel.send(embed=embed)
@@ -845,7 +845,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
           description=f'You have bought the Mansion')
         await ctx.channel.send(embed=embed)
       
-      elif id[0] == '5':
+      elif id == '5':
         if a[0][4] >= 10:
           embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
           await ctx.channel.send(embed=embed)
