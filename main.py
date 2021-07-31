@@ -379,7 +379,7 @@ async def on_command_error(ctx, error):
       await ctx.channel.send(f"Did you mean {similar}")
 
     elif isinstance(error, discord.ext.commands.errors.CommandOnCooldown):
-       pawait ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```", color=discord.Colour.red()))
+       await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```", color=discord.Colour.red()))
 
     
 
