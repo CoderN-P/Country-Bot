@@ -67,7 +67,7 @@ def get_prefix123(bot, msg):
 #creating bot instance
 
 
-bot = commands.Bot(command_prefix='-', case_insensitive=True, help_command=None)
+bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_command=None)
 
 
 
