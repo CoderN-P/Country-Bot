@@ -64,13 +64,6 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
 
           await ctx.channel.send(embed=embed)
 
-  @currency.error
-  async def currency_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}currency <country>```')
-      await ctx.channel.send(embed=embed)
-
 
   @commands.command(brief='Get the gdp per capita of a real country in a certain year.', description='Get the gdp per capita of a real country in a certain year.')
   async def gdp_percap(self, ctx, country, year):
@@ -134,20 +127,6 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
           )
 
         await ctx.channel.send(embed=embed)
-
-
-
-  @gdp_percap.error
-  async def gdp_percap_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gdp_percap <country> <year>```')
-      await ctx.channel.send(embed=embed)
-
-
-
-
-
 
 
   @commands.command(brief='Get the gni per capita of a real country.', description='Get the gni per capita of a real country.')
@@ -214,18 +193,6 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
           )
 
           await ctx.channel.send(embed=embed)
-
-  @gni_percap.error
-  async def gni_percap_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gni_percap <country> <year>```')
-      await ctx.channel.send(embed=embed)
-
-
-
-
-
 
 
 
@@ -294,20 +261,6 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
           )
 
       await ctx.channel.send(embed=embed)
-
-
-  @inflation.error
-  async def inflation_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}inflation <country> <year>```')
-      await ctx.channel.send(embed=embed)
-
-
-
-
-
-
 
 
 def setup(bot):

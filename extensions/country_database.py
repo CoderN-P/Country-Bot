@@ -62,13 +62,6 @@ class CountryDatabase(commands.Cog, name='Country Database', description='Comman
           await ctx.channel.send(embed=embed)
 
 
-  @list.error
-  async def list_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}list <letter>```')
-      await ctx.channel.send(embed=embed)
-
 
 
 def setup(bot):

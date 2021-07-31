@@ -106,8 +106,8 @@ class Misc(commands.Cog, description='Miscellaneous commands'):
 
 
   @commands.command(description='Get information about a color by supplying its rgb/hex', brief='Get information about a color by supplying its rgb/hex')
-  async def color(self, ctx, *, rgb_hex):
-    rgb = rgb_hex
+  async def color(self, ctx, *, rgb_or_hex):
+    rgb = rgb_or_hex
     if rgb.startswith("#"):
       info = requests.get(f"https://www.thecolorapi.com/id?hex={rgb[1:]}")
     else:
@@ -164,13 +164,6 @@ class Misc(commands.Cog, description='Miscellaneous commands'):
         embed=discord.Embed(title='Error', description=':x: Invalid Hex or RGB')
         await ctx.channel.send(embed=embed)
 
-
-  @color.error 
-  async def color_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        prefix = await get_prefix(ctx.guild.id)
-        embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}color <rgb or hex>```')
-        await ctx.channel.send(embed=embed)
 
 
 

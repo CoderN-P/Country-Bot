@@ -17,18 +17,6 @@ class AdminCommands(commands.Cog, name='Admin/Configuration', description='Comma
         await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
       else:
         await ctx.channel.send("You don't have sufficient permissions to do that")
-
-  @changeprefix.error
-  async def changeprefix_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guld.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}changeprefix <prefix>```')
-      await ctx.channel.send(embed=embed)
-
-    else:
-      embed = discord.Embed(title='Error', description=f'''```-diff
-      {error}''', color=0xe74c3c)
-
   
   @commands.command(brief='Set up a channel to receive updates about the bot', description='Set up a channel to receive updates about the bot')
   @commands.has_permissions(administrator=True)
@@ -52,13 +40,6 @@ class AdminCommands(commands.Cog, name='Admin/Configuration', description='Comma
     if isinstance(error, discord.ext.commands.MissingPermissions):
         await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
 
-    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}configurechannel <channel>```')
-      await ctx.channel.send(embed=embed)
-
-   
-
 
   @commands.command(brief='Make a channel not receive updates about the bot', description='Make a channel not receive updates about the bot')
   @commands.has_permissions(administrator=True)
@@ -76,11 +57,6 @@ class AdminCommands(commands.Cog, name='Admin/Configuration', description='Comma
   async def unconfigure_error(self, ctx, error):
     if isinstance(error, discord.ext.commands.MissingPermissions):
         await ctx.send("You need the `ADMINISTRATOR` permission to do that!")
-
-    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}unconfigurechannel <channel>```')
-      await ctx.channel.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(AdminCommands(bot))

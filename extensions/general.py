@@ -90,12 +90,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
           await ctx.channel.send(embed=embed)
 
-  @cap.error
-  async def capital_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}capital <country>```')
-      await ctx.channel.send(embed=embed)
 
   
   @commands.command(description='Check the population of a real country.', brief='Check the population of a real country.')
@@ -139,12 +133,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
         await ctx.channel.send(embed=embed)
 
-  @population.error
-  async def population_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}population <country>```')
-      await ctx.channel.send(embed=embed)
 
   
   @commands.command(description='Check the states/provinces in a real country', brief='Check the states/provinces in a real country')
@@ -192,13 +180,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
         await ctx.channel.send(embed=embed)
 
-
-  @states.error
-  async def states_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}states <country>```')
-      await ctx.channel.send(embed=embed)
 
   @commands.command(description='Check the main language of any real country.', brief='Check the main language of any real country.')
   async def language(self, ctx, *, country):
@@ -264,14 +245,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
         )
 
         await ctx.channel.send(embed=embed)
-
-
-  @language.error
-  async def language_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}language <country>```')
-      await ctx.channel.send(embed=embed)
 
 
   
@@ -395,12 +368,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
       await ctx.channel.send(embed=embed)
 
-  @covid.error
-  async def covid_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}covid <country>```')
-      await ctx.channel.send(embed=embed)
 
   
   @commands.command(description='View information about the bot', brief='View information about the bot')

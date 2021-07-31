@@ -249,13 +249,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
       await update_coins((ctx.author.id, ab[0][11] + value))
 
-  @sell.error
-  async def sell_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      await ctx.send(embed=discord.Embed(title='Bad Usage', description=f'''[] = optional
-      <> = mandatory
-      Invalid Usage: ```{prefix}sell <item> [amount]```'''))
+
 
   
 
@@ -881,17 +875,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         embed = discord.Embed(title='ummmm', description="This ID doesn't exist. Check out the shop command to see all the available IDs")
         await ctx.send(embed=embed)
 
-  @buy.error
-  async def buy_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}buy <ID> <amount>```')
-      await ctx.channel.send(embed=embed)
-      return
-
-
-
-      
+ 
 
   @commands.command(description='Gift some population to other people!', brief='Gift some population to other people!')
   async def gift(self, ctx, user, amount):
@@ -994,12 +978,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
     await ctx.channel.send(embed=embed)
 
-  @change.error
-  async def change_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}change <new country name>```')
-      await ctx.channel.send(embed=embed)
 
   @commands.cooldown(1, 86400, commands.BucketType.user)
   @commands.command(description='Get your daily allowance of population...', brief='Get your daily allowance of population...')
@@ -1026,13 +1004,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
             em = discord.Embed(title="Slow it down!",description=f'''Try again after `{datetime.timedelta(seconds = time1)}`.''')
             await ctx.send(embed=em)
 
-
-  @gift.error
-  async def gift_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        prefix = await get_prefix(ctx.guild.id)
-        embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}gift <user> <amount>```')
-        await ctx.channel.send(embed=embed)
 
 
 
@@ -1241,14 +1212,9 @@ class Games(commands.Cog, description='Cool games that test your geography skill
 
   @war.error
   async def war_error(self, ctx, error):
-      if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-        prefix = await get_prefix(ctx.guild.id)
-        embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}war <user>``` User should be a ping')
-        await ctx.channel.send(embed=embed)
-
-      elif isinstance(error, commands.CommandOnCooldown):
-            em = discord.Embed(title="Hey!",description=f'''You can't wage war right now! Try again in `{error.retry_after:.2f}`s.''')
-            await ctx.send(embed=em)
+    if isinstance(error, commands.CommandOnCooldown):
+      em = discord.Embed(title="Hey!",description=f'''You can't wage war right now! Try again in `{error.retry_after:.2f}`s.''')
+      await ctx.send(embed=em)
 
 
   @commands.command(description='Guess capitals of countries, or guess countries from their capitals!', brief='Guess capitals of countries, or guess countries from their capitals!')

@@ -389,7 +389,7 @@ async def on_command_error(ctx, error):
       
 
     elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      pass
+      await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```", color=discord.Colour.red()))
     
 
     else:

@@ -52,12 +52,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         await ctx.channel.send(embed=embed)
 
-  @area.error
-  async def area_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}area <country>```')
-      await ctx.channel.send(embed=embed)
 
   @commands.command(description='Check the region that a country is located in. (Must be a real country)', brief='Check the region that a country is located in.')
   async def region(self, ctx, *, country):
@@ -96,13 +90,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         await ctx.channel.send(embed=embed)
 
-  @region.error
-  async def region_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}region <country>```')
-      await ctx.channel.send(embed=embed)
-
 
   @commands.command(description='Check the subregion that a country is located in. (Must be a real country)', brief='Check the subregion that a country is located in.')
   async def subregion(self, ctx, *, country):
@@ -140,13 +127,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
         )
 
         await ctx.channel.send(embed=embed)
-
-  @subregion.error
-  async def subregion_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}subregion <country>```')
-      await ctx.channel.send(embed=embed)
 
 
   @commands.command(description='Get all the bordering countries of a real country.', brief='Get all the bordering countries of a real country.')
@@ -234,12 +214,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         await ctx.channel.send(embed=embed)
 
-  @borders.error
-  async def borders_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}borders <country>```')
-      await ctx.channel.send(embed=embed)
 
   
   @commands.command(description='Get all the timezones located in a real country.', brief='Get all the timezones located in a real country.')
@@ -287,13 +261,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         await ctx.channel.send(embed=embed)
 
-  @timezone.error
-  async def timezone_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}timezone <country>```')
-      await ctx.channel.send(embed=embed)
-
 
   @commands.command(description='Get the rough coordinates of a real country.', brief='Get the rough coordinates of a real country.')
   async def coords(self, ctx, *, country):
@@ -340,14 +307,6 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
         )
 
         await ctx.channel.send(embed=embed)
-
-
-  @coords.error
-  async def coords_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}coords <country>```')
-      await ctx.channel.send(embed=embed)
 
 
 

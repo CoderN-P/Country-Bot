@@ -51,13 +51,6 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await update((ctx.author.id, a[0][0], a[0][1] - amount, a[0][2], a[0][3], a[0][4], a[0][10]))
 
 
-  @dice.error
-  async def dice_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}dice <amount>```')
-      await ctx.channel.send(embed=embed)
-
   @commands.command(brief='Flip a coin with Country Bot, to win population (or loose some)', description='Flip a coin with Country Bot, to win population (or loose some)')
   async def coinflip(self, ctx, choice, *amount):
     h_t = random.choice(['h', 't'])
@@ -151,12 +144,6 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await ctx.channel.send(embed=embed)
         return
 
-  @coinflip.error
-  async def coinflip_error(self, ctx, error):
-    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-      embed = discord.Embed(title='huh', description=':x: That is not a valid option. Specify either `heads` or `tails`')
-      await ctx.channel.send(embed=embed)
-      return
 
 
 def setup(bot):
