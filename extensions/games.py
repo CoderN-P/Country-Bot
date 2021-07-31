@@ -728,7 +728,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
 
   @commands.command(description='Buy items for your country!', brief='Buy items for your country!')
-  async def buy(self, ctx, id=None, *amount):
+  async def buy(self, ctx, id, *amount):
     prefix = await get_prefix(ctx.guild.id)
     try:
       a = await reading(ctx.message.author.id)
@@ -736,10 +736,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       
       embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
       await ctx.channel.send(embed=embed)
-    if id == None:
-      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}buy <ID> <amount>```')
-      await ctx.channel.send(embed=embed)
-      return
 
     
     if len(amount) == 1:
@@ -884,6 +880,13 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       else:
         embed = discord.Embed(title='ummmm', description="This ID doesn't exist. Check out the shop command to see all the available IDs")
         await ctx.send(embed=embed)
+
+  @buy.error
+  async def buy_error(self, ctx, error):
+    if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}buy <ID> <amount>```')
+      await ctx.channel.send(embed=embed)
+      return
 
 
 

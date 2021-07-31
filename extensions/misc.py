@@ -7,7 +7,7 @@ import time
 import random, json
 
 
-class Misc(commands.Cog, name='Miscellaneous commands'):
+class Misc(commands.Cog, description='Miscellaneous commands'):
   def __init__(self, bot):
     self.bot = bot
 
