@@ -743,7 +743,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
       
 
-      if id[0] == '1':
+      if id == '1':
           if a[0][11] - (500 * int(amount)) < 0:
             embed = discord.Embed(title='Oh no', description=''':x: You don't have enough coins!''')
             await ctx.channel.send(embed=embed)
