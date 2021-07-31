@@ -106,18 +106,18 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
     else:
       
       try:
-        amount[0] = int(amount[0])
+        amount = int(amount[0])
       except:
         embed = discord.Embed(title='Error', description=':x: You have entered an invalid amount!')
         await ctx.send(embed=embed)
         return
       
-      if amount[0] < 1:
+      if amount < 1:
         await ctx.send(":x: You can't bet with this amount smh")
         return
 
 
-      if a[0][1] <= int(amount[0]):
+      if a[0][1] <= int(amount):
         embed = discord.Embed(title='Hey!', description=":x: You don't have that much population to bet")
         await ctx.send(embed=embed)
         return
@@ -131,15 +131,15 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
       if confirmed == choice:
         embed = discord.Embed(title='Woohooooo!!!', description=f':tada: Your guess was correct!! You won `{amount[0]}` population!!!')
 
-        await update((ctx.author.id, a[0][0], a[0][1] + int(amount[1]), a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update((ctx.author.id, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
         return
 
       else:
-        embed = discord.Embed(title=':(', description=f':slight_frown: Your guess was incorrect. You lost `{amount[0]}` population')
+        embed = discord.Embed(title=':(', description=f':slight_frown: Your guess was incorrect. You lost `{amount}` population')
 
-        await update((ctx.author.id, a[0][0], a[0][1] - amount[1], a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update((ctx.author.id, a[0][0], a[0][1] - amount, a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
         return
