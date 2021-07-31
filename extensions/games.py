@@ -648,7 +648,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       await ctx.send(" :x: You have WAY too much population. You better prestige or you won't be able to work!")
 
   @work.error
-  async def work_error(ctx, error):
+  async def work_error(self, ctx, error):
       if isinstance(error, commands.CommandOnCooldown):
           em = discord.Embed(title="Too tired",description=f'''You are too tired to work again. You can work in `{error.retry_after:.2f}`s.''')
           await ctx.send(embed=em)

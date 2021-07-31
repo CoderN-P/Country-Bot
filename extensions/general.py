@@ -383,34 +383,34 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
     
     embed.add_field(name='Server Count', value=f'''```css
-  [{len(self.bot.guilds)} servers]
+[{len(self.bot.guilds)} servers]
   ```''')
 
     embed.add_field(name='CPU usage', value=f'''```css
-  [{cpu_usage}%]
+[{cpu_usage}%]
   ```''', inline=True)
     
     embed.add_field(name='Uptime', value=f'''```css
-  [{text}]
+[{text}]
   ```''')
     embed.add_field(name='Memory', value=f'''```ini
-  [{memory} kb]
+[{memory} kb]
   ```''')
     
     embed.add_field(name='User Countries', value=f'''```ini
-  [{await count()}]
+[{await count()}]
   ```''')
 
     embed.add_field(name='Creator', value=f'''```ini
-  [Coder N#0001]
+[Coder N#0001]
   ```''', inline=True)
 
     embed.add_field(name='Websocket Ping', value=f'''```ini
-  [{self.bot.latency * 1000} ms]
+[{self.bot.latency * 1000} ms]
   ```''')
 
     embed.add_field(name='Commands', value=f'''```css
-  [{len(self.bot.commands)}]
+[{len(self.bot.commands)}]
   ```''')
 
 
