@@ -884,6 +884,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @buy.error
   async def buy_error(self, ctx, error):
     if isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+      prefix = await get_prefix(ctx.guild.id)
       embed = discord.Embed(title='Incorrect Usage', description=f'```Usage: {prefix}buy <ID> <amount>```')
       await ctx.channel.send(embed=embed)
       return
