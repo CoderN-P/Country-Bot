@@ -2,6 +2,7 @@ from discord.ext import commands
 import discord
 from mongomethods import get_prefix
 import pycountry, re
+import datetime
 
 class CountryDatabase(commands.Cog, name='Country Database', description='Commands that allow you to find countries!'):
   def __init__(self, bot):

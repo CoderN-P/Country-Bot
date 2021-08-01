@@ -5,7 +5,7 @@ import os
 global username, password
 username = os.environ['USERNAME']
 password = os.environ['PASSWORD']
-
+import datetime
 class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pics of animals, and wholesome memes from reddit!'):
   def __init__(self, bot):
     self.bot = bot

@@ -3,6 +3,7 @@ from mongomethods import count, reading, update, update_prestige, update_war, wr
 
 import discord, random
 import asyncio
+import datetime
 
 class Gambling(commands.Cog, description='Commands that allow you to gamble with Country Bot'):
   def __init__(self, bot):
