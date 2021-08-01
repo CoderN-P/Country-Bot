@@ -130,7 +130,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         confirmed = 'tails'
 
       if confirmed == choice:
-        embed = discord.Embed(title='Woohooooo!!!', description=f':tada: Your guess was correct!! You won `{amount[0]}` population!!!')
+        embed = discord.Embed(title='Woohooooo!!!', description=f':tada: Your guess was correct!! You won `{amount}` population!!!')
 
         await update((ctx.author.id, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
 
