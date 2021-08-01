@@ -80,7 +80,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       
 
       for i in data:
-        i['_id'] =  await bot.fetch_user(int(i['_id']))
+        i['_id'] =  await self.bot.fetch_user(int(i['_id']))
       
       string = ''''''
       for x, i in enumerate(data, start=1):
@@ -100,7 +100,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         
 
         for i in data:
-          i['_id'] =  await bot.fetch_user(int(i['_id']))
+          i['_id'] =  await self.bot.fetch_user(int(i['_id']))
         
         string = ''''''
         for x, i in enumerate(data, start=1):
