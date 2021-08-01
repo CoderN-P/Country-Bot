@@ -11,7 +11,7 @@ import unicodedata, asyncio
 from countryinfo import CountryInfo
 
 
-
+from discord import Color
 import random
 
 
@@ -293,7 +293,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       def check(m):
         return m.channel == the_channel and m.author == the_author
 
-      msg = await bot.wait_for('message', check=check, timeout=100)
+      msg = await self.bot.wait_for('message', check=check, timeout=100)
 
       await writing((ctx.author.id, msg.content, 0, 1, "Mayor", 1, 0, 50000000, 0, 0, 0, 0, 0))
 
