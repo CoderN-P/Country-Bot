@@ -85,8 +85,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       string = ''''''
       for x, i in enumerate(data, start=1):
         prestige = i['data']['prestige']
-        name = i['_id'].strip('`')
-        name2 = i['data']['name'].strip('`')
+        name = str(i['_id']).strip('`')
+        name2 = str(i['data']['name']).strip('`')
         string = string + f'**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n'
 
       embed = discord.Embed(title='Global Leaderboard (prestige)', description=string)
@@ -105,8 +105,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         string = ''''''
         for x, i in enumerate(data, start=1):
           prestige = i['data']['coins']
-          name = i['_id'].strip('`')
-          name2 = i['data']['name'].strip('`')
+          name = str(i['_id']).strip('`')
+          name2 = str(i['data']['name']).strip('`')
           string = string + f'**{x}.** {name}: `{name2}`| `{prestige}` :coin:\n'
 
         embed = discord.Embed(title='Global Leaderboard (coins)', description=string)
