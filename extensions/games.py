@@ -1037,7 +1037,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
     try:
       user1 = await reading(ctx.message.author.id)
     except:
-      prefix = await get_prefix(id)
+      prefix = await get_prefix(ctx.guild.id)
       embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {prefix}start to create your amazing country!!!''')
 
       await ctx.channel.send(embed=embed)
@@ -1217,6 +1217,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
       await ctx.send(embed=em)
 
 
+
   @commands.command(description='Guess capitals of countries, or guess countries from their capitals!', brief='Guess capitals of countries, or guess countries from their capitals!')
   async def guess_capital(self, ctx, *reverse):
       arg = reverse
@@ -1247,14 +1248,22 @@ class Games(commands.Cog, description='Cool games that test your geography skill
             
             country_capital = country_capital1.capital()
           except:
+            random_country = random.choice(quiz_country_list)
             country_capital1 = CountryInfo(random_country)
             
             country_capital = country_capital1.capital()
 
           if not country_capital:
-            random_country = random.choice(quiz_country_list)
-            country_capital1 = CountryInfo(random_country)
-            country_capital = country_capital1.capital()
+            try:
+              random_country = random.choice(quiz_country_list)
+              country_capital1 = CountryInfo(random_country)
+
+              country_capital = country_capital1.capital()
+            except:
+              random_country = random.choice(quiz_country_list)
+              country_capital1 = CountryInfo(random_country)
+
+              country_capital = country_capital1.capital()
 
 
           country_capital = unicodedata.normalize('NFKD', country_capital).encode('ascii', 'ignore').decode('utf-8')
