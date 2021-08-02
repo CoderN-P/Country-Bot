@@ -178,19 +178,19 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     
 
     if not amount:
-      item = None
+      item1 = None
       for i in a.keys():
-        if item[0].lower() in i:
-          item = i
+        if item.lower() in i:
+          item1 = i
 
-      if item == None:
+      if item1 == None:
         await ctx.send(":x: You don't own that!")
         return
 
       else:
-        value = a[item]['value']
-        if a[item]['amount'] == 1:
-          del a[item]
+        value = a[item1]['value']
+        if a[item1]['amount'] == 1:
+          del a[item1]
           await update_inventory((ctx.author.id, a))
 
           await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
@@ -198,12 +198,12 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
           await update_coins((ctx.author.id, ab[0][11] + value))
 
         else:
-          value = a[item]['value']/a[item]['amount']
-          a[item] = {'amount': a[item]['amount'] - 1, 'value': a[item]['value'] - value}
+          value = a[item1]['value']/a[item1]['amount']
+          a[item1] = {'amount': a[item1]['amount'] - 1, 'value': a[item1]['value'] - value}
         
           await update_inventory((ctx.author.id, a))
 
-          await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+          await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item1}'))
 
           await update_coins((ctx.author.id, ab[0][11] + value))
 
@@ -218,17 +218,17 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         await ctx.send(':x: That is not a valid amount')
         return
       
-      item = None
+      item1 = None
       for i in a.keys():
         if item.lower() in i:
-          item = i
+          item1 = i
 
-      if item == None:
+      if item1 == None:
         await ctx.send(":x: You don't own that!")
         return
       
       
-      amount1 = a[item]['amount']
+      amount1 = a[item1]['amount']
 
 
 
@@ -236,16 +236,16 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         await ctx.send(":x: You don't have that much of this item")
         return
 
-      value = a[item]['value']/a[item]['amount'] * amount
-      if a[item]['amount'] - amount == 0:
-        del a[item]
+      value = a[item1]['value']/a[item1]['amount'] * amount
+      if a[item1]['amount'] - amount == 0:
+        del a[item1]
       else:
-        a[item]['amount'] = a[item]['amount'] - amount 
+        a[item1]['amount'] = a[item1]['amount'] - amount
 
 
       await update_inventory((ctx.author.id, a))
 
-      await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item}'))
+      await ctx.send(embed=discord.Embed(title='Success', description=f'Sold {item1}'))
 
       await update_coins((ctx.author.id, ab[0][11] + value))
 
