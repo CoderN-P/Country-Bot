@@ -388,7 +388,8 @@ async def on_command_error(ctx, error):
           await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there. Anyways, this bug will be sent to our team to fix, please stand by!")
       except:
           pass
-      channel = bot.get_channel(871588397603516466)
+      guild = bot.get_guild(821872779523522580)
+      channel = discord.utils.get(guild.channels, name="bug-logs")
       await channel.send(embed=discord.Embed(title='Error in executing a command', description=f'New error when executing command: {ctx.command_name}\n**Error**: {error}'))
 
       
