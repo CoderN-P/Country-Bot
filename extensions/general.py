@@ -422,7 +422,7 @@ class General(commands.Cog, name='General Data', description='Commands that retu
         if len(data) == 0:
             await ctx.send(':x: We could not find any matches for this page')
             return
-        await ctx.send(embed = discord.Embed(title='Did you mean', description=', '.join(data))
+        await ctx.send(embed = discord.Embed(title='Did you mean', description=', '.join(data)))
         await ctx.send(embed=discord.Embed(title='Error', description=e))
 
 
