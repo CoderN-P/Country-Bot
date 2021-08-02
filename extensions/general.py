@@ -420,9 +420,11 @@ class General(commands.Cog, name='General Data', description='Commands that retu
     except:
         await ctx.send(embed=discord.Embed(title='Error', description=':x: We could not find any matches for that page.', color=discord.Color.red()))
         return
-
-    data = wikipedia.page(data)
-    await ctx.send(embed=discord.Embed(title=data.title, url=data.url, description=data.summary))
+    try:
+        data = wikipedia.page(data)
+        await ctx.send(embed=discord.Embed(title=data.title, url=data.url, description=data.summary))
+    except Exception as e:
+        await ctx.send(embed=discord.Embed(title='Error', description=e))
 
 
 
