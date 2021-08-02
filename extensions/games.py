@@ -171,7 +171,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
     except:
       prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{prefix}start` to start your country!')
+      embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
       return
     
