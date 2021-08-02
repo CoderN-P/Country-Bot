@@ -390,7 +390,7 @@ async def on_command_error(ctx, error):
           pass
       guild = bot.get_guild(821872779523522580)
       channel = discord.utils.get(guild.channels, name="bug-logs")
-      await channel.send(embed=discord.Embed(title='Error in executing a command', description=f'New error when executing command: {ctx.command_name}\n**Error**: {error}'))
+      await channel.send(embed=discord.Embed(title='Error in executing a command', description=f'New error when executing command: {ctx.command.name}\n**Error**: {error}'))
 
       
 
