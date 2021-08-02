@@ -10,6 +10,7 @@ from discord import Color
 import json, requests
 import datetime, time
 import resource, psutil
+import wikipedia
 
 global main_up
 main_up = time.time()
@@ -383,41 +384,44 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
     
     embed.add_field(name='Server Count', value=f'''```css
-[{len(self.bot.guilds)} servers]
-  ```''')
+[{len(self.bot.guilds)} servers]```''')
 
     embed.add_field(name='CPU usage', value=f'''```css
-[{cpu_usage}%]
-  ```''', inline=True)
+[{cpu_usage}%]```''', inline=True)
     
     embed.add_field(name='Uptime', value=f'''```css
-[{text}]
-  ```''')
+[{text}]```''')
     embed.add_field(name='Memory', value=f'''```ini
-[{memory} kb]
-  ```''')
+[{memory} kb]```''')
     
     embed.add_field(name='User Countries', value=f'''```ini
-[{await count()}]
-  ```''')
+[{await count()}]```''')
 
     embed.add_field(name='Creator', value=f'''```ini
-[Coder N#0001]
-  ```''', inline=True)
+[Coder N#0001]```''', inline=True)
 
     embed.add_field(name='Websocket Ping', value=f'''```ini
-[{self.bot.latency * 1000} ms]
-  ```''')
+[{self.bot.latency * 1000} ms]```''')
 
     embed.add_field(name='Commands', value=f'''```css
-[{len(self.bot.commands)}]
-  ```''')
+[{len(self.bot.commands)}]```''')
 
 
 
 
     embed.set_footer(text='If some percentages show 0.0%, it means that the number is really close to zero.')
     await ctx.channel.send(embed=embed)
+
+  @commands.command(brief='Get information from wikipedia', description='Get information from wikipedia!', aliases=['wikipedia'])
+  async def wiki(self, ctx, page):
+    try:
+        data = wikipedia.search(page)[0]
+    except:
+        await ctx.send(embed=discord.Embed(title='Error', description=':x: We could not find any matches for that page.', color=discord.Color.red()))
+        return
+
+    data = wikipedia.page(data)
+    await ctx.send(embed=discord.Embed(title=data.title, url=data.url, description=data.summary))
 
 
   
