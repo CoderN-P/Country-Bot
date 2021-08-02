@@ -412,7 +412,7 @@ class General(commands.Cog, name='General Data', description='Commands that retu
     embed.set_footer(text='If some percentages show 0.0%, it means that the number is really close to zero.')
     await ctx.channel.send(embed=embed)
 
-  @commands.command(brief='Get information from wikipedia', description='Get information from wikipedia!', aliases=['wikipedia'])
+  @commands.command(brief='Get information from wikipedia, Put search terms in quotes for better results (does not work all the time)', description='Get information from wikipedia! Put search terms in quotes for better results (does not work all the time)', aliases=['wikipedia'])
   async def wiki(self, ctx, *, page):
     try:
         data = wikipedia.page(page)
