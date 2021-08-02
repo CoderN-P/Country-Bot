@@ -415,15 +415,14 @@ class General(commands.Cog, name='General Data', description='Commands that retu
   @commands.command(brief='Get information from wikipedia', description='Get information from wikipedia!', aliases=['wikipedia'])
   async def wiki(self, ctx, *, page):
     try:
-        data = wikipedia.search(page)[0]
-
-    except:
-        await ctx.send(embed=discord.Embed(title='Error', description=':x: We could not find any matches for that page.', color=discord.Color.red()))
-        return
-    try:
-        data = wikipedia.page(data)
+        data = wikipedia.page(page)
         await ctx.send(embed=discord.Embed(title=data.title, url=data.url, description=data.summary))
     except Exception as e:
+        data = wikipedia.search(page)
+        if len(data) == 0:
+            await ctx.send(':x: We could not find any matches for this page')
+            return
+        await ctx.send(embed = discord.Embed(title='Did you mean', description=', '.join(data))
         await ctx.send(embed=discord.Embed(title='Error', description=e))
 
 
