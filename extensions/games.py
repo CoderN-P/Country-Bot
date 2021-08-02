@@ -180,7 +180,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     if not amount:
       item = None
       for i in a.keys():
-        if item1[0].lower() in i:
+        if item[0].lower() in i:
           item = i
 
       if item == None:
@@ -210,7 +210,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     else:
       amount = amount[0].strip(',')
       try:
-        amount = int(item1[1])
+        amount = int(amount)
       except:
         await ctx.send(':x: That is not a valid amount')
         return
@@ -220,7 +220,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       
       item = None
       for i in a.keys():
-        if item1[0].lower() in i:
+        if item.lower() in i:
           item = i
 
       if item == None:
