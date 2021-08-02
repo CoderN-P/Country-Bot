@@ -385,10 +385,10 @@ async def on_command_error(ctx, error):
 
     elif isinstance(error, discord.ext.commands.errors.CommandInvokeError):
       try:
-          await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there.")
+          await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there. Anyways, this bug will be sent to our team to fix, please stand by!")
       except:
           pass
-      channel = await bot.get_channel(871588397603516466)
+      channel = bot.get_channel(871588397603516466)
       await channel.send(embed=discord.Embed(title='Error in executing a command', description=f'New error when executing command: {ctx.command_name}\n**Error**: {error}'))
 
       
