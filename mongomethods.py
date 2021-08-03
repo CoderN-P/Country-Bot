@@ -36,7 +36,7 @@ async def find_inventory(user_id, ctx=None):
     if inventory == None:
       if ctx == None:
         raise Exception
-      prefix = ctx.clean_prefix
+      prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
       return
@@ -58,7 +58,7 @@ async def reading(user_id, ctx=None):
     if data == None:
       if ctx == None:
         raise Exception
-      prefix = ctx.clean_prefix
+      prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
       return
