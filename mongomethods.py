@@ -32,7 +32,8 @@ async def delete_task(user_id):
 
 
 async def find_inventory(user_id, ctx=None):
-    inventory = dict(await my_collection.find_one({"_id": str(user_id)}))
+    inventory = await my_collection.find_one({"_id": str(user_id)})
+    print(inventory)
     if inventory == None:
       if ctx == None:
         raise Exception
@@ -41,6 +42,7 @@ async def find_inventory(user_id, ctx=None):
       await ctx.send(embed=embed)
       return
     else:
+      inventory = dict(inventory) 
       return inventory['inventory']
 
     
@@ -54,15 +56,16 @@ async def writing(arg):
 
   
 async def reading(user_id, ctx=None):
-    data = dict(await my_collection.find_one({"_id": str(user_id)}))
-    if data == None:
-      if ctx == None:
+    data = await my_collection.find_one({"_id": str(user_id)})
+    if not data:
+      if not ctx:
         raise Exception
       prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
       return
-    else:
+    elif data:
+      data = dict(data)
       data = data['data']
       return [list(data.values())]
 
