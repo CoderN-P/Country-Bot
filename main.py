@@ -242,7 +242,7 @@ async def refugee_drops():
 async def on_ready():  
     global task
     print('hi')
-    #task = bot.loop.create_task(refugee_drops())
+    task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")

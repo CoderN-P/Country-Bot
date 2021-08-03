@@ -2,7 +2,6 @@ from discord.ext import commands
 import discord
 import requests, os
 import datetime
-from mongomethods import get_prefix
 import time
 import random, json
 

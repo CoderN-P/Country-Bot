@@ -345,12 +345,12 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       await ctx.channel.send(embed=embed)
 
     except:
-      embed = discord.Embed(title='Hey!', description=f':x: You or the person you are viewing do not have a country! Create one with `{ctx.clean_prefix}start`')
+      embed = discord.Embed(title='Hey!', description=f':x: You or the person you are viewing do not have a country! Create one with `{ctx.prefix}start`')
       await ctx.send(embed=embed)
 
   @commands.command(aliases=['shop'], description='Shows you items you can purchase for your country', brief='Shows you items you can purchase for your country')
   async def store(self, ctx):
-    prefix = ctx.clean_prefix
+    prefix = ctx.prefix
     a = await reading(ctx.author.id, ctx)
     if a == None:
       return
@@ -664,14 +664,18 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     thechannel = ctx.channel
     theauthor = ctx.message.author
     def check(m):
-      return m.content == 'y' or m.content == 'n' and m.channel == thechannel and m.author == theauthor 
-    msg = await self.bot.wait_for('message', check=check, timeout=100)
+      return m.content == 'y' or m.content == 'n' and m.channel == thechannel and m.author == theauthor
+    try: 
+      msg = await self.bot.wait_for('message', check=check, timeout=100)
+    except asyncio.TimeoutError:
+      await ctx.send(':x: You did not answer in time')
+      return
     a = await reading(ctx.author.id, ctx)
     if a == None:
       return
     if msg.content == 'y':
       await delete_task(ctx.message.author.id)
-      prefix = ctx.command_name
+      prefix = ctx.prefix
       embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{prefix}start`")
       await ctx.channel.send(embed=embed)
     elif msg.content == 'n':
@@ -857,8 +861,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         await ctx.channel.send(embed=embed)
         return
 
-    a = await reading(ctx.author.id, ctx)
-    if a == None:
+    b = await reading(ctx.author.id, ctx)
+    if b == None:
       return
 
     try:

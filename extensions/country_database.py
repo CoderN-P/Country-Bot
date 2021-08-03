@@ -1,6 +1,5 @@
 from discord.ext import commands
 import discord
-from mongomethods import get_prefix
 import pycountry, re
 import datetime
 

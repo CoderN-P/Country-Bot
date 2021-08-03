@@ -1,5 +1,5 @@
 from discord.ext import commands
-from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins, get_prefix
+from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins
 
 import discord, random
 import asyncio
