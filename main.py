@@ -3,7 +3,7 @@ from discord.ext.commands import has_permissions
 import discord
 from discord import Color
 from discord.ext import commands
-from discord.ext.commands import cooldown, BucketType
+from discord.ext.commands import cooldown
 
 
 #imports for eval command
@@ -15,29 +15,22 @@ from pretty_help import DefaultMenu, PrettyHelp
 
 
 #imports for mongodb
-import motor.motor_asyncio
 
 #imports for data on countries
 from countryinfo import CountryInfo
 import country_converter as coco
-import pycountry
-import wbdata
 from emojiflags.lookup import lookup
 
 #imports for json
-import json
+
 
 #imports for checking text
 from fuzzywuzzy import fuzz
-import unicodedata
+
 import regex as re
 
 #other
 import random
-import resource, psutil
-import time
-import datetime
-import requests
 import io
 import os, topgg
 from dotenv import load_dotenv
@@ -74,7 +67,7 @@ bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_com
 
 
 
-#dbl_token = os.environ['TOPGGTOKEN']
+
 
 
 menu = DefaultMenu('◀️', '▶️', '❌') # You can copy-paste any icons you want.
@@ -83,9 +76,14 @@ bot.help_command = PrettyHelp(navigation=menu, color=discord.Colour.red(), endin
 
 
 bot.topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "dbl_password")
-bot.topgg_webhook.run(4355)  # this method can be awaited as well
-
-
+bot.topgg_webhook.run(4355)  
+dbl_token = os.environ['TOPGGTOKEN']
+bot.topggpy = topgg.DBLClient(bot, dbl_token, autopost=True, post_shard_count=True)
+@bot.event
+async def on_autopost_success():
+    print(
+        f"Posted server count ({bot.topggpy.guild_count}), shard count ({bot.shard_count})"
+    )
 
 
 @bot.event
@@ -150,7 +148,6 @@ def start_extensions(bot):
   bot.load_extension("extensions.memes")
   bot.load_extension("extensions.games")
   bot.load_extension("extensions.general")
-  bot.load_extension("extensions.topgg")
   bot.load_extension('extensions.geographical')
   bot.load_extension("jishaku")
   bot.add_cog(DeveloperCommands(bot))
@@ -199,7 +196,7 @@ async def refugee_drops():
 
  
 
-  channel = await bot.fetch_channel( 836624980359643176)
+  channel = await bot.fetch_channel(836624980359643176)
 
   while True:
       word = random.choice(words)
@@ -243,7 +240,7 @@ async def refugee_drops():
 async def on_ready():  
     global task
     print('hi')
-    #task = bot.loop.create_task(refugee_drops())
+    task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
     print('bot is ready')
     print(f"bot is in {len(bot.guilds)} servers")
@@ -258,15 +255,15 @@ async def on_ready():
 async def on_message(msg):
 
   if msg.content == f'<@810662403217948672> prefix' or msg.content == f'<@!810662403217948672> prefix':
-        prefix = await get_prefix(msg.guild.id)
+        prefix = bot.command_prefix
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == f'<@810662403217948672>prefix' or msg.content == f'<@!810662403217948672>prefix':
-        prefix = await get_prefix(msg.guild.id)
+        prefix = bot.command_prefix
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == '<@810662403217948672>' or msg.content == '<@!810662403217948672>':
-        prefix = await get_prefix(msg.guild.id)
+        prefix = bot.command_prefix
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
 
@@ -359,7 +356,7 @@ async def on_command_error(ctx, error):
       similar = []
       other=[]
       
-      prefix = await get_prefix(ctx.guild.id)
+      prefix = ctx.clean_prefix
 
       for commands in bot.commands:
         
