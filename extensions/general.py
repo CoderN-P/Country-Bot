@@ -4,7 +4,7 @@ import country_converter as coco
 import random, re
 import pycountry
 from fuzzywuzzy import fuzz
-from mongomethods import get_prefix, count
+from mongomethods import count
 from countryinfo import CountryInfo
 from discord import Color
 import json, requests

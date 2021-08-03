@@ -1,6 +1,7 @@
 import motor.motor_asyncio
-import pymongo
+import pymongo, discord
 import dns, os
+
 
 client1 = motor.motor_asyncio.AsyncIOMotorClient(os.environ['MONGO'])
 
@@ -12,9 +13,6 @@ my_collection = db1.collection_name
 
 
 
-async def find_flag(id):
-  data = await my_collection.find_one({"_id": str(id)})
-  return data['data']['flag']
 
 async def find_lb():
   data = my_collection.find({}).sort("data.prestige", -1)
@@ -33,11 +31,15 @@ async def delete_task(user_id):
 
 
 
-async def find_inventory(user_id):
+async def find_inventory(user_id, ctx=None):
     inventory = dict(await my_collection.find_one({"_id": str(user_id)}))
-
     if inventory == None:
-      raise Exception
+      if ctx == None:
+        raise Exception
+      prefix = ctx.clean_prefix
+      embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
+      await ctx.send(embed=embed)
+      return
     else:
       return inventory['inventory']
 
@@ -51,10 +53,15 @@ async def writing(arg):
 
 
   
-async def reading(user_id):
+async def reading(user_id, ctx=None):
     data = dict(await my_collection.find_one({"_id": str(user_id)}))
     if data == None:
-      raise Exception
+      if ctx == None:
+        raise Exception
+      prefix = ctx.clean_prefix
+      embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
+      await ctx.send(embed=embed)
+      return
     else:
       data = data['data']
       return [list(data.values())]
@@ -169,9 +176,6 @@ prefixes_db = client1.prefixes.main
 async def create_prefix(id, prefix):
   await prefixes_db.insert_one({'_id': str(id), 'prefix': prefix})
 
-async def get_prefix(id):
-  prefix = await prefixes_db.find_one({'_id': str(id)})
-  return prefix['prefix']
 
 async def update_prefix(id, prefix):
   await prefixes_db.update_one({'_id': str(id)}, {'$set': {'prefix': prefix}})

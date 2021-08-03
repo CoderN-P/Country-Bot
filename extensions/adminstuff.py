@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from mongomethods import update_prefix, get_prefix, create_update, delete_update
+from mongomethods import update_prefix, create_update, delete_update
 import datetime
 class AdminCommands(commands.Cog, name='Admin/Configuration', description='Commands only for admins'):
   def __init__(self, bot):

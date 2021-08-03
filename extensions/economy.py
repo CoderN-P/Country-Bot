@@ -9,6 +9,7 @@ from countryinfo import CountryInfo
 import wbdata, pycountry, re
 
 cc = coco.CountryConverter()
+url = 'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
 
 class CountryEconomy(commands.Cog, name='Economy Data', description="Commands that give you data about a country's economy."):
   def __init__(self, bot):
@@ -58,8 +59,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
           embed.set_thumbnail(
-              url=
-              'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
 
           await ctx.channel.send(embed=embed)
@@ -92,8 +92,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
         embed.set_thumbnail(
-              url=
-            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
         await ctx.channel.send(embed=embed)
       else:
@@ -122,8 +121,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
         embed.set_thumbnail(
-              url=
-              'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
 
         await ctx.channel.send(embed=embed)
@@ -154,8 +152,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
         embed.set_thumbnail(
-              url=
-            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
         await ctx.channel.send(embed=embed)
 
@@ -188,8 +185,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
           embed.set_thumbnail(
-              url=
-              'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
 
           await ctx.channel.send(embed=embed)
@@ -222,8 +218,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
         embed.set_thumbnail(
-              url=
-            'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
         await ctx.channel.send(embed=embed)
 
@@ -256,8 +251,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               color=0xFF5733)
 
       embed.set_thumbnail(
-              url=
-              'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
+              url=url
           )
 
       await ctx.channel.send(embed=embed)

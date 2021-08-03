@@ -19,17 +19,7 @@ class CountryDatabase(commands.Cog, name='Country Database', description='Comman
           if re.match(check, s, re.I):
               new_list.append(x.name)
 
-      seen = {}
-      dupes = []
 
-      for x in new_list:
-          if x not in seen:
-              seen[x] = 1
-          else:
-              if seen[x] == 1:
-                  dupes.append(x)
-                  del new_list[x]
-              seen[x] += 1
 
       
       for i in range(0, len(new_list)):

@@ -37,14 +37,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(brief='Tax your citizens for coins.', description='Tax your citiens for coins.')
   @commands.cooldown(1, 300, commands.BucketType.user)
   async def tax(self, ctx):
-    try:
-      a = await reading(ctx.author.id)
-
-    except:
-      prefix = await get_prefix(id)
-      embed = discord.Embed(title='Hey!', description=f":x: You don't have a country! Type `{prefix}start` to start one!")
-
-      await ctx.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
 
     if a[0][11] > 1000000000:
@@ -123,13 +117,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Allows you to hunt for items and sell them for coins. The items go to your inventory', brief='Allows you to hunt for items and sell them for coins.')
   @commands.cooldown(1, 15, commands.BucketType.user)
   async def hunt(self, ctx):
-    try:
-      a = await find_inventory(ctx.author.id)
-
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Hey!', description=f'You dont have a country! Type `{prefix}start` to start your country!')
-      await ctx.send(embed=embed)
+    a = await find_inventory(ctx.author.id, ctx)
+    if a == None:
       return
 
     lst = list(hunt_animals.keys())
@@ -138,12 +127,10 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
     if animal == ' ':
       embed = discord.Embed(title='Hunting', description='While hunting you found nothing :C')
-
       await ctx.send(embed=embed)
 
     else:
       embed = discord.Embed(title='Hunting', description=f"While hunting you found an {hunt_animals[animal][0]} {animal} worth {hunt_animals[animal][1]}")
-
       await ctx.send(embed=embed)
 
       if f'{hunt_animals[animal][0]} {animal}' not in a.keys():
@@ -164,18 +151,10 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
   @commands.command(description='Sell items in your inventory', brief='Sell items in your inventory')
   async def sell(self, ctx, item, *amount):
-    
-    try:
-      a = await find_inventory(ctx.author.id)
-      ab = await reading(ctx.author.id)
-
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
-      await ctx.send(embed=embed)
+    ab = await reading(ctx.author.id, ctx) 
+    if ab == None:
       return
-    
-    
+    a = await find_inventory(ctx.author.id)
 
     if not amount:
       item1 = None
@@ -257,13 +236,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
   @commands.command(aliases=['inv'], description='View your inventory', brief='View your inventory')
   async def inventory(self, ctx):
-    try:
-      a = await find_inventory(ctx.author.id)
-
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Sorry', description=f''':x: You don't have a country. Type `{prefix}start` to start one''')
-      await ctx.send(embed=embed)
+    a = await find_inventory(ctx.author.id, ctx)
+    if a == None:
       return
 
     
@@ -307,7 +281,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
 
 
-  @commands.command(description="Check information about your country, or another person's country.", breif="Check information about your country, or another person's country.")
+  @commands.command(description="Check information about your country, or another person's country.", brief="Check information about your country, or another person's country.")
   async def profile(self, ctx, member: discord.Member=None):
     if member == None:
       id = ctx.author.id
@@ -317,7 +291,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       id = member.id
 
     try:
-      a = await reading(id)
+      a = await reading(ctx.author.id)
       name = a[0][0]
       username = member.name 
       discriminator = member.discriminator
@@ -364,27 +338,21 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
 
       try:
-        embed.set_footer(text=f'Tax your citizens with `{db[str(ctx.guild.id)]}tax` to earn coins!')
+        embed.set_footer(text=f'Tax your citizens with `{ctx.clean_prefix}tax` to earn coins!')
       except:
         pass
       
       await ctx.channel.send(embed=embed)
 
     except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed= discord.Embed(title='Sorry', description=f''':x: You or the person you are viewing don't have a country yet. Type {prefix}start to create your amazing country!!!''')
-
-      await ctx.channel.send(embed=embed)
-    
+      embed = discord.Embed(title='Hey!', description=f':x: You or the person you are viewing do not have a country! Create one with `{ctx.clean_prefix}start`')
+      await ctx.send(embed=embed)
 
   @commands.command(aliases=['shop'], description='Shows you items you can purchase for your country', brief='Shows you items you can purchase for your country')
   async def store(self, ctx):
-    prefix = await get_prefix(ctx.guild.id)
-    try: 
-      a = await reading(ctx.message.author.id)
-    except:
-      embed = discord.Embed(title='Whoops', description=f"You haven't started a country yet. Type `{prefix}start` to create your amazing country!!!!")
-      await ctx.channel.send(embed=embed)
+    prefix = ctx.clean_prefix
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
 
     status = 'NOT OWNED'
@@ -462,12 +430,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Work and earn population for your country!', brief='Work and earn population for your country!')
   async def work(self, ctx):
     chance = random.randint(1, 10)
-    try:
-      a = await (reading(ctx.message.author.id))
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{prefix}start`. Have fun with your amazing country!!!")
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
 
     if a[0][1] > 30000000000000000000000000000000000:
@@ -658,12 +622,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
   @commands.command(description='Prestige your country. This means that your population and multiplier will be reset, but you earn more coins, more multiplier and more population.', brief='Prestige your country.')
   async def prestige(self, ctx):
-    try:
-      a = await reading(ctx.message.author.id)
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Sorry', description=f":x: You haven't created a country yet. To create one type `{prefix}start`. Have fun with your amazing country!!!")
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
     
 
@@ -699,7 +659,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       
   @commands.command(description='Deletes your country :((', brief='Deletes your country :((')
   async def quit(self, ctx):
-    prefix = await get_prefix(ctx.guild.id)
     embed = discord.Embed(title='quit', description=':x: Are you really sure you want to quit your country. You will lose all your data (`y`,`n`)')
     await ctx.channel.send(embed=embed)
     thechannel = ctx.channel
@@ -707,29 +666,25 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     def check(m):
       return m.content == 'y' or m.content == 'n' and m.channel == thechannel and m.author == theauthor 
     msg = await self.bot.wait_for('message', check=check, timeout=100)
-    try:
-      a = await reading(ctx.message.author.id)
-      if msg.content == 'y':
-        await delete_task(ctx.message.author.id)
-        embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{prefix}start`")
-        await ctx.channel.send(embed=embed)
-      elif msg.content == 'n':
-        embed = discord.Embed(title='Phew', description=f'Your country is not deleted :DD')
-        await ctx.channel.send(embed=embed)
-    except:
-      embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
+      return
+    if msg.content == 'y':
+      await delete_task(ctx.message.author.id)
+      prefix = ctx.command_name
+      embed = discord.Embed(title="Country deleted", description=f"Your country is gone, and you can't become the leader :cry:. But don't worry :D. You can start a new one with `{prefix}start`")
       await ctx.channel.send(embed=embed)
+    elif msg.content == 'n':
+      embed = discord.Embed(title='Phew', description=f'Your country is not deleted :DD')
+      await ctx.channel.send(embed=embed)
+    
 
 
   @commands.command(description='Buy items for your country!', brief='Buy items for your country!')
   async def buy(self, ctx, id, *amount):
-    prefix = await get_prefix(ctx.guild.id)
-    try:
-      a = await reading(ctx.message.author.id)
-    except:
-      
-      embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
+      return
 
     
     if len(amount) == 1:
@@ -902,13 +857,8 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         await ctx.channel.send(embed=embed)
         return
 
-    try:
-      b = await reading(ctx.author.id)
-
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Whoops', description=f":x: You don't have a country!! Type `{prefix}start` to start your country!")
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
 
     try:
@@ -960,12 +910,9 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Change your country name!', brief='Change your country name!')
   async def change(self, ctx, *, name):
     arg = name
-    try:
-      a = await reading(ctx.message.author.id)
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
+      return
 
     if len(arg) > 50:
       embed = discord.Embed(title='Hey!', description=':x: The name can only be up to 50 characters')
@@ -982,13 +929,11 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.cooldown(1, 86400, commands.BucketType.user)
   @commands.command(description='Get your daily allowance of population...', brief='Get your daily allowance of population...')
   async def daily(self, ctx):
-    try:
-      a = await reading(ctx.message.author.id)
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed = discord.Embed(title='Ummmmm...', description = f'''You anyways don't even have a country. Create one with `{prefix}start`''')
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
+      return
       
-    a = await reading(ctx.message.author.id)
+    
     await update((ctx.message.author.id, a[0][0], a[0][1] + int((100 * (((a[0][1]**0.5)/100)) * (a[0][5] +1))), a[0][2], a[0][3], a[0][4], a[0][10]))
 
     
@@ -1034,13 +979,8 @@ class Games(commands.Cog, description='Cool games that test your geography skill
     
 
       
-    try:
-      user1 = await reading(ctx.message.author.id)
-    except:
-      prefix = await get_prefix(ctx.guild.id)
-      embed= discord.Embed(title='Sorry', description=f''':x: You don't have a country yet. Type {prefix}start to create your amazing country!!!''')
-
-      await ctx.channel.send(embed=embed)
+    user1 = await reading(ctx.author.id, ctx)
+    if user1 == None:
       return
     try:
       user2 = await reading(b)

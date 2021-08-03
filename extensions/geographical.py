@@ -3,7 +3,6 @@ from discord.ext import commands
 import country_converter as coco
 import random, re
 from fuzzywuzzy import fuzz
-from mongomethods import get_prefix
 from countryinfo import CountryInfo
 import datetime
 cc = coco.CountryConverter()
@@ -12,7 +11,7 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.command(description='Check the population of a real country.', brief='Check the population of a real country.')
+  @commands.command(description='Check the area of a real country in sg. km.', brief='Check the areaof a real country in sq. km.')
   async def area(self, ctx, *, country):
     try:
         country1 = CountryInfo(country)

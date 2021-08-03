@@ -20,13 +20,11 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
     if amount <= 0:
       await ctx.send(":x: That isnt a valid amount")
       return
-    try:
-      a = await reading(ctx.author.id)
-    except:
-      prefix = await get_prefix(id)
-      embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{prefix}start`")
-      await ctx.channel.send(embed=embed)
+   
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
+    
     if amount >= a[0][1]:
       await ctx.send(':x: You do not have that much population to bet')
       return
@@ -55,16 +53,9 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
   @commands.command(brief='Flip a coin with Country Bot, to win population (or loose some)', description='Flip a coin with Country Bot, to win population (or loose some)')
   async def coinflip(self, ctx, choice, *amount):
     h_t = random.choice(['h', 't'])
-    try:
-      a = await reading(ctx.author.id)
-    except:
-      prefix = await get_prefix(id)
-      embed = discord.Embed(title='Hey!', description=f":x: You don't have a country. Start a country with `{prefix}start`")
-      await ctx.channel.send(embed=embed)
+    a = await reading(ctx.author.id, ctx)
+    if a == None:
       return
-
-  
-      
 
     if choice.lower() not in ['heads', 'tails']:
       embed = discord.Embed(title='huh', description=':x: That is not a valid option. Specify either `heads` or `tails`')
