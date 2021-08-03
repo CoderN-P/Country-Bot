@@ -38,7 +38,6 @@ load_dotenv()
 #asyncio
 import asyncio
 
-#replit db
 
 #internal imports
 from mongomethods import *
