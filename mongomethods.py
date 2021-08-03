@@ -33,7 +33,6 @@ async def delete_task(user_id):
 
 async def find_inventory(user_id, ctx=None):
     inventory = await my_collection.find_one({"_id": str(user_id)})
-    print(inventory)
     if inventory == None:
       if ctx == None:
         raise Exception

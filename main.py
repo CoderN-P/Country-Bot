@@ -149,7 +149,7 @@ def start_extensions(bot):
   bot.load_extension("extensions.memes")
   bot.load_extension("extensions.games")
   bot.load_extension("extensions.general")
-  bot.load_extension("extensions.topgg")
+  #bot.load_extension("extensions.topgg")
   bot.load_extension('extensions.geographical')
   bot.load_extension("jishaku")
   bot.add_cog(DeveloperCommands(bot))
@@ -257,7 +257,6 @@ async def on_ready():
 async def on_message(msg):
 
   if msg.content == f'<@810662403217948672> prefix' or msg.content == f'<@!810662403217948672> prefix':
-<<<<<<< HEAD
         prefix = bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
@@ -267,17 +266,15 @@ async def on_message(msg):
 
   elif msg.content == '<@810662403217948672>' or msg.content == '<@!810662403217948672>':
         prefix = bot.command_prefix(bot, msg)
-=======
-        prefix = await get_prefix(msg.guild.id)
+        
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == f'<@810662403217948672>prefix' or msg.content == f'<@!810662403217948672>prefix':
-        prefix = await get_prefix(msg.guild.id)
+        prefix = bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == '<@810662403217948672>' or msg.content == '<@!810662403217948672>':
-        prefix = await get_prefix(msg.guild.id)
->>>>>>> parent of 11b983e (started refugee port)
+        prefix = bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
 
@@ -398,7 +395,7 @@ async def on_command_error(ctx, error):
       try:
           await ctx.author.send(":thinking: Something went wrong... Double check that I have permission to talk there. Anyways, this bug will be sent to our team to fix, please stand by!")
       except:
-          pass
+          pass       
       guild = bot.get_guild(821872779523522580)
       channel = discord.utils.get(guild.channels, name="bug-logs")
       await channel.send(embed=discord.Embed(title='Error in executing a command', description=f'New error when executing command: {ctx.command.name}\n**Error**: {error}'))
