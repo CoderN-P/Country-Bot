@@ -255,15 +255,15 @@ async def on_ready():
 async def on_message(msg):
 
   if msg.content == f'<@810662403217948672> prefix' or msg.content == f'<@!810662403217948672> prefix':
-        prefix = get_prefix(bot, msg)
+        prefix =  bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == f'<@810662403217948672>prefix' or msg.content == f'<@!810662403217948672>prefix':
-        prefix = get_prefix(bot, msg)
+        prefix = bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
   elif msg.content == '<@810662403217948672>' or msg.content == '<@!810662403217948672>':
-        prefix = get_prefix(bot, msg)
+        prefix = bot.command_prefix(bot, msg)
         await msg.channel.send(f"My prefix in this server is `{prefix}`")
   
 
