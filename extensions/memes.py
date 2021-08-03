@@ -119,7 +119,7 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
     await ctx.send(embed=embed)
 
 
-  @commands.command(description='Create a drake meme. The meme_format should be: `meme title | meme text 1 | meme text 2`', brief='Create a drake meme.')
+  @commands.command(description='Create a drake meme. The meme_format should be: meme title | meme text 1 | meme text 2', brief='Create a drake meme.')
   async def drake(self, ctx, *, meme_format):
     arg = meme_format
     data = requests.get('https://api.imgflip.com/get_memes').json()['data']['memes']
