@@ -291,7 +291,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       id = member.id
 
     try:
-      a = await reading(ctx.author.id)
+      a = await reading(id)
       name = a[0][0]
       username = member.name 
       discriminator = member.discriminator
