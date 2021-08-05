@@ -1307,6 +1307,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
               await ctx.channel.send("No one scored in this match. :cry: Total score `0`")
               break
 
+  
 
           
 
@@ -1314,7 +1315,6 @@ class Games(commands.Cog, description='Cool games that test your geography skill
 
 
   
-
 
 
 
