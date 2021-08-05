@@ -805,7 +805,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "1e09682579e81beed7133e455b15da26aa5c6fcf1458a2c7655704b9a2d06d0e"
+content-hash = "a115e0e0c4725a0e55f2f53d47e9ad1c639631c24bed9308421a6c23d781f2ba"
 
 [metadata.files]
 a-world-of-countries = [
