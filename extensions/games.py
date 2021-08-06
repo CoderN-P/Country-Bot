@@ -335,10 +335,9 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       elif dic[a[0][4]] == 'Space Base':
         embed.set_image(url='https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581')
 
-      try:
-        embed.set_footer(text=f'Tax your citizens with `{ctx.clean_prefix}tax` to earn coins!')
-      except:
-        pass
+      
+      embed.set_footer(text=f'Tax your citizens with `{ctx.prefix}tax` to earn coins!')
+      
       
       await ctx.channel.send(embed=embed)
 

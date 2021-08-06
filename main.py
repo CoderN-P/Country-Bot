@@ -48,6 +48,8 @@ from mongomethods import *
 
 #getting the prefix of the guild from replit db
 def get_prefix123(bot, msg):
+    if msg.guild.id is None:
+      return '.'
     try:
       prefix = get_prefix2(msg.guild.id)
     except:
