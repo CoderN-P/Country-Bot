@@ -7,15 +7,17 @@ from fuzzywuzzy import fuzz
 from mongomethods import count
 from countryinfo import CountryInfo
 from discord import Color
-import json, requests
+import json
+import requests
 import datetime, time
-import resource, psutil
+import resource
+import psutil
 import wikipedia
 
-global main_up
+
 main_up = time.time()
 
-global quiz_country_list
+
 quiz_country_list = list(CountryInfo().all().keys())
 
 class General(commands.Cog, name='General Data', description='Commands that return general data about the bot, and real life countries'):
@@ -146,8 +148,8 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
         result = country1.provinces()
 
-        for i in range(0, len(result)):
-          result[i] = '`' +result[i]+ '`'
+        for i, x in enumerate(result):
+          result[i] = '`' +x+ '`'
 
         result1 = " |".join(result)
 
@@ -191,8 +193,8 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
         result = country1.languages()
 
-        for i in range(0, len(result)):
-            result3 = pycountry.languages.get(alpha_2=result[i])
+        for i, x in enumerate(result):
+            result3 = pycountry.languages.get(alpha_2=x)
 
             result[i] = result3.name
 

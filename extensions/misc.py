@@ -1,10 +1,12 @@
 from discord.ext import commands
 import discord
-import requests, os
+import requests
+import os
 import datetime
 import time
-import random, json
-
+import random
+import json
+import ast
 
 class Misc(commands.Cog, description='Miscellaneous commands'):
   def __init__(self, bot):
@@ -195,7 +197,7 @@ class Misc(commands.Cog, description='Miscellaneous commands'):
 
   @commands.command(name='calc', description='Calculate a mathematical expression, (no variables allowed)', brief='Calculate stuff')
   async def my_command(self, ctx, *, arg):
-      result = eval(arg)
+      result = ast.literal_eval(arg)
       await ctx.send(result)
 
   @commands.command(description='Country Bot will reverse the text you give him.', brief='Country Bot will reverse the text you give him.')

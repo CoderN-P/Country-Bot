@@ -20,12 +20,12 @@ from discord.ext import commands
 
 dic2 = {'Mayor': 1, 'State Senator': 2, 'Governor': 3, 'Senator': 4, 'Vice President': 5, 'President': 6}
 
-global dic
+
 dic = {1 : "Mom's basement", 2 : 'Apartment (with roomate)', 3 : 'Home Office', 5 : 'Mansion', 10 : 'Space Base'}
 
 hunt_animals = {'Boar': [':boar:', 1000], 'Deer': [':deer:', 400], 'Crocodile': [':crocodile:', 750]}
 
-global quiz_country_list
+
 quiz_country_list = list(CountryInfo().all().keys())
 
 
@@ -38,7 +38,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.cooldown(1, 300, commands.BucketType.user)
   async def tax(self, ctx):
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     if a[0][11] > 1000000000:
@@ -118,7 +118,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.cooldown(1, 15, commands.BucketType.user)
   async def hunt(self, ctx):
     a = await find_inventory(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     lst = list(hunt_animals.keys())
@@ -152,7 +152,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Sell items in your inventory', brief='Sell items in your inventory')
   async def sell(self, ctx, item, *amount):
     ab = await reading(ctx.author.id, ctx) 
-    if ab == None:
+    if ab is None:
       return
     a = await find_inventory(ctx.author.id)
 
@@ -162,9 +162,9 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         if item.lower() in i:
           item1 = i
 
-      if item1 == None:
+      if item1 is None:
         await ctx.send(":x: You don't own that!")
-        return
+        
 
       else:
         value = a[item1]['value']
@@ -202,7 +202,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         if item.lower() in i:
           item1 = i
 
-      if item1 == None:
+      if item1 is None:
         await ctx.send(":x: You don't own that!")
         return
       
@@ -237,7 +237,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(aliases=['inv'], description='View your inventory', brief='View your inventory')
   async def inventory(self, ctx):
     a = await find_inventory(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     
@@ -284,14 +284,11 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description="Check information about your country, or another person's country.", brief="Check information about your country, or another person's country.")
   async def profile(self, ctx, member: discord.Member=None):
     if member == None:
-      id = ctx.author.id
       member = ctx.author
 
-    else:
-      id = member.id
 
     try:
-      a = await reading(id)
+      a = await reading(member.id)
       name = a[0][0]
       username = member.name 
       discriminator = member.discriminator
@@ -352,7 +349,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   async def store(self, ctx):
     prefix = ctx.prefix
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     status = 'NOT OWNED'
@@ -431,7 +428,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   async def work(self, ctx):
     chance = random.randint(1, 10)
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     if a[0][1] > 30000000000000000000000000000000000:
@@ -623,7 +620,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Prestige your country. This means that your population and multiplier will be reset, but you earn more coins, more multiplier and more population.', brief='Prestige your country.')
   async def prestige(self, ctx):
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
     
 
@@ -671,7 +668,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
       await ctx.send(':x: You did not answer in time')
       return
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
     if msg.content == 'y':
       await delete_task(ctx.message.author.id)
@@ -687,7 +684,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Buy items for your country!', brief='Buy items for your country!')
   async def buy(self, ctx, id, *amount):
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     
@@ -763,7 +760,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
           embed = discord.Embed(title='Hey', description=':x: You already own this!!!')
           await ctx.channel.send(embed=embed)
           return
-        elif a[0][4] < 2:
+        if a[0][4] < 2:
           embed = discord.Embed(title='Hey', description=':x: You need to buy the apartment first!!!')
           await ctx.channel.send(embed=embed)
           return
@@ -862,7 +859,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         return
 
     b = await reading(ctx.author.id, ctx)
-    if b == None:
+    if b is None:
       return
 
     try:
@@ -872,7 +869,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
         if int(amount) > b[0][1]:
           embed = discord.Embed(title="Hey!", description=":x: You don't have that many people!")
           await ctx.channel.send(embed=embed)
-          return
 
         else:
             await update((ctx.author.id, b[0][0], b[0][1] - int(amount), b[0][2], b[0][3], b[0][4], b[0][10]))
@@ -890,8 +886,6 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
             await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1]/2)} people to {user1}'s country!"))
 
-            return
-
         elif amount.lower() == 'all':
             await update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10]))
 
@@ -899,9 +893,9 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
             await ctx.channel.send(embed=discord.Embed(title="Success!", description=f"Succesfully transefered {int(b[0][1])} people to {user1}'s country!"))
 
-            return
-        embed = discord.Embed(title='Hey!', description=":x: That is not a valid amount!")
-        await ctx.channel.send(embed=embed)
+        else:  
+          embed = discord.Embed(title='Hey!', description=":x: That is not a valid amount!")
+          await ctx.channel.send(embed=embed)
     except OverflowError:
       await ctx.send(":x: You can't gift that much at a time")
 
@@ -915,7 +909,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   async def change(self, ctx, *, name):
     arg = name
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     if len(arg) > 50:
@@ -934,7 +928,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
   @commands.command(description='Get your daily allowance of population...', brief='Get your daily allowance of population...')
   async def daily(self, ctx):
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
       
     
@@ -984,7 +978,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
 
       
     user1 = await reading(ctx.author.id, ctx)
-    if user1 == None:
+    if user1 is None:
       return
     try:
       user2 = await reading(b)
@@ -1026,7 +1020,11 @@ class Games(commands.Cog, description='Cool games that test your geography skill
     def check(m):
       return m.channel == ctx.channel and m.author == ctx.message.author
     n = True  
+    a = 0
     while n:
+      if a == 4:
+        await ctx.send('You tried this too many times, quitting game..')
+        return
       await ctx.channel.send(f"<@!{ctx.message.author.id}> how many troops do you want to deploy, type `quit` to end")
       try:
         msg = await self.bot.wait_for('message', check=check, timeout=20)
@@ -1041,6 +1039,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
         
         if num <= 0:
           await ctx.channel.send("You can't go to war with less than 0 people smh")
+          a += 1
           continue
           
         else:
@@ -1054,6 +1053,7 @@ class Games(commands.Cog, description='Cool games that test your geography skill
           await ctx.send(':x: Game quit')
           return
         await ctx.channel.send("That is not a valid amount!!")
+        a += 1
         continue
 
       if num.is_integer():
@@ -1063,16 +1063,21 @@ class Games(commands.Cog, description='Cool games that test your geography skill
           break
         else:
           await ctx.channel.send(f":x: <@!{ctx.message.author.id}> you dont have enough people!!!!")
+          a += 1
           continue
       else:
         await ctx.channel.send(f"{msg.content} is not a valid amount")
+        a += 1
         continue
 
 
     def check(m):
       return m.channel == ctx.channel and m.author == opponent 
-
+    a = 0
     while n:
+      if a == 4:
+        await ctx.send('You tried this too many times! quitting game...')
+        return
       await ctx.channel.send(f"{user} how many troops do you want to deploy, type `quit` to end")
       try:
         msg = await self.bot.wait_for('message', check=check, timeout=20)
@@ -1084,12 +1089,14 @@ class Games(commands.Cog, description='Cool games that test your geography skill
 
         if num <= 0:
           await ctx.channel.send("You can't go to war with less than 0 people smh")
+          a = a + 1
           continue
       except:
         if msg.content.lower() == 'quit':
           await ctx.send(':x: Game Quit')
           return
         await ctx.channel.send("That is not a valid amount!!")
+        a = a + 1
         continue
 
       if num.is_integer():
@@ -1099,9 +1106,11 @@ class Games(commands.Cog, description='Cool games that test your geography skill
           break
         else:
           await ctx.channel.send(f":x: {user} you dont have enough people!!!!")
+          a = a + 1
           continue
       else:
         await ctx.channel.send(f"{msg.content} is not a valid amount")
+        a = a + 1
         continue
 
     random_country = random.choice(quiz_country_list)
@@ -1186,6 +1195,9 @@ class Games(commands.Cog, description='Cool games that test your geography skill
         count = 0
         bol = True
         while bol:
+          if count == 20:
+            await ctx.send('WOW you guys are really good at this! You beat the game!')
+            return
           random_country = random.choice(quiz_country_list)
           try:
             country_capital1 = CountryInfo(random_country)

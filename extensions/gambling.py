@@ -22,7 +22,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
       return
    
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
     
     if amount >= a[0][1]:
@@ -54,7 +54,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
   async def coinflip(self, ctx, choice, *amount):
     h_t = random.choice(['h', 't'])
     a = await reading(ctx.author.id, ctx)
-    if a == None:
+    if a is None:
       return
 
     if choice.lower() not in ['heads', 'tails']:
@@ -85,7 +85,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await update((ctx.author.id, a[0][0], a[0][1] + 1, a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
-        return
+        
 
       else:
         embed = discord.Embed(title=':(', description=':slight_frown: Your guess was incorrect. You lost `1` population')
@@ -93,7 +93,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await update((ctx.author.id, a[0][0], a[0][1] - 1, a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
-        return
+        
 
     else:
       
@@ -126,7 +126,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await update((ctx.author.id, a[0][0], a[0][1] + int(amount), a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
-        return
+        
 
       else:
         embed = discord.Embed(title=':(', description=f':slight_frown: Your guess was incorrect. You lost `{amount}` population')
@@ -134,7 +134,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
         await update((ctx.author.id, a[0][0], a[0][1] - amount, a[0][2], a[0][3], a[0][4], a[0][10]))
 
         await ctx.channel.send(embed=embed)
-        return
+        
 
 
 

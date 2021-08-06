@@ -1,6 +1,8 @@
 import motor.motor_asyncio
-import pymongo, discord
-import dns, os
+import pymongo
+import discord
+import dns
+import os
 
 
 client1 = motor.motor_asyncio.AsyncIOMotorClient(os.environ['MONGO'])
@@ -33,8 +35,8 @@ async def delete_task(user_id):
 
 async def find_inventory(user_id, ctx=None):
     inventory = await my_collection.find_one({"_id": str(user_id)})
-    if inventory == None:
-      if ctx == None:
+    if inventory is None:
+      if ctx is None:
         raise Exception
       prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')

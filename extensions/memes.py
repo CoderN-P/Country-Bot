@@ -2,7 +2,7 @@ import discord
 import requests
 from discord.ext import commands
 import os
-global username, password
+
 username = os.environ['USERNAME']
 password = os.environ['PASSWORD']
 import datetime

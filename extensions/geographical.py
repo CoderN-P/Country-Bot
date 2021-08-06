@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import country_converter as coco
-import random, re
+import random
+import re
 from fuzzywuzzy import fuzz
 from countryinfo import CountryInfo
 import datetime

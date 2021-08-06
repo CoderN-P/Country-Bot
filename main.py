@@ -8,7 +8,8 @@ from discord.ext.commands import cooldown
 
 #imports for eval command
 from pathlib import Path
-import textwrap, contextlib
+import textwrap
+import contextlib
 from traceback import format_exception
 
 from pretty_help import DefaultMenu, PrettyHelp
@@ -32,7 +33,8 @@ import regex as re
 #other
 import random
 import io
-import os, topgg
+import os
+import topgg
 from dotenv import load_dotenv
 load_dotenv()
 #asyncio
@@ -238,7 +240,6 @@ async def refugee_drops():
 @bot.event
 async def on_ready():  
     global task
-    print('hi')
     task = bot.loop.create_task(refugee_drops())
     bot.loop.create_task(presence())
     print('bot is ready')
@@ -276,7 +277,6 @@ class DeveloperCommands(commands.Cog, name='Developer Commands', description='Co
     if int(ctx.author.id) != 751594192739893298:
       embed = discord.Embed(title='Hey!', description=":x: You don't have permission to use this command!")
       await ctx.send(embed=embed)
-      return
 
     else:
       task.cancel()
@@ -284,10 +284,7 @@ class DeveloperCommands(commands.Cog, name='Developer Commands', description='Co
 
   @commands.command(description='A developer only command to start refugee drops in the support server.', brief='A developer only command to start refugee drops in the support server.')
   async def start_drops(self, ctx):
-    if int(ctx.author.id) != 751594192739893298:
-      return
-
-    else:
+    if int(ctx.author.id) == 751594192739893298:
       try:
         global task
         task = bot.loop.create_task(refugee_drops())
