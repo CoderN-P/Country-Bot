@@ -41,7 +41,7 @@ async def find_inventory(user_id, ctx=None):
       prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
-      return
+      
     else:
       inventory = dict(inventory) 
       return inventory['inventory']
@@ -64,7 +64,7 @@ async def reading(user_id, ctx=None):
       prefix = ctx.prefix
       embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
       await ctx.send(embed=embed)
-      return
+    
     elif data:
       data = dict(data)
       data = data['data']

@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands
 import country_converter as coco
 import datetime
-
-
 from countryinfo import CountryInfo
-import wbdata, pycountry, re
+import wbdata
+import pycountry
+import re
 
 cc = coco.CountryConverter()
 url = 'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
@@ -27,9 +27,9 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               result.pop(1)
               result.pop(1)
 
-          for i in range(0, len(result)):
+          for x in result:
 
-              result4 = pycountry.currencies.get(alpha_3=result[i])
+              result4 = pycountry.currencies.get(alpha_3=x)
 
               result5.append(result4.name)
 

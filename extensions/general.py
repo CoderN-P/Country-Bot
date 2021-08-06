@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 import country_converter as coco
-import random, re
+import random
+import re
 import pycountry
 from fuzzywuzzy import fuzz
 from mongomethods import count
@@ -9,7 +10,8 @@ from countryinfo import CountryInfo
 from discord import Color
 import json
 import requests
-import datetime, time
+import datetime
+import time
 import resource
 import psutil
 import wikipedia
@@ -327,14 +329,20 @@ class General(commands.Cog, name='General Data', description='Commands that retu
       else:
         total_cases = "{:,}".format(int(total_cases))
 
-      if not deaths_per1mill: pass
-      else: deaths_per1mill = "{:,}".format(int(deaths_per1mill))
+      if not deaths_per1mill: 
+        pass
+      else: 
+        deaths_per1mill = "{:,}".format(int(deaths_per1mill))
 
-      if not new_deaths: pass
-      else: new_deaths = "{:,}".format(int(new_deaths))
+      if not new_deaths: 
+        pass
+      else: 
+        new_deaths = "{:,}".format(int(new_deaths))
 
-      if not total_deaths: pass
-      else: total_deaths = "{:,}".format(int(total_deaths))
+      if not total_deaths: 
+        pass
+      else: 
+        total_deaths = "{:,}".format(int(total_deaths))
         
       
       

@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
-import pycountry, re
+import pycountry
+import re
 import datetime
 
 class CountryDatabase(commands.Cog, name='Country Database', description='Commands that allow you to find countries!'):
@@ -21,8 +22,8 @@ class CountryDatabase(commands.Cog, name='Country Database', description='Comman
 
 
       
-      for i in range(0, len(new_list)):
-                new_list[i] = '`' +new_list[i]+ '`'
+      for i, x in enumerate(new_list):
+                new_list[i] = '`' +x+ '`'
       result1 = " |".join(new_list)
 
       result2 = re.sub(r'(?<=[|])(?=[^\s])', r' ', result1)

@@ -143,7 +143,7 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
        
 
-        if isinstance(result1, str) == True:
+        if isinstance(result1, str):
             embed = discord.Embed(
                 title="Borders of " + country,
                 description=f'**`{result1}`**',
@@ -159,9 +159,9 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
             await ctx.channel.send(embed=embed)
 
-        elif type(result1) == type([]):
-            for i in range(0, len(result1)):
-              result1[i] = '`' +result1[i]+ '`'
+        elif isinstance(result1, list):
+            for i, x in enumerate(result1):
+              result1[i] = '`' +x+ '`'
 
             result1 = " ".join(result1)
 
@@ -226,8 +226,8 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         result = country1.timezones()
 
-        for i in range(0, len(result)):
-          result[i] = '`' +result[i]+ '`'
+        for i, x in enumerate(result):
+          result[i] = '`' +x+ '`'
 
         result1 = " |".join(result)
 
@@ -272,8 +272,8 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         result = country1.latlng()
 
-        for i in range(0, len(result)):
-            result[i] = str(result[i])
+        for i, x in enumerate(result):
+            result[i] = str(x)
 
         result1 = ",".join(result)
 

@@ -6,7 +6,8 @@ import country_converter as coco
 from emojiflags.lookup import lookup
 
 import datetime
-import unicodedata, asyncio
+import unicodedata
+import asyncio
 
 from countryinfo import CountryInfo
 
@@ -283,7 +284,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
 
   @commands.command(description="Check information about your country, or another person's country.", brief="Check information about your country, or another person's country.")
   async def profile(self, ctx, member: discord.Member=None):
-    if member == None:
+    if member is None:
       member = ctx.author
 
 

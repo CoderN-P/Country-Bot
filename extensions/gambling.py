@@ -1,7 +1,8 @@
 from discord.ext import commands
 from mongomethods import count, reading, update, update_prestige, update_war, writing, delete_task, search_name, update_coins
 
-import discord, random
+import discord
+import random
 import asyncio
 import datetime
 
@@ -27,7 +28,7 @@ class Gambling(commands.Cog, description='Commands that allow you to gamble with
     
     if amount >= a[0][1]:
       await ctx.send(':x: You do not have that much population to bet')
-      return
+     
     else:
       user_dice1 = random.randint(1, 6)
       user_dice2 = random.randint(1, 6)
