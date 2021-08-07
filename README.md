@@ -37,5 +37,7 @@ You can also create your own country in Country Bot! Wage war against your frien
 
 ### Bot Listing websites
 
-[![Discord Bots](https://top.gg/api/widget/810662403217948672.svg)](https://top.gg/bot/810662403217948672)
+#### [top.gg](https://top.gg)
+
+  [![Discord Bots](https://top.gg/api/widget/810662403217948672.svg)](https://top.gg/bot/810662403217948672)
 
