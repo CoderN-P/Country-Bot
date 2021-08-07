@@ -1,4 +1,4 @@
 # Table of contents
 
-* [CountryBot](README.md)
+* [Country Bot](README.md)
 
