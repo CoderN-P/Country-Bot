@@ -51,3 +51,9 @@ You can also create your own country in Country Bot! Wage war against your frien
 
   [![DiscordBotList](https://discordbotlist.com/api/v1/bots/810662403217948672/widget)](https://discordbotlist.com/bots/810662403217948672)
 
+
+
+## Report Bugs
+
+To report bugs, please join the support server! You may leave afterwards, but we have lots of cool giveaways, and special support server only features!
+
