@@ -10,7 +10,9 @@ description: Frequently asked questions
 
 ## Why is the bot not responding to my commands?
 
-Make sure that Country Bot has permission to send messages and has embed perms in the channel that you are using the bot commands in.  
+Make sure that Country Bot has permission to send messages and has embed perms in the channel that you are using the bot commands in.
+
+Make sure that you are using the correct prefix! Country Bot's default prefix is `.` To check the prefix again, just ping Country Bot  
   
 Country Bot can also be offline or rebooted. If this is the case, Country Bot should be back up in less than 10 minutes
 

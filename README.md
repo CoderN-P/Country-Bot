@@ -45,15 +45,17 @@ You can also create your own country in Country Bot! Wage war against your frien
 
 * [top.gg](https://top.gg/bot/810662403217948672)
 
-  [![Discord Bots](https://top.gg/api/widget/810662403217948672.svg)](https://top.gg/bot/810662403217948672)
+[![Discord Bots](https://top.gg/api/widget/810662403217948672.svg)](https://top.gg/bot/810662403217948672)
+
+
 
 * [Discordbotlist](https://discordbotlist.com/)
 
-  [![DiscordBotList](https://discordbotlist.com/api/v1/bots/810662403217948672/widget)](https://discordbotlist.com/bots/810662403217948672)
+[![DiscordBotList](https://discordbotlist.com/api/v1/bots/810662403217948672/widget)](https://discordbotlist.com/bots/810662403217948672)
 
 
 
 ## Report Bugs
 
-To report bugs, please join the support server! You may leave afterwards, but we have lots of cool giveaways, and special support server only features!
+To report bugs, please join the support server! You may leave afterward, but we have lots of cool giveaways, and special support server-only features!
 

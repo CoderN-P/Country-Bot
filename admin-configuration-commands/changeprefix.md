@@ -6,6 +6,10 @@ description: A command to change the bot's prefix for that server
 
 ## Command Usage
 
+`<>` required argument
+
+`[]` optional argument
+
 ```text
 .changeprefix <prefix>
 ```

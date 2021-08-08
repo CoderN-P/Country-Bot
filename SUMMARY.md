@@ -26,7 +26,11 @@
 
 ## Economy Commands
 
-* [Untitled](economy-commands/untitled.md)
+* [buy](economy-commands/untitled.md)
+* [store](economy-commands/store.md)
+* [change](economy-commands/change.md)
+* [daily](economy-commands/daily.md)
+* [gift](economy-commands/gift.md)
 
 ## Economy Commands \(for real countries\)
 

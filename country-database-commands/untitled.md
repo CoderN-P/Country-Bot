@@ -8,6 +8,10 @@ description: >-
 
 ## Usage
 
+`<>` required argument
+
+`[]` optional argument
+
 ```text
 .list <letter or letters>
 ```

@@ -4,6 +4,10 @@ description: Configure or unconfigure a channel to receive updates about the bot
 
 # Configurechannel / Unconfigurechannel
 
+`<>` required argument
+
+`[]` optional argument
+
 ## configurechannel
 
 Set up a channel to receive updates about the bot
