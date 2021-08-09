@@ -147,8 +147,8 @@ my_collection2 = db2.update_info
     
 async def create_update(channel):
   data = await my_collection2.find_one({"_id": int(channel)})
-  if data is not None:
-    pass
+  if data is None:
+          pass
   else:
     raise Exception
   await my_collection2.insert_one({"_id": int(channel)})
