@@ -38,7 +38,7 @@
 
 ## Gambling Commands
 
-* [Untitled](gambling-commands/untitled.md)
+* [coinflip](gambling-commands/untitled.md)
 
 ## Games
 

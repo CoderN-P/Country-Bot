@@ -16,7 +16,7 @@ To customize the prefix, use the `.changeprefix` command
 
 ## About
 
-Country Bot is a fun discord bot written in python using discord.py As stated in the name, Country Bot is all about Countries.
+Country Bot is a fun discord bot written in python using discord.py. As stated in the name, Country Bot is all about Countries.
 
 You can find almost any desired information about a certain country! These include but are not limited to:
 
