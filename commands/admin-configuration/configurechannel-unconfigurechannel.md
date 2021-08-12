@@ -2,7 +2,7 @@
 description: Configure or unconfigure a channel to receive updates about the bot!
 ---
 
-# Configurechannel / Unconfigurechannel
+# configurechannel / unconfigurechannel
 
 `<>` required argument
 

@@ -6,13 +6,13 @@ description: Overview
 
 ## General Information
 
-BOT PREFIX: `.`
+#### BOT PREFIX: `.`
 
-HELP COMMAND: `.help`
+#### HELP COMMAND: `.help`
 
-AMOUNT OF COMMANDS: `66`
+#### AMOUNT OF COMMANDS: `66`
 
-To customize the prefix, use the `.changeprefix` command
+**To customize the prefix, use the `.changeprefix` command**
 
 ## About
 
@@ -57,5 +57,5 @@ You can also create your own country in Country Bot! Wage war against your frien
 
 ## Report Bugs
 
-To report bugs, please join the support server! You may leave afterward, but we have lots of cool giveaways, and special support server-only features!
+To report bugs, please join the support server! You may leave afterward, but we have lots of cool giveaways and special support server-only features!
 

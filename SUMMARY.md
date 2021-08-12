@@ -3,56 +3,44 @@
 * [Overview](README.md)
 * [FAQ](faq.md)
 
-## Admin/Configuration Commands
+## Commands
 
-* [changeprefix](admin-configuration-commands/changeprefix.md)
-* [Configurechannel / Unconfigurechannel](admin-configuration-commands/configurechannel-unconfigurechannel.md)
+* [Admin/Configuration](commands/admin-configuration/README.md)
+  * [changeprefix](commands/admin-configuration/changeprefix.md)
+  * [configurechannel / unconfigurechannel](commands/admin-configuration/configurechannel-unconfigurechannel.md)
 
-## Animals/Meme commands
+---
 
-* [aww](animals-meme-commands/untitled.md)
-* [cat](animals-meme-commands/cat.md)
-* [dog](animals-meme-commands/dog.md)
-* [drake](animals-meme-commands/drake.md)
-* [meme](animals-meme-commands/meme.md)
+* [Animal/Memes](animal-memes/README.md)
+  * [aww](animal-memes/untitled-1.md)
+  * [cat](animal-memes/cat.md)
+  * [dog](animal-memes/dog.md)
+  * [drake](animal-memes/drake.md)
+  * [meme](animal-memes/meme.md)
+  * [snake](animal-memes/snake.md)
+* [Country Database](country-database/README.md)
+  * [list](country-database/untitled.md)
+* [Developer Commands](developer-commands.md)
+* [Economy Commands](economy-commands-1/README.md)
+  * [gift](economy-commands-1/gift.md)
+  * [daily](economy-commands-1/daily.md)
+  * [change](economy-commands-1/change.md)
+  * [store](economy-commands-1/store.md)
+  * [buy](economy-commands-1/untitled.md)
+* [Economy Data](economy-data.md)
+* [Games](games-1.md)
+* [General Data](general-data.md)
+* [Gambling](gambling.md)
+* [Geographical Info](geographical-info-1.md)
+* [Misc](misc.md)
 
-## Country Database Commands
+## Links
 
-* [list](country-database-commands/untitled.md)
+---
 
-## Developer Commands
-
-* [Untitled](developer-commands/untitled.md)
-
-## Economy Commands
-
-* [buy](economy-commands/untitled.md)
-* [store](economy-commands/store.md)
-* [change](economy-commands/change.md)
-* [daily](economy-commands/daily.md)
-* [gift](economy-commands/gift.md)
-
-## Economy Commands \(for real countries\)
-
-* [Untitled](economy-commands-for-real-countries/untitled.md)
-
-## Gambling Commands
-
-* [coinflip](gambling-commands/untitled.md)
-
-## Games
-
-* [Untitled](games/untitled.md)
-
-## General Data <a id="general-data-commands-that-return-general-data-about-countries-and-the-bot"></a>
-
-* [Untitled](general-data-commands-that-return-general-data-about-countries-and-the-bot/untitled.md)
-
-## Geographical Info
-
-* [Untitled](geographical-info/untitled.md)
-
-## Miscellaneous Commands
-
-* [Untitled](miscellaneous-commands/untitled.md)
+* [Support Server](https://discord.gg/hCgh9wngkS)
+* [Github Repo](https://github.com/CoderN-P/Country-Bot)
+* [Invite](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)
+* [top.gg](https://top.gg/bot/810662403217948672)
+* [discordbotlist](https://discordbotlist.com/bots/country-bot)
 

@@ -18,7 +18,7 @@ Country Bot can also be offline or rebooted. If this is the case, Country Bot sh
 
 ## Will I get any rewards from voting?
 
-Yes! If you vote for Country Bot on https://top.gg, and you have created a country, you will receive extra coins and population \(see the next page for information about the economy system\)
+Yes! If you vote for Country Bot on [top.gg](https://top.gg), and you have created a country, you will receive extra coins and population
 
 ## Country Bot keeps saying: "Sorry \_\_ is not a country" even though it is a country!
 
@@ -26,9 +26,9 @@ This is a problem that we can't fix, so you will have to bear with us! Country B
 
 ## I forgot Country Bot's prefix!
 
-Don't worry! Just ping country bot and he will tell you his prefix
+Don't worry! Just ping Country Bot and it will tell you its prefix.
 
 ## I was playing a guess\_capital game, but it paused while I was still playing!
 
-This could have happened, because the bot was restarted.
+This could have happened because the bot was restarted.
 
