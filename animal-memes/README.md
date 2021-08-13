@@ -6,7 +6,3 @@ description: >-
 
 # Animal/Memes
 
-## 
-
-
-
