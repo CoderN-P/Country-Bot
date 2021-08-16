@@ -16,7 +16,7 @@ class AdminCommands(commands.Cog, name='Admin/Configuration', description='Comma
 
         await ctx.channel.send(f"Prefix has been changed to `{prefix}`")
       else:
-        await ctx.channel.send("You don't have sufficient permissions to do that")
+        await ctx.channel.send("You don't have sufficient permissions to do that You need the `ADMINISTRATOR` permission to do this.")
   
   @commands.command(brief='Set up a channel to receive updates about the bot', description='Set up a channel to receive updates about the bot')
   @commands.has_permissions(administrator=True)
