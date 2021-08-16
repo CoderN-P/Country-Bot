@@ -103,7 +103,7 @@ async def country_filter(country, ctx):
          return data
           
 
-description = 'Check out our slash commands! Type `/` to bring up all of the slash commands! If you do not see any slash commands from country bot, then please click [this link to invite it again (you do not have to kick the bot :D)](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)'
+description = 'Check out our slash commands! Type `/` to bring up all of the slash commands! If you do not see any slash commands from country bot, then please kick country bot and use [this link to invite it again](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)'
 bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_command=None, description=description)
 
 slash = SlashCommand(bot, sync_commands=True)
