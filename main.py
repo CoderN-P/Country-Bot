@@ -5,6 +5,7 @@ from discord import Color
 from discord.ext import commands
 from discord.ext.commands import cooldown
 
+dic = {1 : "Mom's basement", 2 : 'Apartment (with roomate)', 3 : 'Home Office', 5 : 'Mansion', 10 : 'Space Base'}
 
 #imports for eval command
 from pathlib import Path
@@ -29,7 +30,7 @@ from emojiflags.lookup import lookup
 from fuzzywuzzy import fuzz
 
 import regex as re
-
+import requests
 #other
 import random
 import io
@@ -39,13 +40,13 @@ from dotenv import load_dotenv
 load_dotenv()
 #asyncio
 import asyncio
-
+from discord_slash import SlashCommand
 
 #internal imports
 from mongomethods import *
 
 
-
+guild_ids = [821872779523522580]
 #getting the prefix of the guild from replit db
 def get_prefix123(bot, msg):
     if msg.guild.id is None:
@@ -62,9 +63,50 @@ def get_prefix123(bot, msg):
    
 #creating bot instance
 
+async def country_filter(country, ctx):
+    if len(country) in [3, 2]:
+      data = requests.get(f'https://restcountries.eu/rest/v2/alpha/{country}')
+      data=data.json()
 
-bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_command=None)
+    else:      
+      data = requests.get(f'https://restcountries.eu/rest/v2/name/{country}?fullText=true')
+      data=data.json()
+      if 'status' in data:
+        data = requests.get(f'https://restcountries.eu/rest/v2/name/{country}')
+        data=data.json()
+        if len(data) == 1:
+                pass
+        else:
+          if 'status' in data:
+            await ctx.send(embed=discord.Embed(title='Error', description=':x: Hm, I could not find a country with that name!'))
+            return       
+          close_dict = {}
+          
+          for i, x in enumerate(data):
+                  close_dict[i] = fuzz.ratio(country, x['name'])
+          
+          index = max(close_dict, key=close_dict.get) if close_dict else None
 
+          if index:
+            data = data[index]
+          else:
+            await ctx.send(embed=discord.Embed(title='Error', description=':x: Hm, I could not find a country with that name!'))
+            return
+              
+    
+    if 'status' in data:
+        await ctx.send(embed=discord.Embed(title='Error', description=':x: Hm, I could not find a country with that name!'))
+        
+    else:
+         if isinstance(data, list):
+           data = data[0]
+         return data
+          
+
+description = 'Check out our slash commands! Type `/` to bring up all of the slash commands! If you do not see any slash commands from country bot, then please click [this link to invite it again (you do not have to kick the bot :D)](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)'
+bot = commands.Bot(command_prefix=get_prefix123, case_insensitive=True, help_command=None, description=description)
+
+slash = SlashCommand(bot, sync_commands=True)
 
 
 
@@ -80,6 +122,7 @@ bot.help_command = PrettyHelp(navigation=menu, color=discord.Colour.red(), endin
 
 bot.topgg_webhook = topgg.WebhookManager(bot).dbl_webhook("/dblwebhook", "dbl_password")
 bot.topgg_webhook.run(4355)  
+
 dbl_token = os.environ['TOPGGTOKEN']
 bot.topggpy = topgg.DBLClient(bot, dbl_token, autopost=True, post_shard_count=True)
 @bot.event
@@ -152,6 +195,15 @@ def start_extensions(bot):
   bot.load_extension("extensions.games")
   bot.load_extension("extensions.general")
   bot.load_extension('extensions.geographical')
+  bot.load_extension("slash_commands.country_database")
+  bot.load_extension("slash_commands.gambling")
+  bot.load_extension("slash_commands.economy")
+  bot.load_extension("slash_commands.memes")
+  bot.load_extension('slash_commands.misc')
+  bot.load_extension("slash_commands.games")
+  bot.load_extension("slash_commands.adminstuff")
+  bot.load_extension("slash_commands.general")
+  bot.load_extension('slash_commands.geographical')
   bot.load_extension("jishaku")
   bot.add_cog(DeveloperCommands(bot))
 
@@ -159,8 +211,7 @@ def start_extensions(bot):
 
 
 
-
-
+    
 
 
 
@@ -391,7 +442,11 @@ async def on_command_error(ctx, error):
 
     elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
       await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```", color=discord.Colour.red()))
-    
+
+    elif isinstance(error, discord.ext.commands.errors.MemberNotFound):
+            embed = discord.Embed(title='Hmmm', description=error.args[0])
+            embed.set_footer(text=f"""If a person's name has spaces in it, put it in quotes! \nExample: {ctx.prefix}gift "Coder N" 100""")
+            await ctx.send(embed=embed)
 
     else:
        raise error

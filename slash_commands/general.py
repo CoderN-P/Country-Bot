@@ -15,6 +15,7 @@ import time
 import resource
 import psutil
 import wikipedia
+from discord_slash import cog_ext
 from main import country_filter
 
 main_up = time.time()
@@ -22,13 +23,13 @@ main_up = time.time()
 
 quiz_country_list = list(CountryInfo().all().keys())
 
-class General(commands.Cog, name='General Data', description='Commands that return general data about the bot, and real life countries'):
+class General2(commands.Cog, name='General Data (slash)', description='Commands that return general data about the bot, and real life countries'):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.command(description='Look at the flag of a random real country or specify a certain country.', brief='Look at the flag of a random real country or specify a certain country.')
-  async def flag(self, ctx, *country: str):
-    if len(country) == 0:
+  @cog_ext.cog_slash(description='Look at the flag of a random real country or specify a certain country.')
+  async def flag(self, ctx, country: str=None):
+    if country is None:
       country = random.choice(quiz_country_list)
       result4 = coco.convert(names=country, to='ISO2')
       url = f'https://flagcdn.com/w320/{result4.lower()}.jpg'
@@ -36,11 +37,6 @@ class General(commands.Cog, name='General Data', description='Commands that retu
       e.set_image(url=url)
       await ctx.send(embed=e)
     else:
-      country = ' '.join(country)
-      country = await country_filter(country, ctx)
-      if country is None:
-            return
-      country = country['name'] 
       result4 = coco.convert(names=country, to='ISO2')
       
       
@@ -55,11 +51,11 @@ class General(commands.Cog, name='General Data', description='Commands that retu
         await ctx.send(embed=embed)
 
 
-  @commands.command(name='capital', description='Get the capital of a real country.', brief='Get the capital of a real country.')
-  async def cap(self, ctx, *, country):
+  @cog_ext.cog_slash(name='capital', description='Get the capital of a real country.')
+  async def cap(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
-          return
+                return
         result = data['capital']
         country = data['name']
         alpha2 = data['alpha2Code']
@@ -80,9 +76,10 @@ class General(commands.Cog, name='General Data', description='Commands that retu
         await ctx.send(embed=embed)
 
 
+
   
-  @commands.command(description='Check the population of a real country.', brief='Check the population of a real country.')
-  async def population(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Check the population of a real country.')
+  async def population(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -107,8 +104,8 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
 
   
-  @commands.command(description='Check the states/provinces in a real country', brief='Check the states/provinces in a real country')
-  async def states(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Check the states/provinces in a real country')
+  async def states(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -141,8 +138,9 @@ class General(commands.Cog, name='General Data', description='Commands that retu
         await ctx.send(embed=embed)
 
 
-  @commands.command(description='Check the main language of any real country.', brief='Check the main language of any real country.')
-  async def language(self, ctx, *, country):
+
+  @cog_ext.cog_slash(description='Check the main language of any real country.')
+  async def language(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -171,15 +169,17 @@ class General(commands.Cog, name='General Data', description='Commands that retu
                 icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
+        
+        
+
+      
+        
 
 
   
-  @commands.command(description='Get COVID-19 data on a real country.', brief='Get COVID-19 data on a real country.')
-  async def covid(self, ctx, *, country):
-    country = await country_filter(country, ctx)
-    if country is None:
-            return
-    arg = country['name'] 
+  @cog_ext.cog_slash(description='Get COVID-19 data on a real country.')
+  async def covid(self, ctx, *, country:str):
+    arg = country
     try:
       url="https://covid-193.p.rapidapi.com/statistics?country={}".format(arg)
 
@@ -291,7 +291,7 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
       embed.set_footer(text=f"Date: {datetime.datetime.now()}")
 
-      await ctx.channel.send(embed=embed)
+      await ctx.send(embed=embed)
     
     except:
       embed = discord.Embed(title="Sorry",description="**We could not find data for {}**".format(arg), color=0xFF5733)
@@ -301,11 +301,11 @@ class General(commands.Cog, name='General Data', description='Commands that retu
             'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
           )
 
-      await ctx.channel.send(embed=embed)
+      await ctx.send(embed=embed)
 
 
   
-  @commands.command(description='View information about the bot', brief='View information about the bot')
+  @cog_ext.cog_slash(description='View information about the bot')
   async def stats(self, ctx):
     current_process = psutil.Process()
     cpu_usage = current_process.cpu_percent()
@@ -344,10 +344,10 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
 
     embed.set_footer(text='If some percentages show 0.0%, it means that the number is really close to zero.')
-    await ctx.channel.send(embed=embed)
+    await ctx.send(embed=embed)
 
-  @commands.command(brief='Get information from wikipedia! If searching up names please use full names; short names can cause ambiguity', description='Get information from wikipedia! If searching up names please use full names; short names can cause ambiguity', aliases=['wikipedia'])
-  async def wiki(self, ctx, *, page):
+  @cog_ext.cog_slash(description='Get information from wikipedia! Please use full names; short names can cause ambiguity')
+  async def wiki(self, ctx, *, page: str):
     try:
         data = wikipedia.page(page)
         
@@ -361,7 +361,7 @@ class General(commands.Cog, name='General Data', description='Commands that retu
 
     except wikipedia.exceptions.PageError:
         await ctx.send(':x: We could not find any matches for this page')
-
+         
 
 
 
@@ -372,4 +372,4 @@ class General(commands.Cog, name='General Data', description='Commands that retu
   
 
 def setup(bot):
-  bot.add_cog(General(bot))
+  bot.add_cog(General2(bot))

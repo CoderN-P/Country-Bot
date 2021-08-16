@@ -4,17 +4,21 @@ import country_converter as coco
 import datetime
 import wbdata
 import pycountry
+import re
 from main import country_filter
+import requests
+from discord_slash import cog_ext
+from fuzzywuzzy import fuzz
 
 cc = coco.CountryConverter()
 url = 'https://graduan.sgp1.digitaloceanspaces.com/media/264388/w770/a3d955ec-f826-4041-81d5-e13c040174b4.jpeg'
 
-class CountryEconomy(commands.Cog, name='Economy Data', description="Commands that give you data about a country's economy."):
+class CountryEconomy2(commands.Cog, name='Economy Data (slash)', description="Commands that give you data about a country's economy."):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.command(brief='Get the general currency of a real country.', description='Get the general currency of a real country.')
-  async def currency(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Get the general currency of a real country.')
+  async def currency(self, ctx, *, country: str):
       data = await country_filter(country, ctx)
       if data is None:
               return
@@ -38,19 +42,11 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
 
       await ctx.send(embed=embed)
 
-  @commands.command(brief='Get the gdp per capita of a real country in a certain year.', description='Get the gdp per capita of a real country in a certain year.')
-  async def gdp_percap(self, ctx, country, year):
-    country = await country_filter(country, ctx)
-    if country is None:
-            return
-    arg = country['name'] 
-    arg2 = year
 
-    try:
-      int(year)
-    except:
-      await ctx.send(':x: You did not enter a valid year!')
-      return
+  @cog_ext.cog_slash(description='Get the gdp per capita of a real country in a certain year.')
+  async def gdp_percap(self, ctx, country: str, year: int):
+    arg = country
+    arg2 = str(year)
     try:
       country1 = coco.convert(names=arg, to='iso2')
       country1 = country1.upper()
@@ -76,7 +72,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
         embed.set_thumbnail(
               url=url
           )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
       else:
         embed = discord.Embed(
                   title="GDP per capita of {}".format(arg),
@@ -91,9 +87,9 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=f'https://flagcdn.com/w80/{result3.lower()}.jpg')
 
         embed.set_footer(text="Information requested by: {}".format(
-        ctx.message.author))
+        ctx.author))
 
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     except:
         embed = discord.Embed(
@@ -105,21 +101,13 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=url
           )
 
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
-  @commands.command(brief='Get the gni per capita of a real country.', description='Get the gni per capita of a real country.')
-  async def gni_percap(self, ctx, country, year):
-    country = await country_filter(country, ctx)
-    if country is None:
-            return
-    arg = country['name'] 
-    arg2 = year
-    try:
-      int(year)
-    except:
-      await ctx.send(':x: You did not enter a valid year!')
-      return
+  @cog_ext.cog_slash(description='Get the gni per capita of a real country.')
+  async def gni_percap(self, ctx, country: str, year: int):
+    arg = country
+    arg2 = str(year)
     try:
       country1 = coco.convert(names=arg, to='iso2')
       country2 = []
@@ -143,7 +131,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
         embed.set_thumbnail(
               url=url
           )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
       else:
       
@@ -162,9 +150,9 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=f'https://flagcdn.com/w80/{result3.lower()}.jpg')
 
         embed.set_footer(text="Information requested by: {}".format(
-        ctx.message.author))
+        ctx.author))
 
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
     
     except:
           embed = discord.Embed(
@@ -176,22 +164,14 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=url
           )
 
-          await ctx.channel.send(embed=embed)
+          await ctx.send(embed=embed)
 
 
 
-  @commands.command(brief='Get the inflation (in %) of a real country in a certain year.', description='Get the inflation (in %) of a real country in a certain year.')
-  async def inflation(self, ctx, country, year):
-    country = await country_filter(country, ctx)
-    if country is None:
-            return
-    arg = country['name'] 
-    arg2 = year
-    try:
-      int(year)
-    except:
-      await ctx.send(':x: You did not enter a valid year!')
-      return
+  @cog_ext.cog_slash(description='Get the inflation (in %) of a real country in a certain year.')
+  async def inflation(self, ctx, country: str, year: int):
+    arg = country
+    arg2 = str(year)
     try:
       country1 = coco.convert(names=arg, to='iso2')
       country2 = []
@@ -216,7 +196,7 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
         embed.set_thumbnail(
               url=url
           )
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
       else:
@@ -235,9 +215,9 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=f'https://flagcdn.com/w80/{result3.lower()}.jpg')
 
         embed.set_footer(text="Information requested by: {}".format(
-        ctx.message.author))
+        ctx.author))
 
-        await ctx.channel.send(embed=embed)
+        await ctx.send(embed=embed)
 
     except:
       embed = discord.Embed(
@@ -249,9 +229,9 @@ class CountryEconomy(commands.Cog, name='Economy Data', description="Commands th
               url=url
           )
 
-      await ctx.channel.send(embed=embed)
+      await ctx.send(embed=embed)
 
 
 def setup(bot):
-  bot.add_cog(CountryEconomy(bot))
+  bot.add_cog(CountryEconomy2(bot))
   

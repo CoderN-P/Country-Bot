@@ -2,20 +2,21 @@ import discord
 import requests
 from discord.ext import commands
 import os
+from discord_slash import cog_ext
 
 username = os.environ['USERNAME']
 password = os.environ['PASSWORD']
 import datetime
 
-class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pics of animals, and wholesome memes from reddit!'):
+class Memes_Animals2(commands.Cog, name='Animals and Memes (slash)', description='Get pics of animals, and wholesome memes from reddit!'):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.command(description='Get memes from r/wholesomememes', brief='Get memes from r/wholesomememes')
+  @cog_ext.cog_slash(description='Get memes from r/wholesomememes')
   async def meme(self, ctx):
     data = requests.get('https://meme-api.herokuapp.com/gimme/wholesomememes').json()
     meme = data
-    channel_nsfw = ctx.message.channel.is_nsfw()
+    channel_nsfw = ctx.channel.is_nsfw()
     title = meme['title']
     
     if meme['nsfw'] == 'True':
@@ -43,7 +44,7 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
 
 
 
-  @commands.command(description='Look at cute cat pics from r/cats', brief='Look at cute cat pics from r/cats')
+  @cog_ext.cog_slash(description='Look at cute cat pics from r/cats')
   async def cat(self, ctx):
     try:
       data = requests.get('https://meme-api.herokuapp.com/gimme/cats').json()
@@ -66,7 +67,7 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
 
 
 
-  @commands.command(description='Look at cute dog pics from r/dogs', brief='Look at cute dog pics from r/dogs')
+  @cog_ext.cog_slash(description='Look at cute dog pics from r/dogs')
   async def dog(self, ctx):
     try:
       data = requests.get('https://meme-api.herokuapp.com/gimme/dog').json()
@@ -89,7 +90,7 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
       await ctx.send('Whoops! I could not load a dog image this time! Please try again!')
 
 
-  @commands.command(description='Look at pictures that make you go awwww. From r/aww', brief='Look at pictures that make you go awwww. From r/aww')
+  @cog_ext.cog_slash(description='Look at pictures that make you go awwww. From r/aww')
   async def aww(self, ctx):
     data = requests.get('https://meme-api.herokuapp.com/gimme/awww').json()
     meme = data
@@ -108,7 +109,7 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
     await ctx.send(embed=embed)
 
 
-  @commands.command(description='Look at snakes', brief='Look at snakes')
+  @cog_ext.cog_slash(description='Look at snakes')
   async def snake(self, ctx):
     data = requests.get('https://meme-api.herokuapp.com/gimme/snakes').json()
     meme = data
@@ -127,15 +128,15 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
     await ctx.send(embed=embed)
 
 
-  @commands.command(description='Create a drake meme. The meme_format should be: meme title | meme text 1 | meme text 2', brief='Create a drake meme.')
-  async def drake(self, ctx, *, meme_format):
+  @cog_ext.cog_slash(description='Create a drake meme. The meme_format should be: meme title | meme text 1 | meme text 2')
+  async def drake(self, ctx, *, meme_format: str):
     arg = meme_format
     data = requests.get('https://api.imgflip.com/get_memes').json()['data']['memes']
     images = [{'name':image['name'],'url':image['url'],'id':image['id']} for image in data]
     
     arg = arg.split('|')
     if len(arg) < 3:
-      await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f'Correct Usage:\n```{ctx.prefx}drake meme title | meme text 1 | meme text 2'))
+            await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f'Correct Usage:\n```{ctx.prefx}drake meme title | meme text 1 | meme text 2'))
     URL = 'https://api.imgflip.com/caption_image'
     params = {
         'username':username,
@@ -155,4 +156,4 @@ class Memes_Animals(commands.Cog, name='Animals and Memes', description='Get pic
 
 
 def setup(bot):
-  bot.add_cog(Memes_Animals(bot))
+  bot.add_cog(Memes_Animals2(bot))

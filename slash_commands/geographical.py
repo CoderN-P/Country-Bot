@@ -6,15 +6,16 @@ import re
 from fuzzywuzzy import fuzz
 from countryinfo import CountryInfo
 import datetime
-from main import country_filter
+from discord_slash import cog_ext
 cc = coco.CountryConverter()
+from main import country_filter
 
-class GeographicalInfo(commands.Cog, name='Geographical Info', description='Commands that give you geographical information about a country'):
+class GeographicalInfo2(commands.Cog, name='Geographical Info (slash)', description='Commands that give you geographical information about a country'):
   def __init__(self, bot):
     self.bot = bot
 
-  @commands.command(description='Check the area of a real country in sg. km.', brief='Check the areaof a real country in sq. km.')
-  async def area(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Check the area of a real country in sg. km.')
+  async def area(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -38,11 +39,12 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
                 icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
+       
 
 
-  @commands.command(description='Check the region that a country is located in. (Must be a real country)', brief='Check the region that a country is located in.')
-  async def region(self, ctx, *, country):
-        data = await country_filter(country, ctx)   
+  @cog_ext.cog_slash(description='Check the region that a country is located in. (Must be a real country)')
+  async def region(self, ctx, *, country:str):
+        data = await country_filter(country, ctx)
         if data is None:
                 return
         result = data['region']
@@ -65,8 +67,8 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
         await ctx.send(embed=embed)
 
 
-  @commands.command(description='Check the subregion that a country is located in. (Must be a real country)', brief='Check the subregion that a country is located in.')
-  async def subregion(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Check the subregion that a country is located in. (Must be a real country)')
+  async def subregion(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -90,8 +92,8 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
         await ctx.send(embed=embed)
 
 
-  @commands.command(description='Get all the bordering countries of a real country.', brief='Get all the bordering countries of a real country.')
-  async def borders(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Get all the bordering countries of a real country.')
+  async def borders(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -126,10 +128,9 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
         await ctx.send(embed=embed)
 
-
   
-  @commands.command(description='Get all the timezones located in a real country.', brief='Get all the timezones located in a real country.')
-  async def timezone(self, ctx, *, country):
+  @cog_ext.cog_slash(description='Get all the timezones located in a real country.')
+  async def timezone(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -156,8 +157,9 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
         await ctx.send(embed=embed)
 
 
-  @commands.command(description='Get the rough coordinates of a real country.', brief='Get the rough coordinates of a real country.')
-  async def coords(self, ctx, *, country):
+
+  @cog_ext.cog_slash(description='Get the rough coordinates of a real country.')
+  async def coords(self, ctx, *, country:str):
         data = await country_filter(country, ctx)
         if data is None:
                 return
@@ -177,7 +179,7 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
                 url=f'https://flagcdn.com/w80/{alpha2.lower()}.jpg')
 
         embed.set_footer(
-                text="Requested by: {name} ".format(name=ctx.author),
+                text="Requested by: {name}".format(name=ctx.author),
                 icon_url=ctx.author.avatar_url)
 
         await ctx.send(embed=embed)
@@ -185,4 +187,4 @@ class GeographicalInfo(commands.Cog, name='Geographical Info', description='Comm
 
 
 def setup(bot):
-  bot.add_cog(GeographicalInfo(bot))
+  bot.add_cog(GeographicalInfo2(bot))

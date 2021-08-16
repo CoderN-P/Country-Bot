@@ -60,10 +60,14 @@ async def reading(user_id, ctx=None):
     data = await my_collection.find_one({"_id": str(user_id)})
     if not data:
       if not ctx:
-        raise Exception
-      prefix = ctx.prefix
-      embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
-      await ctx.send(embed=embed)
+        raise KeyError('User does not have a country -__-')
+      try:
+        prefix = ctx.prefix
+        embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `{prefix}start` to start your country!')
+        await ctx.send(embed=embed)
+      except AttributeError:
+        embed = discord.Embed(title='Hey!', description=f'You do not have a country! Type `/start` to start your country!')
+        await ctx.send(embed=embed)
     
     elif data:
       data = dict(data)
