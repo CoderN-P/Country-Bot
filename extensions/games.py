@@ -733,7 +733,7 @@ class EconomyCommands(commands.Cog, name='Economy Commands', description='Comman
     elif len(amount) == 0:
     
       if id == '1':
-        embed = discord.Embed(title='Error', description=':x: How much multipliere are you buying!')
+        embed = discord.Embed(title='Error', description=':x: How much multiplier are you buying!')
         await ctx.channel.send(embed=embed)
 
       elif id == '2':
