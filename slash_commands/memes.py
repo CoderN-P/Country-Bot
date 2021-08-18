@@ -136,7 +136,8 @@ class Memes_Animals2(commands.Cog, name='Animals and Memes (slash)', description
     
     arg = arg.split('|')
     if len(arg) < 3:
-            await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f'Correct Usage:\n```/drake meme title | meme text 1 | meme text 2'))
+            await ctx.send(embed=discord.Embed(title='Incorrect Usage', description=f'Correct Usage:\n```/drake meme title | meme text 1 | meme text 2```'))
+            return
     URL = 'https://api.imgflip.com/caption_image'
     params = {
         'username':username,
