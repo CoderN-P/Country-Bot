@@ -1236,7 +1236,6 @@ class Games2(commands.Cog, description='Cool games that test your geography skil
       count = 0
 
       start = time.monotonic()
-      bol = True
       while time.monotonic() - start < 600:      
         random_country = random.choice(quiz_country_list)
         try:
@@ -1300,7 +1299,6 @@ class Games2(commands.Cog, description='Cool games that test your geography skil
 
           await ctx.send(f"That is the correct answer!!! 🏆 Good Job <@{msg.author.id}>")
           
-          bol = True
 
         except asyncio.TimeoutError:
           try:
