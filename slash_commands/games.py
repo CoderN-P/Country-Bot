@@ -1395,6 +1395,7 @@ class Games2(commands.Cog, description='Cool games that test your geography skil
             except:
               await ctx.send("No one scored in this match. :cry: Total score `0`")
               return
+          await ctx.send('!0 minutes have passed! Good job everyone!!')
 
 
   
