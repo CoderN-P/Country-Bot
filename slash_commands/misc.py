@@ -215,6 +215,13 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
         await ctx.send(text[::-1].strip("@"))
 
+    @cog_ext.cog_subcommand(name="bear", base="gummy", description="Im a gummy bear.")
+    async def gummy_bear(self, ctx, *, text: str):
+
+        await ctx.send(
+            "https://tenor.com/view/cbd-gummies-unlimited-gummy-bear-gif-12397676"
+        )
+
 
 def setup(bot):
     bot.add_cog(Misc2(bot))

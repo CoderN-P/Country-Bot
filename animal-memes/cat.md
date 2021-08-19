@@ -13,4 +13,3 @@ description: 'Get images of cats, from r/cats'
 To get information on this command in discord, use:
 
 `.help cat`
-
