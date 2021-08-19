@@ -10,6 +10,7 @@ from discord_slash.context import MenuContext
 from discord_slash.model import ContextMenuType
 import unicodedata
 import asyncio
+from dinteractions_Paginator import Paginator
 
 
 from countryinfo import CountryInfo
@@ -359,65 +360,72 @@ class EconomyCommands2(
 
             username = username.replace(" ", "%20")
 
-            amount12 = 36 + len(str(ctx.author.id))
+            amount12 = 36 + len(str(member.id))
             url = f"https://cbotdiscord.npcool.repl.co/{member.id}/{str(member.avatar_url)[amount12:][:-15]}/{str(username)}/{str(discriminator)}"
             embed = discord.Embed(
-                title=f"""{name}""",
-                url=url,
-                description=f"""Population: `{"{:,}".format(a[0][1])}`
+                title=f"""General Information""",
+                description=f"""Name: [`{name}`]({url})
+                Population: `{"{:,}".format(a[0][1])}`
                       Multiplier: `{"{:,}".format(a[0][2])}`
                       Job: `{a[0][3]}`
                       Work Ethic: `{a[0][4]}`
-                      Office: `{dic[a[0][4]]}`
                       Work Commands Issued: 
                       `{a[0][10]}`
                       Coins: {a[0][11]} :coin:
                       """,
             )
 
-            embed.add_field(
-                name="War",
-                value=f"""Wars Played: `{a[0][7]}`
+            embed2 = discord.Embed(
+                title="War",
+                description=f"""Wars Played: `{a[0][7]}`
                       Wars Won: `{a[0][8]}`
                       Wars Lost: `{a[0][9]}`
                       """,
             )
 
-            embed.add_field(
-                name="Prestige",
-                value=f"""Prestige Level: `{a[0][5]}`
+            embed3 = discord.Embed(
+                title="Prestige",
+                description=f"""Prestige Level: `{a[0][5]}`
                       Prestige Requirement `{a[0][6]}` population""",
             )
 
+            embed4 = discord.Embed(
+                title="Office", description=f"Your office is: `{dic[a[0][4]]}`"
+            )
+
             embed.set_thumbnail(url=member.avatar_url)
+            embed2.set_thumbnail(url=member.avatar_url)
+            embed3.set_thumbnail(url=member.avatar_url)
+            embed4.set_thumbnail(url=member.avatar_url)
 
             if dic[a[0][4]] == "Mom's basement":
-                embed.set_image(
+                embed4.set_image(
                     url="http://www.storefrontlife.com/wp-content/uploads/2013/01/Basement.jpg"
                 )
             elif dic[a[0][4]] == "Apartment (with roomate)":
-                embed.set_image(
+                embed4.set_image(
                     url="https://res.cloudinary.com/hemcfvrk2/image/upload/c_lfill,g_xy_center,x_1516,y_615,w_1200,h_700,q_auto:eco,fl_lossy,f_auto/v1485383879/uhzs2wektoh0mb5rkual.jpg"
                 )
 
             elif dic[a[0][4]] == "Mansion":
-                embed.set_image(
+                embed4.set_image(
                     url="https://fm.cnbc.com/applications/cnbc.com/resources/img/editorial/2013/08/26/100987825-121017_EJ_stone_mansion_0014r.600x400.jpg?v=1395082652"
                 )
 
             elif dic[a[0][4]] == "Home Office":
-                embed.set_image(
+                embed4.set_image(
                     url="https://cdn1.epicgames.com/ue/product/Screenshot/01B-1920x1080-6fd10f5c37639159b1d7a57a869aa3ed.png?resize=1&w=1600"
                 )
 
             elif dic[a[0][4]] == "Space Base":
-                embed.set_image(
+                embed4.set_image(
                     url="https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581"
                 )
 
             embed.set_footer(text=f"Tax your citizens with `/tax` to earn coins!")
 
-            await ctx.send(embed=embed)
+            pages = [embed, embed2, embed3, embed4]
+            await Paginator(bot=self.bot, ctx=ctx, pages=pages)
 
         except:
             embed = discord.Embed(

@@ -1,4 +1,4 @@
-# imports form dicord.py
+# imports form discord.py
 from discord.ext.commands import has_permissions
 import discord
 from discord import Color
