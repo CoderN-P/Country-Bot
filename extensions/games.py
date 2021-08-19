@@ -442,7 +442,7 @@ class EconomyCommands(
             )
 
             pages = [embed, embed2, embed3, embed4]
-            await Paginator(bot=self.bot, ctx=ctx, pages=pages)
+            await Paginator(bot=self.bot, ctx=ctx, pages=pages, timeout=100)
 
         except:
             embed = discord.Embed(
