@@ -13,3 +13,4 @@ description: 'Get images of dogs, from r/dogs'
 To get information on this command in discord, use:
 
 `.help dog`
+

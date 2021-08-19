@@ -14,6 +14,13 @@ description: Overview
 
 **To customize the prefix, use the `.changeprefix` command**
 
+## All commands can be used as slash commands!
+
+To view all the slash commands available, please type: `/` 
+
+If you do not see country bot's slash commands, then re - invite the bot with this link:  
+[https://discord.com/api/oauth2/authorize?client\_id=810662403217948672&permissions=2048&scope=bot%20applications.commands](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)
+
 ## About
 
 Country Bot is a fun discord bot written in python using discord.py. As stated in the name, Country Bot is all about Countries.
