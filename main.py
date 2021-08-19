@@ -529,7 +529,7 @@ async def on_command_error(ctx, error):
         )
 
     elif isinstance(error, discord.ext.commands.errors.MemberNotFound):
-        embed = discord.Embed(title="Hmmm", description=error.args[0])
+        embed = discord.Embed(title="Hmm", description=error.args[0])
         embed.set_footer(
             text=f"""If a person's name has spaces in it, put it in quotes! \nExample: {ctx.prefix}gift "Coder N" 100"""
         )
@@ -540,7 +540,7 @@ async def on_command_error(ctx, error):
 
 
 if not os.getenv("TOKEN"):
-    print("HEYYYYY. DONT TRY TO STEAL MY TOKEN OK")
+    print("HEYYYYY. DON'T TRY TO STEAL MY TOKEN OK")
 else:
     if __name__ == "__main__":
         start_extensions(bot)
