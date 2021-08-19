@@ -27,7 +27,11 @@
   * [change](economy-commands-1/change.md)
   * [store](economy-commands-1/store.md)
   * [buy](economy-commands-1/untitled.md)
-* [Economy Data](economy-data.md)
+* [Economy Data](economy-data/README.md)
+  * [currency](economy-data/currency.md)
+  * [gdp\_percap](economy-data/gdp_percap.md)
+  * [gni\_percap](economy-data/gni_percap.md)
+  * [inflation](economy-data/inflation.md)
 * [Games](games-1.md)
 * [General Data](general-data.md)
 * [Gambling](gambling.md)
@@ -35,8 +39,6 @@
 * [Misc](misc.md)
 
 ## Links
-
----
 
 * [Support Server](https://discord.gg/hCgh9wngkS)
 * [Github Repo](https://github.com/CoderN-P/Country-Bot)
