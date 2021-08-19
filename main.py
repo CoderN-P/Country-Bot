@@ -221,13 +221,13 @@ async def on_dbl_test(data):
     print(f"Received a test vote:\n{data}")
 
 
-# add guild id to replit db when bot is added
+# add guild id to mongo db when bot is added
 @bot.event
 async def on_guild_join(guild):
     await create_prefix(guild.id, ".")
 
 
-# eremov guild id from replit db when bot is kicked
+# remove guild id from mongo db when bot is kicked
 @bot.event
 async def on_guild_remove(guild):
     await delete_prefix(guild.id)
