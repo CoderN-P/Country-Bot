@@ -269,11 +269,10 @@ async def presence():
             )
         )
         await asyncio.sleep(10)
-        users = sum(len(g.members) for g in bot.guilds)
         await bot.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=f"{len(bot.guilds)} guilds and {users} users!",
+                name=f"{len(bot.guilds)} guilds and {sum(guild.member_count for guild in bot.guilds)} users!",
             )
         )
         await asyncio.sleep(10)
