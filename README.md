@@ -6,13 +6,30 @@ description: Overview
 
 ## General Information
 
-#### BOT PREFIX: `.`
+{% tabs %}
+{% tab title="Prefix" %}
+Country Bot's `prefix` is: `.`   
+This means that all of Country Bot's commands will start with this character to avoid confusion.
 
-#### HELP COMMAND: `.help`
+{% hint style="info" %}
+Use the [changeprefix](commands/admin-configuration/changeprefix.md) command to change Country Bot's prefix
+{% endhint %}
+{% endtab %}
 
-#### AMOUNT OF COMMANDS: `66`
+{% tab title="Help Command" %}
+To view a detailed list of all the commands and categories, type:
 
-**To customize the prefix, use the `.changeprefix` command**
+`.help`
+
+{% hint style="danger" %}
+`Replace . with the prefix of the bot in your server.`
+
+`You can find this out by pinging Country Bot.`
+{% endhint %}
+{% endtab %}
+{% endtabs %}
+
+
 
 ## All commands can be used as slash commands!
 
@@ -35,8 +52,6 @@ You can find almost any desired information about a certain country! These inclu
 * etc.
 
 Stay on top of things with up to date information on COVID-19 and search basically anything up with the `wiki` command!
-
-A full list of commands are included in the `.help` command
 
 ## Games
 
