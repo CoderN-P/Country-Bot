@@ -1,4 +1,4 @@
-# imports form discord.py
+# imports from discord.py
 from discord.ext.commands import has_permissions
 import discord
 from discord import Color
@@ -72,16 +72,16 @@ def get_prefix123(bot, msg):
 
 async def country_filter(country, ctx):
     if len(country) in [3, 2]:
-        data = requests.get(f"https://restcountries.eu/rest/v2/alpha/{country}")
+        data = requests.get(f"https://restcountries.com/v2/alpha/{country}")
         data = data.json()
 
     else:
         data = requests.get(
-            f"https://restcountries.eu/rest/v2/name/{country}?fullText=true"
+            f"https://restcountries.com/v2/name/{country}?fullText=true"
         )
         data = data.json()
         if "status" in data:
-            data = requests.get(f"https://restcountries.eu/rest/v2/name/{country}")
+            data = requests.get(f"https://restcountries.com/v2/name/{country}")
             data = data.json()
             if len(data) == 1:
                 pass

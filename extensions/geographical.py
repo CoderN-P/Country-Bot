@@ -119,8 +119,8 @@ class GeographicalInfo(
         country = data["name"]
         alpha2 = data["alpha2Code"]
         alpha3 = data["alpha3Code"]
-        result = data["borders"]
-        if len(result) == 0:
+        
+        if 'borders' not in data.keys():
             await ctx.send(
                 embed=discord.Embed(
                     title="Hmm",
@@ -128,6 +128,7 @@ class GeographicalInfo(
                 )
             )
             return
+        result = data['borders']
         string = ""
         result = coco.convert(names=result, to="name_short")
         if isinstance(result, str):

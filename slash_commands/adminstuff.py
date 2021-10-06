@@ -16,6 +16,7 @@ class AdminCommands2(
     @cog_ext.cog_slash(description="Set up a channel to receive updates about the bot")
     @commands.has_permissions(administrator=True)
     async def configurechannel(self, ctx, channel: discord.TextChannel):
+        await ctx.defer(hidden=True)
 
         try:
             await create_update(channel.id)
@@ -49,6 +50,7 @@ class AdminCommands2(
     @cog_ext.cog_slash(description="Make a channel not receive updates about the bot")
     @commands.has_permissions(administrator=True)
     async def unconfigurechannel(self, ctx, channel: discord.TextChannel):
+        await ctx.defer(hidden=True)
         try:
             await delete_update(int(channel.id))
 

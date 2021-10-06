@@ -19,6 +19,7 @@ class Memes_Animals2(
 
     @cog_ext.cog_slash(description="Get memes from r/wholesomememes")
     async def meme(self, ctx):
+        await ctx.defer(hidden=True)
         data = requests.get(
             "https://meme-api.herokuapp.com/gimme/wholesomememes"
         ).json()
@@ -52,6 +53,7 @@ class Memes_Animals2(
 
     @cog_ext.cog_slash(description="Look at cute cat pics from r/cats")
     async def cat(self, ctx):
+        await ctx.defer(hidden=True)
         try:
             data = requests.get("https://meme-api.herokuapp.com/gimme/cats").json()
             meme = data
@@ -71,6 +73,7 @@ class Memes_Animals2(
 
     @cog_ext.cog_slash(description="Look at cute dog pics from r/dogs")
     async def dog(self, ctx):
+        await ctx.defer(hidden=True)
         try:
             data = requests.get("https://meme-api.herokuapp.com/gimme/dog").json()
             meme = data
@@ -93,6 +96,7 @@ class Memes_Animals2(
         description="Look at pictures that make you go awwww. From r/aww"
     )
     async def aww(self, ctx):
+        await ctx.defer(hidden=True)
         data = requests.get("https://meme-api.herokuapp.com/gimme/awww").json()
         meme = data
 
@@ -107,6 +111,7 @@ class Memes_Animals2(
 
     @cog_ext.cog_slash(description="Look at snakes")
     async def snake(self, ctx):
+        await ctx.defer(hidden=True)
         data = requests.get("https://meme-api.herokuapp.com/gimme/snakes").json()
         meme = data
 
@@ -123,6 +128,7 @@ class Memes_Animals2(
         description="Create a drake meme. The meme_format should be: meme title | meme text 1 | meme text 2"
     )
     async def drake(self, ctx, *, meme_format: str):
+        await ctx.defer(hidden=True)
         arg = meme_format
         data = requests.get("https://api.imgflip.com/get_memes").json()["data"]["memes"]
         images = [
@@ -158,4 +164,4 @@ class Memes_Animals2(
 
 
 def setup(bot):
-          bot.add_cog(Memes_Animals2(bot))
+    bot.add_cog(Memes_Animals2(bot))

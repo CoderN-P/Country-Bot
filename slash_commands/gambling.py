@@ -29,6 +29,7 @@ class GamblingSlash(
         description="Gamble with dice against Country Bot for population"
     )
     async def dice(self, ctx, amount: int):
+        await ctx.defer(hidden=True)
         if amount <= 0:
             await ctx.send(":x: That isnt a valid amount")
             return
@@ -92,6 +93,7 @@ class GamblingSlash(
         description="Flip a coin with Country Bot, to win population (or loose some)"
     )
     async def coinflip(self, ctx, choice: str, amount: int = None):
+        await ctx.defer(hidden=True)
         h_t = random.choice(["h", "t"])
         a = await reading(ctx.author.id, ctx)
         if a is None:

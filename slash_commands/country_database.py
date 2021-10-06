@@ -19,6 +19,7 @@ class CountryDatabase2(
         description="List all countries in the world that start with the letter or letters that you provided."
     )
     async def list(self, ctx, letters: str):
+        await ctx.defer(hidden=True)
         arg = letters
         check = arg
         new_list = []

@@ -24,6 +24,7 @@ class CountryEconomy2(
 
     @cog_ext.cog_slash(description="Get the general currency of a real country.")
     async def currency(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         data = await country_filter(country, ctx)
         if data is None:
             return
@@ -55,6 +56,7 @@ class CountryEconomy2(
         description="Get the gdp per capita of a real country in a certain year."
     )
     async def gdp_percap(self, ctx, country: str, year: int):
+        await ctx.defer(hidden=True)
         arg = country
         arg2 = str(year)
         try:
@@ -108,6 +110,7 @@ class CountryEconomy2(
 
     @cog_ext.cog_slash(description="Get the gni per capita of a real country.")
     async def gni_percap(self, ctx, country: str, year: int):
+        await ctx.defer(hidden=True)
         arg = country
         arg2 = str(year)
         try:
@@ -166,6 +169,7 @@ class CountryEconomy2(
         description="Get the inflation (in %) of a real country in a certain year."
     )
     async def inflation(self, ctx, country: str, year: int):
+        await ctx.defer(hidden=True)
         arg = country
         arg2 = str(year)
         try:

@@ -36,6 +36,7 @@ class General2(
         description="Look at the flag of a random real country or specify a certain country."
     )
     async def flag(self, ctx, country: str = None):
+        await ctx.defer(hidden=True)
         if country is None:
             country = random.choice(quiz_country_list)
             result4 = coco.convert(names=country, to="ISO2")
@@ -59,6 +60,7 @@ class General2(
 
     @cog_ext.cog_slash(name="capital", description="Get the capital of a real country.")
     async def cap(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         data = await country_filter(country, ctx)
         if data is None:
             return
@@ -85,6 +87,7 @@ class General2(
 
     @cog_ext.cog_slash(description="Check the population of a real country.")
     async def population(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         data = await country_filter(country, ctx)
         if data is None:
             return
@@ -111,6 +114,7 @@ class General2(
 
     @cog_ext.cog_slash(description="Check the states/provinces in a real country")
     async def states(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         data = await country_filter(country, ctx)
         if data is None:
             return
@@ -145,6 +149,7 @@ class General2(
 
     @cog_ext.cog_slash(description="Check the main language of any real country.")
     async def language(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         data = await country_filter(country, ctx)
         if data is None:
             return
@@ -176,6 +181,7 @@ class General2(
 
     @cog_ext.cog_slash(description="Get COVID-19 data on a real country.")
     async def covid(self, ctx, *, country: str):
+        await ctx.defer(hidden=True)
         arg = country
         try:
             url = "https://covid-193.p.rapidapi.com/statistics?country={}".format(arg)
@@ -302,6 +308,7 @@ class General2(
 
     @cog_ext.cog_slash(description="View information about the bot")
     async def stats(self, ctx):
+        await ctx.defer(hidden=True)
         current_process = psutil.Process()
         cpu_usage = current_process.cpu_percent()
         memory = (resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) / 1000
@@ -369,6 +376,7 @@ class General2(
         description="Get information from wikipedia! Please use full names; short names can cause ambiguity"
     )
     async def wiki(self, ctx, *, page: str):
+        await ctx.defer(hidden=True)
         try:
             data = wikipedia.page(page)
 

@@ -64,6 +64,7 @@ class EconomyCommands2(
     @cog_ext.cog_slash(description="Tax your citiens for coins.")
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def tax(self, ctx):
+        await ctx.defer(hidden=True)
         a = await reading(ctx.author.id, ctx)
         if a is None:
             return
@@ -102,7 +103,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Shows global leaderboards for coins and prestige")
     async def leaderboard(self, ctx, type: str = None):
-
+        await ctx.defer(hidden=True)
         if not type:
 
             data = await find_lb()
@@ -157,6 +158,7 @@ class EconomyCommands2(
     @cog_ext.cog_slash(description="Hunt for items (they go to your inventory)")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def hunt(self, ctx):
+        await ctx.defer(hidden=True)
         a = await find_inventory(ctx.author.id, ctx)
         if a is None:
             return
@@ -204,6 +206,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Sell items in your inventory")
     async def sell(self, ctx, item: str, amount: int = None):
+        await ctx.defer(hidden=True)
         ab = await reading(ctx.author.id, ctx)
         if ab is None:
             return
@@ -283,6 +286,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="View your inventory")
     async def inventory(self, ctx):
+        await ctx.defer(hidden=True)
         a = await find_inventory(ctx.author.id, ctx)
         if a is None:
             return
@@ -303,6 +307,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Start your country!")
     async def start(self, ctx):
+        await ctx.defer(hidden=True)
         try:
             embed = discord.Embed(
                 title="Hooray",
@@ -349,6 +354,7 @@ class EconomyCommands2(
         description="Check information about your country, or another person's country."
     )
     async def profile(self, ctx, member: discord.Member = None):
+        await ctx.defer(hidden=True)
         if member is None:
             member = ctx.author
 
@@ -427,7 +433,7 @@ class EconomyCommands2(
             pages = [embed, embed2, embed3, embed4]
             await Paginator(bot=self.bot, ctx=ctx, pages=pages, timeout=100)
 
-        except:
+        except KeyError:
             embed = discord.Embed(
                 title="Hey!",
                 description=f":x: You or the person you are viewing do not have a country! Create one with `/start`",
@@ -436,6 +442,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Shows you items you can purchase for your country")
     async def shop(self, ctx):
+        await ctx.defer(hidden=True)
         a = await reading(ctx.author.id, ctx)
         if a is None:
             return
@@ -510,6 +517,7 @@ class EconomyCommands2(
     @cog_ext.cog_slash(description="Work and earn population for your country!")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def work(self, ctx):
+        await ctx.defer(hidden=True)
         chance = random.randint(1, 10)
         a = await reading(ctx.author.id, ctx)
         if a is None:
@@ -931,6 +939,7 @@ class EconomyCommands2(
         description="Your population and multiplier will be reset, but you earn more coins, multiplier and population."
     )
     async def prestige(self, ctx):
+        await ctx.defer(hidden=True)
         a = await reading(ctx.author.id, ctx)
         if a is None:
             return
@@ -986,6 +995,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Deletes your country :((")
     async def quit(self, ctx):
+        await ctx.defer(hidden=True)
         embed = discord.Embed(
             title="quit",
             description=":x: Are you really sure you want to quit your country. You will lose all your data (`y`,`n`)",
@@ -1028,6 +1038,7 @@ class EconomyCommands2(
         description="Buy items for your country! Check out the items for sale with the shop command!"
     )
     async def buy(self, ctx, id: int, amount: int = None):
+        await ctx.defer(hidden=True)
         id = str(id)
         a = await reading(ctx.author.id, ctx)
         if a is None:
@@ -1260,6 +1271,7 @@ class EconomyCommands2(
         description='Gift some population to other people! Specify "half" or "full" or an integer as the amount!'
     )
     async def gift(self, ctx, user: discord.User, amount: str):
+        await ctx.defer(hidden=True)
         try:
             a = await reading(user.id)
 
@@ -1390,6 +1402,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_slash(description="Change your country name!")
     async def change(self, ctx, *, name: str):
+        await ctx.defer(hidden=True)
         arg = name
         a = await reading(ctx.author.id, ctx)
         if a is None:
@@ -1414,6 +1427,7 @@ class EconomyCommands2(
     @cog_ext.cog_slash(description="Get your daily allowance of population...")
     @commands.cooldown(1, 86400, commands.BucketType.user)
     async def daily(self, ctx):
+        await ctx.defer(hidden=True)
         a = await reading(ctx.author.id, ctx)
         if a is None:
             return
@@ -1449,6 +1463,7 @@ class EconomyCommands2(
 
     @cog_ext.cog_context_menu(name="View country profile", target=ContextMenuType.USER)
     async def view_country_profile(self, ctx: MenuContext):
+        await ctx.defer(hidden=True)
         member = ctx.target_author
         try:
             a = await reading(member.id)
@@ -1535,6 +1550,7 @@ class Games2(
     @cog_ext.cog_slash(description="Wage war on your friends!")
     @commands.cooldown(1, 60, commands.BucketType.user)
     async def war(self, ctx, user: discord.Member):
+        await ctx.defer(hidden=True)
         b = user.id
 
         opponent = user
@@ -1596,7 +1612,7 @@ class Games2(
             await ctx.send(embed=embed)
         else:
             embed = discord.Embed(
-                title="Phew", dsescription="Crisis averted. There is no war"
+                title="Phew", description="Crisis averted. There is no war"
             )
             await ctx.send(embed=embed)
             return
@@ -1827,6 +1843,7 @@ class Games2(
         name="capital",
     )
     async def guess_capital(self, ctx):
+        await ctx.defer(hidden=True)
         the_author = ctx.author
         channel = ctx.channel
 
@@ -1935,6 +1952,7 @@ class Games2(
         description="Guess countries from their capitals. This game lasts for 10 minutes.",
     )
     async def reverse(self, ctx):
+        await ctx.defer(hidden=True)
         the_author = ctx.author
         channel = ctx.channel
 

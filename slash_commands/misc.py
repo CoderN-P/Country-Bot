@@ -15,6 +15,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(name="cat-fact", description="Learn some cool cat facts!")
     async def catfact(self, ctx):
+        await ctx.defer(hidden=True)
         r = requests.get("https://catfact.ninja/fact?max_length=140")
         r = r.json()["fact"]
         embed = discord.Embed(title="Cat Fact", description=r)
@@ -22,6 +23,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(name="dog-fact", description="Learn some cool dog facts!")
     async def dogfact(self, ctx):
+        await ctx.defer(hidden=True)
         r = requests.get("http://dog-api.kinduff.com/api/facts?number=1")
         r = r.json()["facts"][0]
         embed = discord.Embed(title="Dog Fact", description=r)
@@ -29,6 +31,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="Get Country Bot's invite link")
     async def invite(self, ctx):
+        await ctx.defer(hidden=True)
         await ctx.send(
             embed=discord.Embed(
                 title="Invite link",
@@ -38,6 +41,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="bruh")
     async def bruh(self, ctx):
+        await ctx.defer(hidden=True)
         embed = discord.Embed(title="bruh")
         embed.set_image(
             url="https://media1.tenor.com/images/8daeb547b121eef5f34e7d4e0b88ea35/tenor.gif?itemid=5156041"
@@ -48,6 +52,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
         description="Get a random joke, or specify a type of joke: `knock-knock`, `general`, or `programming`"
     )
     async def joke(self, ctx, *, type: str = None):
+        await ctx.defer(hidden=True)
         arg = type
 
         def jokes(f):
@@ -95,6 +100,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="Vote for Country Bot to get some cool rewards!")
     async def vote(self, ctx):
+        await ctx.defer(hidden=True)
         embed = (
             discord.Embed(
                 title="Vote For Country Bot :)",
@@ -107,6 +113,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="Get the message ping of the bot.")
     async def ping(self, ctx):
+        await ctx.defer(hidden=True)
         """Pong!"""
         before = time.monotonic()
         message = await ctx.send("Pong!")
@@ -115,12 +122,14 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="N o t h i n g")
     async def nothing(self, ctx):
+        await ctx.defer(hidden=True)
         await ctx.send("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
 
     @cog_ext.cog_slash(
         description="Get information about a color by supplying its rgb/hex"
     )
     async def color(self, ctx, *, color: str):
+        await ctx.defer(hidden=True)
         rgb = color
         if rgb.startswith("#"):
             info = requests.get(f"https://www.thecolorapi.com/id?hex={rgb[1:]}")
@@ -179,6 +188,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="lol")
     async def lol(self, ctx):
+        await ctx.defer(hidden=True)
         embed = discord.Embed(title="LOL")
 
         embed.set_image(
@@ -189,6 +199,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="Country Bot changelog.")
     async def changelog(self, ctx):
+        await ctx.defer(hidden=True)
         embed = discord.Embed(
             title="Changelog",
             description="""**1.** Added new `.meme` feature
@@ -207,16 +218,18 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
         description="Calculate a mathematical expression, (no variables allowed)",
     )
     async def my_command(self, ctx, *, expression: str):
+        await ctx.defer(hidden=True)
         result = eval(expression)
         await ctx.send(result)
 
     @cog_ext.cog_slash(description="Country Bot will reverse the text you give it.")
     async def backwards(self, ctx, *, text: str):
-
+        await ctx.defer(hidden=True)
         await ctx.send(text[::-1].strip("@"))
 
     @cog_ext.cog_slash(name="gummy-bear", description="Im a gummy bear.")
     async def gummy_bear(self, ctx):
+        await ctx.defer(hidden=True)
         await ctx.send(
             "https://tenor.com/view/cbd-gummies-unlimited-gummy-bear-gif-12397676"
         )
