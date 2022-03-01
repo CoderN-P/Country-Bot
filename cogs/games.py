@@ -1,4 +1,4 @@
-from mongomethods import *
+from bot_utils.mongomethods import *
 
 from fuzzywuzzy import fuzz
 import country_converter as coco

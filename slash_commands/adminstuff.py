@@ -1,6 +1,6 @@
 from discord.ext import commands
 import discord
-from mongomethods import update_prefix, create_update, delete_update
+from bot_utils.mongomethods import update_prefix, create_update, delete_update
 import datetime
 from discord_slash import cog_ext
 

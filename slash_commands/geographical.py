@@ -9,7 +9,7 @@ import datetime
 from discord_slash import cog_ext
 
 cc = coco.CountryConverter()
-from main import country_filter
+from bot_utils.country_filter import country_filter
 
 
 class GeographicalInfo2(

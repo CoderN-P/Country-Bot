@@ -232,12 +232,12 @@ class Misc(commands.Cog, description="Miscellaneous commands"):
         brief="Calculate stuff",
     )
     async def my_command(self, ctx, *, arg):
-        result = ast.literal_eval(arg)
+        result = eval(arg)
         await ctx.send(result)
 
     @commands.command(
-        description="Country Bot will reverse the text you give him.",
-        brief="Country Bot will reverse the text you give him.",
+        description="Country Bot will reverse the text you give it.",
+        brief="Country Bot will reverse the text you give it.",
     )
     async def backwards(self, ctx, *, text):
 

@@ -4,7 +4,6 @@ import pycountry
 import re
 import datetime
 from discord_slash import cog_ext
-from main import guild_ids
 
 
 class CountryDatabase2(

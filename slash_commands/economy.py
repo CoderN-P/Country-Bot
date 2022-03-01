@@ -5,7 +5,7 @@ import datetime
 import wbdata
 import pycountry
 import re
-from main import country_filter
+from bot_utils.country_filter import country_filter
 import requests
 from discord_slash import cog_ext
 from fuzzywuzzy import fuzz

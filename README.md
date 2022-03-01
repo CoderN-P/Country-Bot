@@ -10,7 +10,7 @@ description: Overview
 
 #### HELP COMMAND: `.help`
 
-#### AMOUNT OF COMMANDS: `66`
+#### AMOUNT OF COMMANDS: `67`
 
 **To customize the prefix, use the `.changeprefix` command**
 

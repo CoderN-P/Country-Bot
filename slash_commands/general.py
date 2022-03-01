@@ -5,7 +5,7 @@ import random
 import re
 import pycountry
 from fuzzywuzzy import fuzz
-from mongomethods import count
+from bot_utils.mongomethods import count
 from countryinfo import CountryInfo
 from discord import Color
 import json
@@ -16,7 +16,7 @@ import resource
 import psutil
 import wikipedia
 from discord_slash import cog_ext
-from main import country_filter
+from bot_utils.country_filter import country_filter
 
 main_up = time.time()
 

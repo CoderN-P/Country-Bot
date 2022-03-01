@@ -115,7 +115,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="N o t h i n g")
     async def nothing(self, ctx):
-        await ctx.send("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀")
+        await ctx.send("⠀")
 
     @cog_ext.cog_slash(
         description="Get information about a color by supplying its rgb/hex"
