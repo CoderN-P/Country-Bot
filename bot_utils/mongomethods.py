@@ -1,9 +1,9 @@
-import motor.motor_asyncio
-import pymongo
-import discord
-import dns
 import os
 
+import discord
+import dns
+import motor.motor_asyncio
+import pymongo
 
 client1 = motor.motor_asyncio.AsyncIOMotorClient(os.environ["MONGO"])
 
@@ -46,26 +46,24 @@ async def find_inventory(user_id, ctx=None):
 
 
 async def writing(arg):
-    await my_collection.insert_one(
-        {
-            "_id": str(arg[0]),
-            "data": {
-                "name": arg[1],
-                "population": arg[2],
-                "multiplier": arg[3],
-                "job": arg[4],
-                "work_ethic": arg[5],
-                "prestige": arg[6],
-                "requirement": arg[7],
-                "wars_played": arg[8],
-                "wars_won": arg[9],
-                "wars_lost": arg[10],
-                "times_worked": arg[11],
-                "coins": arg[12],
-            },
-            "inventory": {},
-        }
-    )
+    await my_collection.insert_one({
+        "_id": str(arg[0]),
+        "data": {
+            "name": arg[1],
+            "population": arg[2],
+            "multiplier": arg[3],
+            "job": arg[4],
+            "work_ethic": arg[5],
+            "prestige": arg[6],
+            "requirement": arg[7],
+            "wars_played": arg[8],
+            "wars_won": arg[9],
+            "wars_lost": arg[10],
+            "times_worked": arg[11],
+            "coins": arg[12],
+        },
+        "inventory": {},
+    })
 
 
 async def reading(user_id, ctx=None):
@@ -150,15 +148,17 @@ async def count():
 
 
 async def update_coins(arg):
-    await my_collection.update_one(
-        {"_id": str(arg[0])}, {"$set": {"data.coins": arg[1]}}
-    )
+    await my_collection.update_one({"_id": str(arg[0])},
+                                   {"$set": {
+                                       "data.coins": arg[1]
+                                   }})
 
 
 async def update_inventory(arg):
-    await my_collection.update_one(
-        {"_id": str(arg[0])}, {"$set": {"inventory": arg[1]}}
-    )
+    await my_collection.update_one({"_id": str(arg[0])},
+                                   {"$set": {
+                                       "inventory": arg[1]
+                                   }})
 
 
 async def search_name(name):
@@ -202,7 +202,10 @@ async def create_prefix(id, prefix):
 
 
 async def update_prefix(id, prefix):
-    await prefixes_db.update_one({"_id": str(id)}, {"$set": {"prefix": prefix}})
+    await prefixes_db.update_one({"_id": str(id)},
+                                 {"$set": {
+                                     "prefix": prefix
+                                 }})
 
 
 async def delete_prefix(id):

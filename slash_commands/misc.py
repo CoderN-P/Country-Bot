@@ -1,26 +1,30 @@
-from discord.ext import commands
+import datetime
+import json
+import os
+import random
+import time
+
 import discord
 import requests
-import os
-import datetime
-import time
-import random
-import json
+from discord.ext import commands
 from discord_slash import cog_ext
 
 
 class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
+
     def __init__(self, bot):
         self.bot = bot
 
-    @cog_ext.cog_slash(name="cat-fact", description="Learn some cool cat facts!")
+    @cog_ext.cog_slash(name="cat-fact",
+                       description="Learn some cool cat facts!")
     async def catfact(self, ctx):
         r = requests.get("https://catfact.ninja/fact?max_length=140")
         r = r.json()["fact"]
         embed = discord.Embed(title="Cat Fact", description=r)
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name="dog-fact", description="Learn some cool dog facts!")
+    @cog_ext.cog_slash(name="dog-fact",
+                       description="Learn some cool dog facts!")
     async def dogfact(self, ctx):
         r = requests.get("http://dog-api.kinduff.com/api/facts?number=1")
         r = r.json()["facts"][0]
@@ -29,12 +33,10 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
 
     @cog_ext.cog_slash(description="Get Country Bot's invite link")
     async def invite(self, ctx):
-        await ctx.send(
-            embed=discord.Embed(
-                title="Invite link",
-                description="Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands",
-            )
-        )
+        await ctx.send(embed=discord.Embed(
+            title="Invite link",
+            description="Use this link to invite the bot to your servers: https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands",
+        ))
 
     @cog_ext.cog_slash(description="bruh")
     async def bruh(self, ctx):
@@ -65,11 +67,8 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
                 a = jokes(f)
 
                 for i in a:
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title=i["setup"], description=i["punchline"]
-                        )
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title=i["setup"], description=i["punchline"]))
                 return
             if arg not in ["knock-knock", "general", "programming"]:
                 await ctx.send(embed=error_embed)
@@ -78,9 +77,8 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
             a = jokes(f)
 
             for i in a:
-                await ctx.send(
-                    embed=discord.Embed(title=i["setup"], description=i["punchline"])
-                )
+                await ctx.send(embed=discord.Embed(title=i["setup"],
+                                                   description=i["punchline"]))
 
         else:
             joke = random.choice(["knock-knock", "general", "programming"])
@@ -89,20 +87,19 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
             a = jokes(f)
 
             for i in a:
-                embed = discord.Embed(title=i["setup"], description=i["punchline"])
+                embed = discord.Embed(title=i["setup"],
+                                      description=i["punchline"])
                 embed.set_footer(text=f"This was a {joke} joke")
                 await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Vote for Country Bot to get some cool rewards!")
+    @cog_ext.cog_slash(
+        description="Vote for Country Bot to get some cool rewards!")
     async def vote(self, ctx):
-        embed = (
-            discord.Embed(
-                title="Vote For Country Bot :)",
-                description="You can vote for country bot [here](https://top.gg/bot/810662403217948672/vote)",
-            )
-            .set_image(url="https://top.gg/images/dblnew.png")
-            .set_footer(text="You can vote every 12 hours")
-        )
+        embed = (discord.Embed(
+            title="Vote For Country Bot :)",
+            description="You can vote for country bot [here](https://top.gg/bot/810662403217948672/vote)",
+        ).set_image(url="https://top.gg/images/dblnew.png").set_footer(
+            text="You can vote every 12 hours"))
         await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(description="Get the message ping of the bot.")
@@ -118,12 +115,12 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
         await ctx.send("⠀")
 
     @cog_ext.cog_slash(
-        description="Get information about a color by supplying its rgb/hex"
-    )
+        description="Get information about a color by supplying its rgb/hex")
     async def color(self, ctx, *, color: str):
         rgb = color
         if rgb.startswith("#"):
-            info = requests.get(f"https://www.thecolorapi.com/id?hex={rgb[1:]}")
+            info = requests.get(
+                f"https://www.thecolorapi.com/id?hex={rgb[1:]}")
         else:
             info = requests.get(f"https://www.thecolorapi.com/id?rgb={rgb}")
 
@@ -155,7 +152,9 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
             rgb2 = rgb1.split(",")
             rgb2 = [float(i) for i in rgb2]
 
-            embed = discord.Embed(title=name, description=None, color=readableHex)
+            embed = discord.Embed(title=name,
+                                  description=None,
+                                  color=readableHex)
 
             embed.add_field(name="RGB", value=rgb1, inline=True)
             embed.add_field(name="HEX", value=hex1)
@@ -166,8 +165,7 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
             embed.add_field(name="XYZ", value=xyz, inline=True)
 
             embed.set_image(
-                url=f"https://singlecolorimage.com/get/{hex1[1:]}/400x100.png"
-            )
+                url=f"https://singlecolorimage.com/get/{hex1[1:]}/400x100.png")
             await ctx.send(embed=embed)
 
         except:
@@ -210,7 +208,8 @@ class Misc2(commands.Cog, description="Miscellaneous commands (slash)"):
         result = eval(expression)
         await ctx.send(result)
 
-    @cog_ext.cog_slash(description="Country Bot will reverse the text you give it.")
+    @cog_ext.cog_slash(
+        description="Country Bot will reverse the text you give it.")
     async def backwards(self, ctx, *, text: str):
 
         await ctx.send(text[::-1].strip("@"))
