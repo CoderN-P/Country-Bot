@@ -1,34 +1,36 @@
+import datetime
+import os
+
 import discord
 import requests
 from discord.ext import commands
-import os
 from discord_slash import cog_ext
 
 username = os.environ["USERNAME"]
 password = os.environ["PASSWORD"]
-import datetime
 
 
 class Memes_Animals2(
-    commands.Cog,
-    name="Animals and Memes (slash)",
-    description="Get pics of animals, and wholesome memes from reddit!",
+        commands.Cog,
+        name="Animals and Memes (slash)",
+        description="Get pics of animals, and wholesome memes from reddit!",
 ):
+
     def __init__(self, bot):
         self.bot = bot
 
     @cog_ext.cog_slash(description="Get memes from r/wholesomememes")
     async def meme(self, ctx):
         data = requests.get(
-            "https://meme-api.herokuapp.com/gimme/wholesomememes"
-        ).json()
+            "https://meme-api.herokuapp.com/gimme/wholesomememes").json()
         meme = data
         channel_nsfw = ctx.channel.is_nsfw()
         title = meme["title"]
 
         if meme["nsfw"] == "True":
             if channel_nsfw:
-                embed = discord.Embed(title=f"{title} [NSFW]", url=meme["postLink"])
+                embed = discord.Embed(title=f"{title} [NSFW]",
+                                      url=meme["postLink"])
                 embed.set_image(url=meme["url"])
                 author = meme["author"]
                 likes = meme["ups"]
@@ -53,7 +55,8 @@ class Memes_Animals2(
     @cog_ext.cog_slash(description="Look at cute cat pics from r/cats")
     async def cat(self, ctx):
         try:
-            data = requests.get("https://meme-api.herokuapp.com/gimme/cats").json()
+            data = requests.get(
+                "https://meme-api.herokuapp.com/gimme/cats").json()
             meme = data
 
             title = meme["title"]
@@ -72,7 +75,8 @@ class Memes_Animals2(
     @cog_ext.cog_slash(description="Look at cute dog pics from r/dogs")
     async def dog(self, ctx):
         try:
-            data = requests.get("https://meme-api.herokuapp.com/gimme/dog").json()
+            data = requests.get(
+                "https://meme-api.herokuapp.com/gimme/dog").json()
             meme = data
 
             title = meme["title"]
@@ -90,8 +94,7 @@ class Memes_Animals2(
             )
 
     @cog_ext.cog_slash(
-        description="Look at pictures that make you go awwww. From r/aww"
-    )
+        description="Look at pictures that make you go awwww. From r/aww")
     async def aww(self, ctx):
         data = requests.get("https://meme-api.herokuapp.com/gimme/awww").json()
         meme = data
@@ -107,7 +110,8 @@ class Memes_Animals2(
 
     @cog_ext.cog_slash(description="Look at snakes")
     async def snake(self, ctx):
-        data = requests.get("https://meme-api.herokuapp.com/gimme/snakes").json()
+        data = requests.get(
+            "https://meme-api.herokuapp.com/gimme/snakes").json()
         meme = data
 
         title = meme["title"]
@@ -124,20 +128,20 @@ class Memes_Animals2(
     )
     async def drake(self, ctx, *, meme_format: str):
         arg = meme_format
-        data = requests.get("https://api.imgflip.com/get_memes").json()["data"]["memes"]
-        images = [
-            {"name": image["name"], "url": image["url"], "id": image["id"]}
-            for image in data
-        ]
+        data = requests.get(
+            "https://api.imgflip.com/get_memes").json()["data"]["memes"]
+        images = [{
+            "name": image["name"],
+            "url": image["url"],
+            "id": image["id"]
+        } for image in data]
 
         arg = arg.split("|")
         if len(arg) < 3:
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Incorrect Usage",
-                    description=f"Correct Usage:\n```/drake meme title | meme text 1 | meme text 2```",
-                )
-            )
+            await ctx.send(embed=discord.Embed(
+                title="Incorrect Usage",
+                description=f"Correct Usage:\n```/drake meme title | meme text 1 | meme text 2```",
+            ))
             return
         URL = "https://api.imgflip.com/caption_image"
         params = {
@@ -158,4 +162,4 @@ class Memes_Animals2(
 
 
 def setup(bot):
-          bot.add_cog(Memes_Animals2(bot))
+    bot.add_cog(Memes_Animals2(bot))

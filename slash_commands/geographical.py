@@ -1,26 +1,30 @@
-import discord
-from discord.ext import commands
-import country_converter as coco
+import datetime
 import random
 import re
-from fuzzywuzzy import fuzz
+
+import country_converter as coco
+import discord
 from countryinfo import CountryInfo
-import datetime
+from discord.ext import commands
 from discord_slash import cog_ext
+from fuzzywuzzy import fuzz
+
+from bot_utils.country_filter import country_filter
 
 cc = coco.CountryConverter()
-from bot_utils.country_filter import country_filter
 
 
 class GeographicalInfo2(
-    commands.Cog,
-    name="Geographical Info (slash)",
-    description="Commands that give you geographical information about a country",
+        commands.Cog,
+        name="Geographical Info (slash)",
+        description="Commands that give you geographical information about a country",
 ):
+
     def __init__(self, bot):
         self.bot = bot
 
-    @cog_ext.cog_slash(description="Check the area of a real country in sg. km.")
+    @cog_ext.cog_slash(
+        description="Check the area of a real country in sg. km.")
     async def area(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -33,13 +37,13 @@ class GeographicalInfo2(
         result2 = round(result2)
         embed = discord.Embed(
             title=f"Area of {country} — {alpha2} | {alpha3}",
-            description="**The area of {country} is:\n `{result:,} sq. km` / `{result2:,} sq. mi`**".format(
-                result=result, country=country, result2=result2
-            ),
+            description="**The area of {country} is:\n `{result:,} sq. km` / `{result2:,} sq. mi`**"
+            .format(result=result, country=country, result2=result2),
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -61,13 +65,13 @@ class GeographicalInfo2(
         alpha3 = data["alpha3Code"]
         embed = discord.Embed(
             title=f"Region of {country} — {alpha2} | {alpha3}",
-            description="**{country} is located in the region of `{result}`**".format(
-                result=result, country=country
-            ),
+            description="**{country} is located in the region of `{result}`**".
+            format(result=result, country=country),
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -90,12 +94,12 @@ class GeographicalInfo2(
         embed = discord.Embed(
             title=f"Subregion of {country} — {alpha2} | {alpha3}",
             description="**{country} is located in the subregion of `{result}`**".format(
-                result=result, country=country
-            ),
+                result=result, country=country),
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -104,7 +108,8 @@ class GeographicalInfo2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Get all the bordering countries of a real country.")
+    @cog_ext.cog_slash(
+        description="Get all the bordering countries of a real country.")
     async def borders(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -114,12 +119,10 @@ class GeographicalInfo2(
         alpha3 = data["alpha3Code"]
         result = data["borders"]
         if len(result) == 0:
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Hmm",
-                    description=f"{country} does not border any other countries",
-                )
-            )
+            await ctx.send(embed=discord.Embed(
+                title="Hmm",
+                description=f"{country} does not border any other countries",
+            ))
             return
         string = ""
         result = coco.convert(names=result, to="name_short")
@@ -135,7 +138,8 @@ class GeographicalInfo2(
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -144,7 +148,8 @@ class GeographicalInfo2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Get all the timezones located in a real country.")
+    @cog_ext.cog_slash(
+        description="Get all the timezones located in a real country.")
     async def timezone(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -162,7 +167,8 @@ class GeographicalInfo2(
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -171,7 +177,8 @@ class GeographicalInfo2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Get the rough coordinates of a real country.")
+    @cog_ext.cog_slash(
+        description="Get the rough coordinates of a real country.")
     async def coords(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -188,7 +195,8 @@ class GeographicalInfo2(
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),

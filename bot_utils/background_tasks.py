@@ -1,11 +1,15 @@
-import discord, asyncio
+import asyncio
 import random
-from bot_utils.mongomethods import update, reading
+
+import discord
+
+from bot_utils.mongomethods import reading, update
 
 words = ["come here!", "more people!", "🙂", "hello!"]
 
 
 class BackgroundTasks:
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -14,17 +18,13 @@ class BackgroundTasks:
             await self.bot.change_presence(activity=discord.Game(name=".help"))
             await asyncio.sleep(10)
             await self.bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.listening, name="@Country Bot prefix"
-                )
-            )
+                activity=discord.Activity(type=discord.ActivityType.listening,
+                                          name="@Country Bot prefix"))
             await asyncio.sleep(10)
-            await self.bot.change_presence(
-                activity=discord.Activity(
-                    type=discord.ActivityType.watching,
-                    name=f"{len(self.bot.guilds)} guilds and {sum(guild.member_count for guild in self.bot.guilds)} users!",
-                )
-            )
+            await self.bot.change_presence(activity=discord.Activity(
+                type=discord.ActivityType.watching,
+                name=f"{len(self.bot.guilds)} guilds and {sum(guild.member_count for guild in self.bot.guilds)} users!",
+            ))
             await asyncio.sleep(10)
 
     # setting the status of the bot and sending a message if the guild is not in db
@@ -36,12 +36,10 @@ class BackgroundTasks:
             word = random.choice(words)
             amount = random.randint(100, 1000)
 
-            message = await channel.send(
-                embed=discord.Embed(
-                    title="Refugees",
-                    description=f"{amount} refugees have showed up. Who will be the first person to bring them in! Say `{word}` to bring them in!!",
-                )
-            )
+            message = await channel.send(embed=discord.Embed(
+                title="Refugees",
+                description=f"{amount} refugees have showed up. Who will be the first person to bring them in! Say `{word}` to bring them in!!",
+            ))
 
             def check(m):
                 return m.content == word and m.channel == channel
@@ -49,7 +47,9 @@ class BackgroundTasks:
             n = True
             while n:
                 try:
-                    msg = await self.bot.wait_for("message", check=check, timeout=30)
+                    msg = await self.bot.wait_for("message",
+                                                  check=check,
+                                                  timeout=30)
 
                     try:
                         a = await reading(msg.author.id)
@@ -61,23 +61,19 @@ class BackgroundTasks:
                         await msg.channel.send(embed=embed)
                         n = True
 
-                    await update(
-                        (
-                            msg.author.id,
-                            a[0][0],
-                            a[0][1] + amount,
-                            a[0][2],
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
-                    await msg.reply(
-                        embed=discord.Embed(
-                            title="Hooray",
-                            description=f"{amount} more people added to your country!",
-                        )
-                    )
+                    await update((
+                        msg.author.id,
+                        a[0][0],
+                        a[0][1] + amount,
+                        a[0][2],
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
+                    await msg.reply(embed=discord.Embed(
+                        title="Hooray",
+                        description=f"{amount} more people added to your country!",
+                    ))
 
                     break
 

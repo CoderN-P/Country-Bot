@@ -1,34 +1,36 @@
-import discord
-from discord.ext import commands
-import country_converter as coco
+import datetime
+import json
 import random
 import re
+import resource
+import time
+
+import country_converter as coco
+import discord
+import psutil
 import pycountry
-from fuzzywuzzy import fuzz
-from bot_utils.mongomethods import count
+import requests
+import wikipedia
 from countryinfo import CountryInfo
 from discord import Color
-import json
-import requests
-import datetime
-import time
-import resource
-import psutil
-import wikipedia
+from discord.ext import commands
 from discord_slash import cog_ext
+from fuzzywuzzy import fuzz
+
 from bot_utils.country_filter import country_filter
+from bot_utils.mongomethods import count
 
 main_up = time.time()
-
 
 quiz_country_list = list(CountryInfo().all().keys())
 
 
 class General2(
-    commands.Cog,
-    name="General Data (slash)",
-    description="Commands that return general data about the bot, and real life countries",
+        commands.Cog,
+        name="General Data (slash)",
+        description="Commands that return general data about the bot, and real life countries",
 ):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -52,12 +54,12 @@ class General2(
             try:
                 await ctx.send(embed=e)
             except:
-                embed = discord.Embed(
-                    title="Error", description=":x: Country not found"
-                )
+                embed = discord.Embed(title="Error",
+                                      description=":x: Country not found")
                 await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(name="capital", description="Get the capital of a real country.")
+    @cog_ext.cog_slash(name="capital",
+                       description="Get the capital of a real country.")
     async def cap(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -69,12 +71,12 @@ class General2(
         embed = discord.Embed(
             title=f"Capital of {country} — {alpha2} | {alpha3}",
             description="**The capital of {country} is `{result}`**".format(
-                result=result, country=country
-            ),
+                result=result, country=country),
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -94,13 +96,13 @@ class General2(
         alpha3 = data["alpha3Code"]
         embed = discord.Embed(
             title=f"Population of {country} — {alpha2} | {alpha3}",
-            description="**The population of {country} is `{result:,}`**".format(
-                result=result, country=country
-            ),
+            description="**The population of {country} is `{result:,}`**".
+            format(result=result, country=country),
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -109,7 +111,8 @@ class General2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Check the states/provinces in a real country")
+    @cog_ext.cog_slash(
+        description="Check the states/provinces in a real country")
     async def states(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -134,7 +137,8 @@ class General2(
         )
 
         result4 = coco.convert(names=country, to="ISO2")
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{result4.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{result4.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -143,7 +147,8 @@ class General2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Check the main language of any real country.")
+    @cog_ext.cog_slash(
+        description="Check the main language of any real country.")
     async def language(self, ctx, *, country: str):
         data = await country_filter(country, ctx)
         if data is None:
@@ -165,7 +170,8 @@ class General2(
             color=0xFF5733,
         )
 
-        embed.set_thumbnail(url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
+        embed.set_thumbnail(
+            url=f"https://flagcdn.com/w80/{alpha2.lower()}.jpg")
 
         embed.set_footer(
             text="Requested by: {name}".format(name=ctx.author),
@@ -178,10 +184,12 @@ class General2(
     async def covid(self, ctx, *, country: str):
         arg = country
         try:
-            url = "https://covid-193.p.rapidapi.com/statistics?country={}".format(arg)
+            url = "https://covid-193.p.rapidapi.com/statistics?country={}".format(
+                arg)
 
             headers = {
-                "x-rapidapi-key": "f3c7547811mshb7e5680d6a29edcp1387fcjsncb14f156c54a",
+                "x-rapidapi-key":
+                "f3c7547811mshb7e5680d6a29edcp1387fcjsncb14f156c54a",
                 "x-rapidapi-host": "covid-193.p.rapidapi.com",
             }
 
@@ -372,27 +380,19 @@ class General2(
         try:
             data = wikipedia.page(page)
 
-            await ctx.send(
-                embed=discord.Embed(
-                    title=data.title, url=data.url, description=data.summary
-                )
-            )
+            await ctx.send(embed=discord.Embed(
+                title=data.title, url=data.url, description=data.summary))
         except discord.errors.HTTPException:
             data = wikipedia.page(page)
 
-            await ctx.send(
-                embed=discord.Embed(
-                    title=data.title,
-                    url=data.url,
-                    description=data.summary.split("\n")[0],
-                )
-            )
+            await ctx.send(embed=discord.Embed(
+                title=data.title,
+                url=data.url,
+                description=data.summary.split("\n")[0],
+            ))
         except wikipedia.exceptions.DisambiguationError as e:
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Did you mean", description=", ".join(e.options)
-                )
-            )
+            await ctx.send(embed=discord.Embed(
+                title="Did you mean", description=", ".join(e.options)))
 
         except wikipedia.exceptions.PageError:
             await ctx.send(":x: We could not find any matches for this page")

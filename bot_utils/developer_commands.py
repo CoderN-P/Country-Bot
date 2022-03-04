@@ -1,17 +1,20 @@
-from discord.ext import commands
-import discord
 import contextlib
-import textwrap
 import io
+import textwrap
+
+import discord
+from discord.ext import commands
+
 from bot_utils.background_tasks import BackgroundTasks
 from bot_utils.mongomethods import findall
 
 
 class DeveloperCommands(
-    commands.Cog,
-    name="Developer Commands",
-    description="Commands that only the developer can use.",
+        commands.Cog,
+        name="Developer Commands",
+        description="Commands that only the developer can use.",
 ):
+
     def __init__(self, bot, task):
         self.bot = bot
         self.task = task
@@ -50,7 +53,8 @@ class DeveloperCommands(
     @commands.is_owner()
     async def start_drops(self, ctx):
         try:
-            self.task = self.bot.loop.create_task(BackgroundTasks().refugee_drops())
+            self.task = self.bot.loop.create_task(
+                BackgroundTasks().refugee_drops())
             await ctx.channel.send("refugee drops have started")
         except:
             await ctx.channel.send("Drops are have already started")

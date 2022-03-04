@@ -1,27 +1,22 @@
-from bot_utils.mongomethods import *
-
-from fuzzywuzzy import fuzz
-import country_converter as coco
-
-from emojiflags.lookup import lookup
-
+import asyncio
 import datetime
+import random
+import time
+import unicodedata
+
+import country_converter as coco
+import discord
+from countryinfo import CountryInfo
+from dinteractions_Paginator import Paginator
+from discord import Color
+from discord.ext import commands
+from discord_slash import cog_ext
 from discord_slash.context import MenuContext
 from discord_slash.model import ContextMenuType
-import unicodedata
-import asyncio
-from dinteractions_Paginator import Paginator
+from emojiflags.lookup import lookup
+from fuzzywuzzy import fuzz
 
-
-from countryinfo import CountryInfo
-import time
-
-from discord import Color
-import random
-from discord_slash import cog_ext
-import discord
-
-from discord.ext import commands
+from bot_utils.mongomethods import *
 
 dic2 = {
     "Mayor": 1,
@@ -31,7 +26,6 @@ dic2 = {
     "Vice President": 5,
     "President": 6,
 }
-
 
 dic = {
     1: "Mom's basement",
@@ -47,15 +41,15 @@ hunt_animals = {
     "Crocodile": [":crocodile:", 750],
 }
 
-
 quiz_country_list = list(CountryInfo().all().keys())
 
 
 class EconomyCommands2(
-    commands.Cog,
-    name="Economy Commands (slash)",
-    description="Commands that let you have your own little economy system",
+        commands.Cog,
+        name="Economy Commands (slash)",
+        description="Commands that let you have your own little economy system",
 ):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -76,16 +70,14 @@ class EconomyCommands2(
 
         prestige = a[0][5] + 1
 
-        tax1 = round(((a[0][1] ** 0.5) / 50) * prestige)
+        tax1 = round(((a[0][1]**0.5) / 50) * prestige)
 
         tax1 *= dic2[a[0][3]]
 
-        await ctx.send(
-            embed=discord.Embed(
-                title="Tax",
-                description=f"You got {tax1} :coin: from taxing your population",
-            )
-        )
+        await ctx.send(embed=discord.Embed(
+            title="Tax",
+            description=f"You got {tax1} :coin: from taxing your population",
+        ))
 
         await update_coins((ctx.author.id, tax1 + a[0][11]))
 
@@ -98,7 +90,8 @@ class EconomyCommands2(
             )
             await ctx.send(embed=em)
 
-    @cog_ext.cog_slash(description="Shows global leaderboards for coins and prestige")
+    @cog_ext.cog_slash(
+        description="Shows global leaderboards for coins and prestige")
     async def leaderboard(self, ctx, type: str = None):
 
         if not type:
@@ -114,13 +107,12 @@ class EconomyCommands2(
                 name = str(i["_id"]).strip("`")
                 name2 = str(i["data"]["name"]).strip("`")
                 string = (
-                    string
-                    + f"**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n"
+                    string +
+                    f"**{x}.** {name}: `{name2}`| `Prestige Level {prestige}`\n"
                 )
 
-            embed = discord.Embed(
-                title="Global Leaderboard (prestige)", description=string
-            )
+            embed = discord.Embed(title="Global Leaderboard (prestige)",
+                                  description=string)
             await ctx.send(embed=embed)
 
         else:
@@ -137,12 +129,11 @@ class EconomyCommands2(
                     name = str(i["_id"]).strip("`")
                     name2 = str(i["data"]["name"]).strip("`")
                     string = (
-                        string + f"**{x}.** {name}: `{name2}`| `{prestige}` :coin:\n"
-                    )
+                        string +
+                        f"**{x}.** {name}: `{name2}`| `{prestige}` :coin:\n")
 
-                embed = discord.Embed(
-                    title="Global Leaderboard (coins)", description=string
-                )
+                embed = discord.Embed(title="Global Leaderboard (coins)",
+                                      description=string)
                 await ctx.send(embed=embed)
 
             else:
@@ -152,7 +143,8 @@ class EconomyCommands2(
     async def lb_error(self, ctx, error):
         raise error
 
-    @cog_ext.cog_slash(description="Hunt for items (they go to your inventory)")
+    @cog_ext.cog_slash(description="Hunt for items (they go to your inventory)"
+                       )
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def hunt(self, ctx):
         a = await find_inventory(ctx.author.id, ctx)
@@ -165,8 +157,8 @@ class EconomyCommands2(
 
         if animal == " ":
             embed = discord.Embed(
-                title="Hunting", description="While hunting you found nothing :C"
-            )
+                title="Hunting",
+                description="While hunting you found nothing :C")
             await ctx.send(embed=embed)
 
         else:
@@ -184,9 +176,11 @@ class EconomyCommands2(
 
             else:
                 a[f"{hunt_animals[animal][0]} {animal}"] = {
-                    "amount": a[f"{hunt_animals[animal][0]} {animal}"]["amount"] + 1,
-                    "value": a[f"{hunt_animals[animal][0]} {animal}"]["value"]
-                    + hunt_animals[animal][1],
+                    "amount":
+                    a[f"{hunt_animals[animal][0]} {animal}"]["amount"] + 1,
+                    "value":
+                    a[f"{hunt_animals[animal][0]} {animal}"]["value"] +
+                    hunt_animals[animal][1],
                 }
 
             await update_inventory((ctx.author.id, a))
@@ -222,9 +216,8 @@ class EconomyCommands2(
                     del a[item1]
                     await update_inventory((ctx.author.id, a))
 
-                    await ctx.send(
-                        embed=discord.Embed(title="Success", description=f"Sold {item}")
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title="Success", description=f"Sold {item}"))
 
                     await update_coins((ctx.author.id, ab[0][11] + value))
 
@@ -237,11 +230,8 @@ class EconomyCommands2(
 
                     await update_inventory((ctx.author.id, a))
 
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="Success", description=f"Sold {item1}"
-                        )
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title="Success", description=f"Sold {item1}"))
 
                     await update_coins((ctx.author.id, ab[0][11] + value))
 
@@ -273,9 +263,8 @@ class EconomyCommands2(
 
             await update_inventory((ctx.author.id, a))
 
-            await ctx.send(
-                embed=discord.Embed(title="Success", description=f"Sold {item1}")
-            )
+            await ctx.send(embed=discord.Embed(title="Success",
+                                               description=f"Sold {item1}"))
 
             await update_coins((ctx.author.id, ab[0][11] + value))
 
@@ -290,8 +279,8 @@ class EconomyCommands2(
             amount = i[1]["amount"]
             value = i[1]["value"]
             string = (
-                string + f"**{x + 1}.** {i[0]} | Amount: {amount} : Worth: {value}\n"
-            )
+                string +
+                f"**{x + 1}.** {i[0]} | Amount: {amount} : Worth: {value}\n")
 
         if len(a) == 0:
             string = ":x: You don't have anything in your inventory. Buy things from the shop with coins!"
@@ -317,35 +306,32 @@ class EconomyCommands2(
 
             msg = await self.bot.wait_for("message", check=check, timeout=100)
 
-            await writing(
-                (
-                    ctx.author.id,
-                    msg.content,
-                    0,
-                    1,
-                    "Mayor",
-                    1,
-                    0,
-                    50000000,
-                    0,
-                    0,
-                    0,
-                    0,
-                    0,
-                )
-            )
+            await writing((
+                ctx.author.id,
+                msg.content,
+                0,
+                1,
+                "Mayor",
+                1,
+                0,
+                50000000,
+                0,
+                0,
+                0,
+                0,
+                0,
+            ))
 
             await ctx.send("Hooray, Country Created!!!!")
         except:
             embed = discord.Embed(
-                title="Sorry", description=""":x: You already have a country."""
-            )
+                title="Sorry",
+                description=""":x: You already have a country.""")
 
             await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(
-        description="Check information about your country, or another person's country."
-    )
+        description="Check information about your country, or another person's country.")
     async def profile(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
@@ -388,8 +374,8 @@ class EconomyCommands2(
             )
 
             embed4 = discord.Embed(
-                title="Office", description=f"Your office is: `{dic[a[0][4]]}`"
-            )
+                title="Office",
+                description=f"Your office is: `{dic[a[0][4]]}`")
 
             embed.set_thumbnail(url=member.avatar_url)
             embed2.set_thumbnail(url=member.avatar_url)
@@ -420,7 +406,8 @@ class EconomyCommands2(
                     url="https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581"
                 )
 
-            embed.set_footer(text=f"Tax your citizens with `/tax` to earn coins!")
+            embed.set_footer(
+                text=f"Tax your citizens with `/tax` to earn coins!")
 
             pages = [embed, embed2, embed3, embed4]
             await Paginator(bot=self.bot, ctx=ctx, pages=pages, timeout=100)
@@ -432,7 +419,8 @@ class EconomyCommands2(
             )
             await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Shows you items you can purchase for your country")
+    @cog_ext.cog_slash(
+        description="Shows you items you can purchase for your country")
     async def shop(self, ctx):
         a = await reading(ctx.author.id, ctx)
         if a is None:
@@ -505,7 +493,8 @@ class EconomyCommands2(
 
         await ctx.send(embed=embed)
 
-    @cog_ext.cog_slash(description="Work and earn population for your country!")
+    @cog_ext.cog_slash(description="Work and earn population for your country!"
+                       )
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def work(self, ctx):
         chance = random.randint(1, 10)
@@ -526,17 +515,15 @@ class EconomyCommands2(
                 description="Congratulations!!, You have been promoted to `State Senator`",
             )
             await ctx.send(embed=embed)
-            await update(
-                (
-                    ctx.author.id,
-                    a[0][0],
-                    a[0][1],
-                    a[0][2],
-                    "State Senator",
-                    a[0][4],
-                    a[0][10],
-                )
-            )
+            await update((
+                ctx.author.id,
+                a[0][0],
+                a[0][1],
+                a[0][2],
+                "State Senator",
+                a[0][4],
+                a[0][10],
+            ))
             a = await reading(ctx.author.id)
 
         elif a[0][1] >= 10000 and a[0][3] == "State Senator":
@@ -545,17 +532,15 @@ class EconomyCommands2(
                 description="Congratulations!!, You have been promoted to `Governor`",
             )
             await ctx.send(embed=embed)
-            await update(
-                (
-                    ctx.author.id,
-                    a[0][0],
-                    a[0][1],
-                    a[0][2],
-                    "Governor",
-                    a[0][4],
-                    a[0][10],
-                )
-            )
+            await update((
+                ctx.author.id,
+                a[0][0],
+                a[0][1],
+                a[0][2],
+                "Governor",
+                a[0][4],
+                a[0][10],
+            ))
             a = await reading(ctx.author.id)
 
         elif a[0][1] >= 50000 and a[0][3] == "Governor":
@@ -564,9 +549,8 @@ class EconomyCommands2(
                 description="Congratulations!!, You have been promoted to `Senator`",
             )
             await ctx.send(embed=embed)
-            await update(
-                (ctx.author.id, a[0][0], a[0][1], a[0][2], "Senator", a[0][4], a[0][10])
-            )
+            await update((ctx.author.id, a[0][0], a[0][1], a[0][2], "Senator",
+                          a[0][4], a[0][10]))
             a = await reading(ctx.author.id)
 
         elif a[0][1] >= 200000 and a[0][3] == "Senator":
@@ -576,17 +560,15 @@ class EconomyCommands2(
             )
 
             await ctx.send(embed=embed)
-            await update(
-                (
-                    ctx.author.id,
-                    a[0][0],
-                    a[0][1],
-                    a[0][2],
-                    "Vice President",
-                    a[0][4],
-                    a[0][10],
-                )
-            )
+            await update((
+                ctx.author.id,
+                a[0][0],
+                a[0][1],
+                a[0][2],
+                "Vice President",
+                a[0][4],
+                a[0][10],
+            ))
             a = await reading(ctx.author.id)
 
         elif a[0][1] >= 2500000 and a[0][3] == "Vice President":
@@ -595,17 +577,15 @@ class EconomyCommands2(
                 description=f"Congratulations!!, You have been promoted to `President` You are now the leader of {a[0][0]}",
             )
             await ctx.send(embed=embed)
-            await update(
-                (
-                    ctx.author.id,
-                    a[0][0],
-                    a[0][1],
-                    a[0][2],
-                    "President",
-                    a[0][4],
-                    a[0][10],
-                )
-            )
+            await update((
+                ctx.author.id,
+                a[0][0],
+                a[0][1],
+                a[0][2],
+                "President",
+                a[0][4],
+                a[0][10],
+            ))
             a = await reading(ctx.author.id)
 
         try:
@@ -622,17 +602,15 @@ class EconomyCommands2(
 
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + (a[0][5] + 1) / 10))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "Mayor",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "Mayor",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work!!!!!",
@@ -642,17 +620,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -672,17 +648,15 @@ class EconomyCommands2(
 
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1) / 10)))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "State Senator",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "State Senator",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work!!!!!",
@@ -692,17 +666,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -722,17 +694,15 @@ class EconomyCommands2(
 
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1) / 10)))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "Governor",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "Governor",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work!!!!!",
@@ -742,17 +712,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -772,17 +740,15 @@ class EconomyCommands2(
                     amount1 = amount1 * a[0][2]
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1) / 10)))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "Senator",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "Senator",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work :zap:!!!!!",
@@ -792,17 +758,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -822,17 +786,15 @@ class EconomyCommands2(
 
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1) / 10)))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "Vice President",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "Vice President",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work!!!!!",
@@ -842,17 +804,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -871,17 +831,15 @@ class EconomyCommands2(
                     amount1 = amount1 * a[0][2]
                 amount = amount1 + int(a[0][1])
                 multi = float("{:.1f}".format(a[0][2] + ((a[0][5] + 1) / 10)))
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        amount,
-                        multi,
-                        "President",
-                        a[0][4],
-                        a[0][10] + 1,
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    amount,
+                    multi,
+                    "President",
+                    a[0][4],
+                    a[0][10] + 1,
+                ))
 
                 embed = discord.Embed(
                     title="Work Work Work!!!!!",
@@ -891,17 +849,15 @@ class EconomyCommands2(
                 await ctx.send(embed=embed)
                 if chance == 5:
                     a = await reading(ctx.author.id)
-                    await update(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            a[0][1],
-                            a[0][2] + 1,
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        a[0][0],
+                        a[0][1],
+                        a[0][2] + 1,
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
                     embed_chance = discord.Embed(
                         title="Hooray",
                         description="While working you found 1 multiplier boost :zap:",
@@ -944,30 +900,28 @@ class EconomyCommands2(
                 return m.channel == ctx.channel and m.author == ctx.author
 
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=100)
+                msg = await self.bot.wait_for("message",
+                                              check=check,
+                                              timeout=100)
 
                 if msg.content.lower() == "n":
-                    embed = discord.Embed(
-                        title="ok", description=":x: Prestige cancelled"
-                    )
+                    embed = discord.Embed(title="ok",
+                                          description=":x: Prestige cancelled")
                     await ctx.send(embed=embed)
 
                 elif msg.content.lower() == "y":
-                    await update_prestige(
-                        (
-                            ctx.author.id,
-                            a[0][0],
-                            0,
-                            1,
-                            "Mayor",
-                            1,
-                            a[0][5] + 1,
-                            (a[0][6] + 50000000),
-                        )
-                    )
-                    embed = discord.Embed(
-                        title="Congratulations", description=":tada: You prestiged!!"
-                    )
+                    await update_prestige((
+                        ctx.author.id,
+                        a[0][0],
+                        0,
+                        1,
+                        "Mayor",
+                        1,
+                        a[0][5] + 1,
+                        (a[0][6] + 50000000),
+                    ))
+                    embed = discord.Embed(title="Congratulations",
+                                          description=":tada: You prestiged!!")
                     await ctx.send(embed=embed)
 
                 else:
@@ -993,12 +947,8 @@ class EconomyCommands2(
         theauthor = ctx.author
 
         def check(m):
-            return (
-                m.content == "y"
-                or m.content == "n"
-                and m.channel == thechannel
-                and m.author == theauthor
-            )
+            return (m.content == "y" or m.content == "n"
+                    and m.channel == thechannel and m.author == theauthor)
 
         try:
             msg = await self.bot.wait_for("message", check=check, timeout=100)
@@ -1018,8 +968,7 @@ class EconomyCommands2(
             await ctx.send(embed=embed)
         elif msg.content == "n":
             embed = discord.Embed(
-                title="Phew", description=f"Your country is not deleted :DD"
-            )
+                title="Phew", description=f"Your country is not deleted :DD")
             await ctx.send(embed=embed)
 
     @cog_ext.cog_slash(
@@ -1044,34 +993,34 @@ class EconomyCommands2(
 
                 if a[0][2] > 10000000:
                     embed = discord.Embed(
-                        title="Stop!", description="You can't buy anymore multiplier!!"
-                    )
+                        title="Stop!",
+                        description="You can't buy anymore multiplier!!")
                     await ctx.send(embed=embed)
                     return
 
                 if int(amount) <= 0:
-                    await ctx.send(":x: You can't buy this amount of multiplier smh")
+                    await ctx.send(
+                        ":x: You can't buy this amount of multiplier smh")
                     return
                 if (int(amount)) + a[0][2] > 10000000:
                     embed = discord.Embed(
-                        title="Stop!", description="You can't buy anymore multiplier!!"
-                    )
+                        title="Stop!",
+                        description="You can't buy anymore multiplier!!")
                     await ctx.send(embed=embed)
                     return
 
-                await update(
-                    (
-                        ctx.message.author.id,
-                        a[0][0],
-                        a[0][1],
-                        a[0][2] + (1 * int(amount)),
-                        a[0][3],
-                        a[0][4],
-                        a[0][10],
-                    )
-                )
+                await update((
+                    ctx.message.author.id,
+                    a[0][0],
+                    a[0][1],
+                    a[0][2] + (1 * int(amount)),
+                    a[0][3],
+                    a[0][4],
+                    a[0][10],
+                ))
 
-                await update_coins((ctx.author.id, a[0][11] - (500 * int(amount))))
+                await update_coins(
+                    (ctx.author.id, a[0][11] - (500 * int(amount))))
 
                 embed = discord.Embed(
                     title="Congratulations",
@@ -1083,15 +1032,14 @@ class EconomyCommands2(
 
             if id == "1":
                 embed = discord.Embed(
-                    title="Error", description=":x: How much multiplier are you buying!"
-                )
+                    title="Error",
+                    description=":x: How much multiplier are you buying!")
                 await ctx.send(embed=embed)
 
             elif id == "2":
                 if a[0][4] >= 2:
                     embed = discord.Embed(
-                        title="Hey", description=":x: You already own this!!!"
-                    )
+                        title="Hey", description=":x: You already own this!!!")
                     await ctx.send(embed=embed)
                     return
                 if (a[0][11] - 1000) < 0:
@@ -1102,17 +1050,15 @@ class EconomyCommands2(
                     await ctx.send(embed=embed)
                     return
 
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        a[0][1],
-                        a[0][2],
-                        a[0][3],
-                        (a[0][4] + 1),
-                        a[0][10],
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    a[0][1],
+                    a[0][2],
+                    a[0][3],
+                    (a[0][4] + 1),
+                    a[0][10],
+                ))
 
                 await update_coins((ctx.author.id, a[0][11] - 1000))
 
@@ -1125,8 +1071,7 @@ class EconomyCommands2(
             elif id == "3":
                 if a[0][4] >= 3:
                     embed = discord.Embed(
-                        title="Hey", description=":x: You already own this!!!"
-                    )
+                        title="Hey", description=":x: You already own this!!!")
                     await ctx.send(embed=embed)
                     return
                 if a[0][4] < 2:
@@ -1144,17 +1089,15 @@ class EconomyCommands2(
                     await ctx.send(embed=embed)
                     return
 
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        a[0][1],
-                        a[0][2],
-                        a[0][3],
-                        (a[0][4] + 1),
-                        a[0][10],
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    a[0][1],
+                    a[0][2],
+                    a[0][3],
+                    (a[0][4] + 1),
+                    a[0][10],
+                ))
 
                 await update_coins((ctx.author.id, a[0][11] - 10000))
 
@@ -1167,8 +1110,7 @@ class EconomyCommands2(
             elif id == "4":
                 if a[0][4] >= 5:
                     embed = discord.Embed(
-                        title="Hey", description=":x: You already own this!!!"
-                    )
+                        title="Hey", description=":x: You already own this!!!")
                     await ctx.send(embed=embed)
                     return
                 if a[0][4] < 3:
@@ -1186,30 +1128,27 @@ class EconomyCommands2(
                     await ctx.send(embed=embed)
                     return
 
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        a[0][1],
-                        a[0][2],
-                        a[0][3],
-                        (a[0][4] + 2),
-                        a[0][10],
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    a[0][1],
+                    a[0][2],
+                    a[0][3],
+                    (a[0][4] + 2),
+                    a[0][10],
+                ))
 
                 await update_coins((ctx.author.id, a[0][11] - 50000))
 
                 embed = discord.Embed(
-                    title="Congratulations", description=f"You have bought the Mansion"
-                )
+                    title="Congratulations",
+                    description=f"You have bought the Mansion")
                 await ctx.send(embed=embed)
 
             elif id == "5":
                 if a[0][4] >= 10:
                     embed = discord.Embed(
-                        title="Hey", description=":x: You already own this!!!"
-                    )
+                        title="Hey", description=":x: You already own this!!!")
                     await ctx.send(embed=embed)
                     return
                 if a[0][4] < 5:
@@ -1227,17 +1166,15 @@ class EconomyCommands2(
                     await ctx.send(embed=embed)
                     return
 
-                await update(
-                    (
-                        ctx.author.id,
-                        a[0][0],
-                        a[0][1],
-                        a[0][2],
-                        a[0][3],
-                        (a[0][4] + 5),
-                        a[0][10],
-                    )
-                )
+                await update((
+                    ctx.author.id,
+                    a[0][0],
+                    a[0][1],
+                    a[0][2],
+                    a[0][3],
+                    (a[0][4] + 5),
+                    a[0][10],
+                ))
 
                 await update_coins((ctx.author.id, a[0][11] - 100000))
 
@@ -1263,15 +1200,15 @@ class EconomyCommands2(
 
         except:
             embed = discord.Embed(
-                title="Whoops", description=":x: This person doesnt have a country!!"
-            )
+                title="Whoops",
+                description=":x: This person doesnt have a country!!")
             await ctx.send(embed=embed)
             return
 
         if str(user.id) == str(ctx.author.id):
             embed = discord.Embed(
-                title="Hey!", description=":x: You can't give gifts to yourself!"
-            )
+                title="Hey!",
+                description=":x: You can't give gifts to yourself!")
             await ctx.send(embed=embed)
             return
 
@@ -1284,104 +1221,87 @@ class EconomyCommands2(
             if amount.isnumeric():
                 if int(amount) > b[0][1]:
                     embed = discord.Embed(
-                        title="Hey!", description=":x: You don't have that many people!"
-                    )
+                        title="Hey!",
+                        description=":x: You don't have that many people!")
                     await ctx.send(embed=embed)
 
                 else:
-                    await update(
-                        (
-                            ctx.author.id,
-                            b[0][0],
-                            b[0][1] - int(amount),
-                            b[0][2],
-                            b[0][3],
-                            b[0][4],
-                            b[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        b[0][0],
+                        b[0][1] - int(amount),
+                        b[0][2],
+                        b[0][3],
+                        b[0][4],
+                        b[0][10],
+                    ))
 
-                    await update(
-                        (
-                            user,
-                            a[0][0],
-                            a[0][1] + int(amount),
-                            a[0][2],
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        user,
+                        a[0][0],
+                        a[0][1] + int(amount),
+                        a[0][2],
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
 
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="Success!",
-                            description=f"Succesfully transefered {amount} people to {user}'s country!",
-                        )
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title="Success!",
+                        description=f"Succesfully transefered {amount} people to {user}'s country!",
+                    ))
 
             else:
 
                 if amount.lower() == "half":
-                    await update(
-                        (
-                            ctx.author.id,
-                            b[0][0],
-                            int(b[0][1] / 2),
-                            b[0][2],
-                            b[0][3],
-                            b[0][4],
-                            b[0][10],
-                        )
-                    )
+                    await update((
+                        ctx.author.id,
+                        b[0][0],
+                        int(b[0][1] / 2),
+                        b[0][2],
+                        b[0][3],
+                        b[0][4],
+                        b[0][10],
+                    ))
 
-                    await update(
-                        (
-                            user,
-                            a[0][0],
-                            a[0][1] + int(b[0][1] / 2),
-                            a[0][2],
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        user,
+                        a[0][0],
+                        a[0][1] + int(b[0][1] / 2),
+                        a[0][2],
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
 
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="Success!",
-                            description=f"Succesfully transefered {int(b[0][1]/2)} people to {user}'s country!",
-                        )
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title="Success!",
+                        description=f"Succesfully transefered {int(b[0][1]/2)} people to {user}'s country!",
+                    ))
 
                 elif amount.lower() == "all":
-                    await update(
-                        (ctx.author.id, b[0][0], 0, b[0][2], b[0][3], b[0][4], b[0][10])
-                    )
+                    await update((ctx.author.id, b[0][0], 0, b[0][2], b[0][3],
+                                  b[0][4], b[0][10]))
 
-                    await update(
-                        (
-                            user,
-                            a[0][0],
-                            a[0][1] + b[0][1],
-                            a[0][2],
-                            a[0][3],
-                            a[0][4],
-                            a[0][10],
-                        )
-                    )
+                    await update((
+                        user,
+                        a[0][0],
+                        a[0][1] + b[0][1],
+                        a[0][2],
+                        a[0][3],
+                        a[0][4],
+                        a[0][10],
+                    ))
 
-                    await ctx.send(
-                        embed=discord.Embed(
-                            title="Success!",
-                            description=f"Succesfully transefered {int(b[0][1])} people to {user}'s country!",
-                        )
-                    )
+                    await ctx.send(embed=discord.Embed(
+                        title="Success!",
+                        description=f"Succesfully transefered {int(b[0][1])} people to {user}'s country!",
+                    ))
 
                 else:
                     embed = discord.Embed(
-                        title="Hey!", description=":x: That is not a valid amount!"
-                    )
+                        title="Hey!",
+                        description=":x: That is not a valid amount!")
                     await ctx.send(embed=embed)
         except OverflowError:
             await ctx.send(":x: You can't gift that much at a time")
@@ -1395,13 +1315,14 @@ class EconomyCommands2(
 
         if len(arg) > 50:
             embed = discord.Embed(
-                title="Hey!", description=":x: The name can only be up to 50 characters"
-            )
+                title="Hey!",
+                description=":x: The name can only be up to 50 characters")
             await ctx.send(embed=embed)
             return
 
         arg = arg.replace("'", "`")
-        await update((ctx.author.id, arg, a[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
+        await update(
+            (ctx.author.id, arg, a[0][1], a[0][2], a[0][3], a[0][4], a[0][10]))
         embed = discord.Embed(
             title="Success",
             description=f"Country name Has been succesfully changed to {arg}",
@@ -1416,17 +1337,15 @@ class EconomyCommands2(
         if a is None:
             return
 
-        await update(
-            (
-                ctx.author.id,
-                a[0][0],
-                a[0][1] + int((100 * (((a[0][1] ** 0.5) / 100)) * (a[0][5] + 1))),
-                a[0][2],
-                a[0][3],
-                a[0][4],
-                a[0][10],
-            )
-        )
+        await update((
+            ctx.author.id,
+            a[0][0],
+            a[0][1] + int((100 * (((a[0][1]**0.5) / 100)) * (a[0][5] + 1))),
+            a[0][2],
+            a[0][3],
+            a[0][4],
+            a[0][10],
+        ))
 
         embed = discord.Embed(
             title="Daily",
@@ -1445,7 +1364,8 @@ class EconomyCommands2(
             )
             await ctx.send(embed=em)
 
-    @cog_ext.cog_context_menu(name="View country profile", target=ContextMenuType.USER)
+    @cog_ext.cog_context_menu(name="View country profile",
+                              target=ContextMenuType.USER)
     async def view_country_profile(self, ctx: MenuContext):
         member = ctx.target_author
         try:
@@ -1512,7 +1432,8 @@ class EconomyCommands2(
                     url="https://cdna.artstation.com/p/assets/images/images/000/630/350/large/jarek-kalwa-space-base.jpg?1429173581"
                 )
 
-            embed.set_footer(text=f"Tax your citizens with `/tax` to earn coins!")
+            embed.set_footer(
+                text=f"Tax your citizens with `/tax` to earn coins!")
 
             await ctx.send(embed=embed)
 
@@ -1524,9 +1445,9 @@ class EconomyCommands2(
             await ctx.send(embed=embed)
 
 
-class Games2(
-    commands.Cog, description="Cool games that test your geography skills (slash)"
-):
+class Games2(commands.Cog,
+             description="Cool games that test your geography skills (slash)"):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -1539,8 +1460,8 @@ class Games2(
 
         if int(b) == int(ctx.author.id):
             embed = discord.Embed(
-                title="Stop!", description=":x: You can't wage war on yourself!"
-            )
+                title="Stop!",
+                description=":x: You can't wage war on yourself!")
             await ctx.send(embed=embed)
             return
 
@@ -1569,12 +1490,9 @@ class Games2(
         )
 
         def check(m):
-            return (
-                m.channel == ctx.channel
-                and m.author == opponent
-                and m.content.lower() == "accept"
-                or m.content.lower() == "deny"
-            )
+            return (m.channel == ctx.channel and m.author == opponent
+                    and m.content.lower() == "accept"
+                    or m.content.lower() == "deny")
 
         try:
             msg = await self.bot.wait_for("message", check=check, timeout=20)
@@ -1594,8 +1512,7 @@ class Games2(
             await ctx.send(embed=embed)
         else:
             embed = discord.Embed(
-                title="Phew", dsescription="Crisis averted. There is no war"
-            )
+                title="Phew", dsescription="Crisis averted. There is no war")
             await ctx.send(embed=embed)
             return
 
@@ -1606,13 +1523,16 @@ class Games2(
         a = 0
         while n:
             if a == 4:
-                await ctx.send("You tried this too many times, quitting game..")
+                await ctx.send("You tried this too many times, quitting game.."
+                               )
                 return
             await ctx.send(
                 f"<@!{ctx.message.author.id}> how many troops do you want to deploy, type `quit` to end"
             )
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=20)
+                msg = await self.bot.wait_for("message",
+                                              check=check,
+                                              timeout=20)
             except asyncio.TimeoutError:
                 await ctx.send("Time ran out. No war :(")
                 return
@@ -1621,7 +1541,8 @@ class Games2(
                 num = float(msg.content)
 
                 if num <= 0:
-                    await ctx.send("You can't go to war with less than 0 people smh")
+                    await ctx.send(
+                        "You can't go to war with less than 0 people smh")
                     a += 1
                     continue
 
@@ -1658,13 +1579,16 @@ class Games2(
         a = 0
         while n:
             if a == 4:
-                await ctx.send("You tried this too many times! quitting game...")
+                await ctx.send(
+                    "You tried this too many times! quitting game...")
                 return
             await ctx.send(
                 f"{user} how many troops do you want to deploy, type `quit` to end"
             )
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=20)
+                msg = await self.bot.wait_for("message",
+                                              check=check,
+                                              timeout=20)
             except asyncio.TimeoutError:
                 await ctx.send("Time ran out. No war :(")
                 return
@@ -1672,7 +1596,8 @@ class Games2(
                 num = float(msg.content)
 
                 if num <= 0:
-                    await ctx.send("You can't go to war with less than 0 people smh")
+                    await ctx.send(
+                        "You can't go to war with less than 0 people smh")
                     a = a + 1
                     continue
             except:
@@ -1689,7 +1614,8 @@ class Games2(
                     user2_troops = int(msg.content)
                     break
                 else:
-                    await ctx.send(f":x: {user} you dont have enough people!!!!")
+                    await ctx.send(
+                        f":x: {user} you dont have enough people!!!!")
                     a = a + 1
                     continue
             else:
@@ -1706,11 +1632,8 @@ class Games2(
             country_capital1 = CountryInfo(random_country)
             country_capital = country_capital1.capital()
 
-        country_capital = (
-            unicodedata.normalize("NFKD", country_capital)
-            .encode("ascii", "ignore")
-            .decode("utf-8")
-        )
+        country_capital = (unicodedata.normalize(
+            "NFKD", country_capital).encode("ascii", "ignore").decode("utf-8"))
 
         # try:
 
@@ -1725,11 +1648,9 @@ class Games2(
 
         def check(m):
 
-            return (
-                m.content.lower() == country_capital.lower()
-                and m.channel == ctx.channel
-                and int(m.author.id) in [int(b), int(ctx.author.id)]
-            )
+            return (m.content.lower() == country_capital.lower()
+                    and m.channel == ctx.channel and int(
+                        m.author.id) in [int(b), int(ctx.author.id)])
 
         try:
             msg = await self.bot.wait_for("message", check=check, timeout=30)
@@ -1742,73 +1663,65 @@ class Games2(
             await ctx.channel.send(
                 f"<@!{ctx.author.id}> you gave the answer first. You won the war!!! :crown:"
             )
-            await update_war(
-                (
-                    ctx.author.id,
-                    user1[0][0],
-                    user1[0][1] + user2_troops,
-                    user1[0][2],
-                    user1[0][3],
-                    user1[0][4],
-                    user1[0][5],
-                    user1[0][6],
-                    user1[0][7] + 1,
-                    user1[0][8] + 1,
-                    user1[0][9],
-                )
-            )
+            await update_war((
+                ctx.author.id,
+                user1[0][0],
+                user1[0][1] + user2_troops,
+                user1[0][2],
+                user1[0][3],
+                user1[0][4],
+                user1[0][5],
+                user1[0][6],
+                user1[0][7] + 1,
+                user1[0][8] + 1,
+                user1[0][9],
+            ))
 
-            await update_war(
-                (
-                    b,
-                    user2[0][0],
-                    user2[0][1] - user2_troops,
-                    user2[0][2],
-                    user2[0][3],
-                    user2[0][4],
-                    user2[0][5],
-                    user2[0][6],
-                    user2[0][7] + 1,
-                    user2[0][8],
-                    user2[0][9] + 1,
-                )
-            )
+            await update_war((
+                b,
+                user2[0][0],
+                user2[0][1] - user2_troops,
+                user2[0][2],
+                user2[0][3],
+                user2[0][4],
+                user2[0][5],
+                user2[0][6],
+                user2[0][7] + 1,
+                user2[0][8],
+                user2[0][9] + 1,
+            ))
 
         else:
             await ctx.channel.send(
                 f"{user} you gave the answer first. You won the war!!! :crown:"
             )
-            await update_war(
-                (
-                    ctx.author.id,
-                    user1[0][0],
-                    user1[0][1] - user1_troops,
-                    user1[0][2],
-                    user1[0][3],
-                    user1[0][4],
-                    user1[0][5],
-                    user1[0][6],
-                    user1[0][7] + 1,
-                    user1[0][8],
-                    user1[0][9] + 1,
-                )
-            )
+            await update_war((
+                ctx.author.id,
+                user1[0][0],
+                user1[0][1] - user1_troops,
+                user1[0][2],
+                user1[0][3],
+                user1[0][4],
+                user1[0][5],
+                user1[0][6],
+                user1[0][7] + 1,
+                user1[0][8],
+                user1[0][9] + 1,
+            ))
 
-            await update_war(
-                (
-                    b,
-                    user2[0][0],
-                    user2[0][1] + user1_troops,
-                    user2[0][2],
-                    user2[0][3],
-                    user2[0][4],
-                    user2[0][5],
-                    user2[0][6],
-                    user2[0][7] + 1,
-                    user2[0][8] + 1,
-                    user2[0][9],
-                )
-            )
+            await update_war((
+                b,
+                user2[0][0],
+                user2[0][1] + user1_troops,
+                user2[0][2],
+                user2[0][3],
+                user2[0][4],
+                user2[0][5],
+                user2[0][6],
+                user2[0][7] + 1,
+                user2[0][8] + 1,
+                user2[0][9],
+            ))
 
     @war.error
     async def war_error(self, ctx, error):
@@ -1831,12 +1744,8 @@ class Games2(
         await ctx.send("How long should the time limit be (**in seconds**)")
 
         def check1(m):
-            return (
-                m.content.isdigit()
-                and m.author == the_author
-                and m.channel == channel
-                and int(m.content) <= 300
-            )
+            return (m.content.isdigit() and m.author == the_author
+                    and m.channel == channel and int(m.content) <= 300)
 
         msg1 = await self.bot.wait_for("message", check=check1)
 
@@ -1871,11 +1780,9 @@ class Games2(
 
                     country_capital = country_capital1.capital()
 
-            country_capital = (
-                unicodedata.normalize("NFKD", country_capital)
-                .encode("ascii", "ignore")
-                .decode("utf-8")
-            )
+            country_capital = (unicodedata.normalize(
+                "NFKD", country_capital).encode("ascii",
+                                                "ignore").decode("utf-8"))
 
             # try:
 
@@ -1891,12 +1798,12 @@ class Games2(
             def check(m):
                 return (
                     fuzz.ratio(country_capital.lower(), m.content.lower()) > 85
-                    or m.content.lower() == "quit"
-                    and m.channel == channel
-                )
+                    or m.content.lower() == "quit" and m.channel == channel)
 
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=length)
+                msg = await self.bot.wait_for("message",
+                                              check=check,
+                                              timeout=length)
 
                 if msg.content == "quit":
                     await ctx.send("Game Over")
@@ -1922,10 +1829,12 @@ class Games2(
                     )
                     return
                 except:
-                    await ctx.send("No one scored in this match. :cry: Total score `0`")
+                    await ctx.send(
+                        "No one scored in this match. :cry: Total score `0`")
                     return
 
-        await ctx.send("10 mintues have passed! The game is over! Good job everyone!")
+        await ctx.send(
+            "10 mintues have passed! The game is over! Good job everyone!")
 
     @cog_ext.cog_subcommand(
         base="guess",
@@ -1939,12 +1848,8 @@ class Games2(
         await ctx.send("How long should the time limit be (**in seconds**)")
 
         def check1(m):
-            return (
-                m.content.isdigit()
-                and m.author == the_author
-                and m.channel == channel
-                and int(m.content) <= 300
-            )
+            return (m.content.isdigit() and m.author == the_author
+                    and m.channel == channel and int(m.content) <= 300)
 
         msg1 = await self.bot.wait_for("message", check=check1)
 
@@ -1977,13 +1882,14 @@ class Games2(
 
             def check(m):
                 return (
-                    m.content.lower() == "quit"
-                    or fuzz.ratio(random_country.lower(), m.content.lower()) > 82
-                    and m.channel == channel
-                )
+                    m.content.lower() == "quit" or
+                    fuzz.ratio(random_country.lower(), m.content.lower()) > 82
+                    and m.channel == channel)
 
             try:
-                msg = await self.bot.wait_for("message", check=check, timeout=length)
+                msg = await self.bot.wait_for("message",
+                                              check=check,
+                                              timeout=length)
 
                 if msg.content.lower() == "quit":
                     await ctx.send("Game quit")
@@ -2009,7 +1915,8 @@ class Games2(
                     )
                     return
                 except:
-                    await ctx.send("No one scored in this match. :cry: Total score `0`")
+                    await ctx.send(
+                        "No one scored in this match. :cry: Total score `0`")
                     return
         await ctx.send("10 minutes have passed! Good job everyone!!")
 
