@@ -1,16 +1,18 @@
-from discord.ext import commands
+import datetime
+import re
+
 import discord
 import pycountry
-import re
-import datetime
+from discord.ext import commands
 from discord_slash import cog_ext
 
 
 class CountryDatabase2(
-    commands.Cog,
-    name="Country Database (slash)",
-    description="Commands that allow you to find countries!",
+        commands.Cog,
+        name="Country Database (slash)",
+        description="Commands that allow you to find countries!",
 ):
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -36,7 +38,8 @@ class CountryDatabase2(
         if not result2:
             embed = discord.Embed(
                 title="Sorry",
-                description="**there are no countries starting with {}**".format(arg),
+                description="**there are no countries starting with {}**".
+                format(arg),
                 color=0xFF5733,
             )
 

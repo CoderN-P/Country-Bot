@@ -1,22 +1,26 @@
+import os
+
 import discord
+import topgg
 from discord.ext import commands
+from discord_slash import SlashCommand
+from fuzzywuzzy import fuzz
+from pretty_help import DefaultMenu, PrettyHelp
+
+from bot_utils.background_tasks import BackgroundTasks
 from bot_utils.mongomethods import (
-    get_prefix2,
+    create_prefix,
     create_prefix2,
     delete_prefix,
-    create_prefix,
+    get_prefix2,
     reading,
     update,
     update_coins,
 )
-import topgg, os
-from bot_utils.background_tasks import BackgroundTasks
-from discord_slash import SlashCommand
-from pretty_help import PrettyHelp, DefaultMenu
-from fuzzywuzzy import fuzz
 
 
 class CountryBot(commands.Bot):
+
     def __init__(self):
         self.owner = 751594192739893298
         self.description = "Check out our slash commands! Type `/` to bring up all of the slash commands! If you do not see any slash commands from country bot, then please kick country bot and use [this link to invite it again](https://discord.com/api/oauth2/authorize?client_id=810662403217948672&permissions=2048&scope=bot%20applications.commands)"
@@ -30,19 +34,20 @@ class CountryBot(commands.Bot):
         _ = SlashCommand(self, sync_commands=True)
 
         self.topgg_webhook = topgg.WebhookManager(self).dbl_webhook(
-            "/dblwebhook", "dbl_password"
-        )
+            "/dblwebhook", "dbl_password")
         self.topgg_webhook.run(4355)
 
-        menu = DefaultMenu("◀️", "▶️", "❌")  # You can copy-paste any icons you want.
+        menu = DefaultMenu("◀️", "▶️",
+                           "❌")  # You can copy-paste any icons you want.
         ending_note = "Type {help.clean_prefix}help command to get information on a command\nType {help.clean_prefix}help category to get information on a category\nPlease do not put text in <> or []\n<> = mandatory argument, [] = optional argument"
-        self.help_command = PrettyHelp(
-            navigation=menu, color=discord.Colour.red(), ending_note=ending_note
-        )
+        self.help_command = PrettyHelp(navigation=menu,
+                                       color=discord.Colour.red(),
+                                       ending_note=ending_note)
         dbl_token = os.environ["TOPGGTOKEN"]
-        self.topggpy = topgg.DBLClient(
-            self, dbl_token, autopost=True, post_shard_count=True
-        )
+        self.topggpy = topgg.DBLClient(self,
+                                       dbl_token,
+                                       autopost=True,
+                                       post_shard_count=True)
 
         self.tasks = BackgroundTasks(self)
 
@@ -60,24 +65,18 @@ class CountryBot(commands.Bot):
         self.run(os.getenv("TOKEN"))
 
     async def on_message(self, msg):
-        if (
-            msg.content == f"<@810662403217948672> prefix"
-            or msg.content == f"<@!810662403217948672> prefix"
-        ):
+        if (msg.content == f"<@810662403217948672> prefix"
+                or msg.content == f"<@!810662403217948672> prefix"):
             prefix = self.bot.command_prefix(self.bot, msg)
             await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
-        elif (
-            msg.content == f"<@810662403217948672>prefix"
-            or msg.content == f"<@!810662403217948672>prefix"
-        ):
+        elif (msg.content == f"<@810662403217948672>prefix"
+              or msg.content == f"<@!810662403217948672>prefix"):
             prefix = self.bot.command_prefix(self.bot, msg)
             await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
-        elif (
-            msg.content == "<@810662403217948672>"
-            or msg.content == "<@!810662403217948672>"
-        ):
+        elif (msg.content == "<@810662403217948672>"
+              or msg.content == "<@!810662403217948672>"):
             prefix = self.bot.command_prefix(self.bot, msg)
             await msg.channel.send(f"My prefix in this server is `{prefix}`")
 
@@ -106,17 +105,15 @@ class CountryBot(commands.Bot):
                 "Thanks for voting! Unfortunately since you have not made a country, you can't redeem any rewards :( To create a country type `.start` Remember, replace `.` with the prefix of the bot in the server you are in!"
             )
             return
-        await update(
-            (
-                user.id,
-                a[0][0],
-                a[0][1] + (1000 * (a[0][5] + 1)),
-                a[0][2],
-                a[0][3],
-                a[0][4],
-                a[0][10],
-            )
-        )
+        await update((
+            user.id,
+            a[0][0],
+            a[0][1] + (1000 * (a[0][5] + 1)),
+            a[0][2],
+            a[0][3],
+            a[0][4],
+            a[0][10],
+        ))
         await update_coins((user.id, a[0][11] + (100 * a[0][5])))
         await user.send(
             "Thanks for voting, I appreciate it! Check your profile to see the received rewards!"
@@ -163,21 +160,18 @@ class CountryBot(commands.Bot):
                 pass
             guild = self.bot.get_guild(821872779523522580)
             channel = discord.utils.get(guild.channels, name="bug-logs")
-            await channel.send(
-                embed=discord.Embed(
-                    title="Error in executing a command",
-                    description=f"New error when executing command: {ctx.command.name}\n**Error**: {error}",
-                )
-            )
+            await channel.send(embed=discord.Embed(
+                title="Error in executing a command",
+                description=f"New error when executing command: {ctx.command.name}\n**Error**: {error}",
+            ))
 
-        elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
-            await ctx.send(
-                embed=discord.Embed(
-                    title="Incorrect Usage",
-                    description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```",
-                    color=discord.Colour.red(),
-                )
-            )
+        elif isinstance(error,
+                        discord.ext.commands.errors.MissingRequiredArgument):
+            await ctx.send(embed=discord.Embed(
+                title="Incorrect Usage",
+                description=f"Correct Usage: ```{ctx.prefix}{ctx.command.name} {ctx.command.signature}```",
+                color=discord.Colour.red(),
+            ))
 
         elif isinstance(error, discord.ext.commands.errors.MemberNotFound):
             embed = discord.Embed(title="Hmm", description=error.args[0])
